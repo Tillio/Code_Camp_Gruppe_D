@@ -1,60 +1,69 @@
 package com.example.group_d.ui.main.ui.friends
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.group_d.R
+import com.example.group_d.data.model.User
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
+import com.example.group_d.databinding.FragmentFriendsListBinding
 
-/**
- * A simple [Fragment] subclass.
- * Use the [FriendListFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
-class FriendListFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
+class FriendsListFragment : Fragment() {
+    private var _binding: FragmentFriendsListBinding? = null
+
+    private val binding get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_friend_list, container, false)
+        _binding = FragmentFriendsListBinding.inflate(inflater, container, false)
+        val root: View = binding.root
+
+        val friendList: RecyclerView = binding.friendList
+        val friendAdapter = FriendAdapter()
+        friendAdapter.friendItems = ArrayList(createFriends())
+        friendList.adapter = friendAdapter
+        friendList.layoutManager = LinearLayoutManager(context)
+
+        binding.addFriendButton.setOnClickListener{
+            val parentFrag: FriendsFragment =
+                this.parentFragment as FriendsFragment
+                parentFrag.showAddFriendScreen()
+        }
+        return root
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment FriendListFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            FriendListFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
+    fun createFriends(): List<User> {
+        val arrayList = ArrayList<User>()
+        arrayList.add(User(name = "user1", id = "0", online = true))
+        arrayList.add(User(name = "user2", id = "1", online = true))
+        arrayList.add(User(name = "user3", id = "2", online = true))
+        arrayList.add(User(name = "user4", id = "3", online = false))
+        arrayList.add(User(name = "user1", id = "0", online = true))
+        arrayList.add(User(name = "user2", id = "1", online = true))
+        arrayList.add(User(name = "user3", id = "2", online = true))
+        arrayList.add(User(name = "user4", id = "3", online = false))
+        arrayList.add(User(name = "user1", id = "0", online = true))
+        arrayList.add(User(name = "user2", id = "1", online = true))
+        arrayList.add(User(name = "user3", id = "2", online = true))
+        arrayList.add(User(name = "user4", id = "3", online = false))
+        arrayList.add(User(name = "user1", id = "0", online = true))
+        arrayList.add(User(name = "user2", id = "1", online = true))
+        arrayList.add(User(name = "user3", id = "2", online = true))
+        arrayList.add(User(name = "user4", id = "88", online = false))
+        arrayList.add(User(name = "user1", id = "0", online = true))
+        arrayList.add(User(name = "user02", id = "1", online = true))
+        arrayList.add(User(name = "user3654", id = "2", online = true))
+        arrayList.add(User(name = "user499", id = "99", online = false))
+
+        return arrayList
     }
+
+
 }

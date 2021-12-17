@@ -1,10 +1,10 @@
-package com.example.group_d.ui.main.ui.dashboard
+package com.example.group_d.ui.main.ui.games
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
-class DashboardViewModel : ViewModel() {
+class GamesViewModel : ViewModel() {
 
     private val _text = MutableLiveData<String>().apply {
         value = "This is dashboard Fragment"

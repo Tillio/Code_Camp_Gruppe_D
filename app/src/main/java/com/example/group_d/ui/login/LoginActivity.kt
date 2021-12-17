@@ -1,6 +1,7 @@
 package com.example.group_d.ui.login
 
 import android.app.Activity
+import android.content.Intent
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
@@ -15,6 +16,7 @@ import android.widget.Toast
 import com.example.group_d.databinding.ActivityLoginBinding
 
 import com.example.group_d.R
+import com.example.group_d.ui.main.MainScreenActivity
 
 class LoginActivity : AppCompatActivity() {
 
@@ -31,6 +33,7 @@ class LoginActivity : AppCompatActivity() {
         val password = binding.password
         val login = binding.login
         val loading = binding.loading
+
 
         loginViewModel = ViewModelProvider(this, LoginViewModelFactory())
             .get(LoginViewModel::class.java)
@@ -94,6 +97,7 @@ class LoginActivity : AppCompatActivity() {
             login.setOnClickListener {
                 loading.visibility = View.VISIBLE
                 loginViewModel.login(username.text.toString(), password.text.toString())
+                startMainActivity()
             }
         }
     }
@@ -111,6 +115,11 @@ class LoginActivity : AppCompatActivity() {
 
     private fun showLoginFailed(@StringRes errorString: Int) {
         Toast.makeText(applicationContext, errorString, Toast.LENGTH_SHORT).show()
+    }
+
+    private fun startMainActivity() {
+        val i = Intent(this, MainScreenActivity::class.java ).apply {  }
+        startActivity(i)
     }
 }
 

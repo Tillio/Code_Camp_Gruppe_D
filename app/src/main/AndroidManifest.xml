@@ -10,14 +10,29 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Group_D">
         <activity
+            android:name=".ui.main.MainScreenActivity"
+            android:exported="true"
+            android:label="@string/title_activity_main_screen" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
             android:name=".ui.login.LoginActivity"
             android:exported="true"
             android:label="@string/title_activity_login">
+            <!--detail>
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            </detail-->
         </activity>
     </application>
 
 </manifest>
+
+

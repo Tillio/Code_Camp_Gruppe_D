@@ -1,4 +1,4 @@
-package com.example.group_d.ui.main.ui.dashboard
+package com.example.group_d.ui.main.ui.games
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,12 +8,12 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import com.example.group_d.databinding.FragmentDashboardBinding
+import com.example.group_d.databinding.FragmentGamesBinding
 
-class DashboardFragment : Fragment() {
+class GamesFragment : Fragment() {
 
-    private lateinit var dashboardViewModel: DashboardViewModel
-    private var _binding: FragmentDashboardBinding? = null
+    private lateinit var gamesViewModel: GamesViewModel
+    private var _binding: FragmentGamesBinding? = null
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -24,15 +24,15 @@ class DashboardFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        dashboardViewModel =
-            ViewModelProvider(this).get(DashboardViewModel::class.java)
+        gamesViewModel =
+            ViewModelProvider(this).get(GamesViewModel::class.java)
 
-        _binding = FragmentDashboardBinding.inflate(inflater, container, false)
+        _binding = FragmentGamesBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        val textView: TextView = binding.textDashboard
-        dashboardViewModel.text.observe(viewLifecycleOwner, Observer {
-            textView.text = it
+        val textView: TextView = binding.textGames
+        gamesViewModel.text.observe(viewLifecycleOwner, Observer {
+            //textView.text = it
         })
         return root
     }
