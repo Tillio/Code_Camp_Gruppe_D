@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/navigation_games">
+
+    <fragment
+        android:id="@+id/navigation_games"
+        android:name="com.example.group_d.ui.main.ui.games.GamesFragment"
+        android:label="@string/title_games"
+        tools:layout="@layout/fragment_challenges" />
+
+    <fragment
+        android:id="@+id/navigation_friends"
+        android:name="com.example.group_d.ui.main.ui.friends.FriendsFragment"
+        android:label="@string/title_friends"
+        tools:layout="@layout/fragment_games" />
+
+    <fragment
+        android:id="@+id/navigation_challenges"
+        android:name="com.example.group_d.ui.main.ui.challenges.ChallengesFragment"
+        android:label="@string/title_challenges"
+        tools:layout="@layout/fragment_friends_list" />
+
+    <fragment
+        android:id="@+id/navigation_settings"
+        android:name="com.example.group_d.ui.main.ui.settings.SettingsFragment"
+        android:label="@string/title_settings"
+        tools:layout="@layout/fragment_settings" />
+</navigation>

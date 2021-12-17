@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/navigation_games"
+        android:icon="@drawable/ic_twotone_sports_esports_24"
+        android:title="@string/title_games" />
+
+    <item
+        android:id="@+id/navigation_friends"
+        android:icon="@drawable/ic_baseline_people_24"
+        android:title="@string/title_friends" />
+
+
+    <item
+        android:id="@+id/navigation_challenges"
+        android:icon="@drawable/ic_baseline_emoji_flags_24"
+        android:title="@string/title_challenges" />
+
+    <item
+        android:id="@+id/navigation_settings"
+        android:icon="@drawable/ic_baseline_settings_24"
+        android:title="@string/title_settings" />
+
+</menu>
