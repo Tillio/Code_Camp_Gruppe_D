@@ -32,7 +32,6 @@ class FriendsFragment : Fragment() {
 
         friendList = FriendsListFragment()
         friendRequest = FriendRequestFragment()
-
         childFragmentManager.beginTransaction().apply {
             replace(R.id.fl_friend_screen, friendList)
             commit()
