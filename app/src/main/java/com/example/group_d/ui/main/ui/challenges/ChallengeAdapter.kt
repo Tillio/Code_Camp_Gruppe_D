@@ -20,11 +20,16 @@ class ChallengeAdapter(private val challenges: List<Challenge>, private val frag
 
         init {
             buttonAccept.setOnClickListener {
-                TODO("Start new game with ${challenge.user.name}")
+                fragment.onAccept(challenge)
             }
 
             buttonDecline.setOnClickListener {
-                fragment.showDeclineDialog(challenge)
+                fragment.apply {
+                    ChallengeDeclineDialogFragment(challenge, this).show(
+                        parentFragmentManager,
+                        "challenge_decline_${challenge.user.id}"
+                    )
+                }
             }
         }
 

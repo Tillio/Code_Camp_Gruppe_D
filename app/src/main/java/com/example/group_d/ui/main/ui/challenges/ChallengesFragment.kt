@@ -50,11 +50,9 @@ class ChallengesFragment : Fragment() {
         _binding = null
     }
 
-    fun showDeclineDialog(challenge: Challenge) {
-        ChallengeDeclineDialogFragment(challenge, this).show(
-            parentFragmentManager,
-            "challenge_decline_${challenge.user.id}"
-        )
+    fun onAccept(challenge: Challenge) {
+        challengesViewModel.accept(challenge)
+        Log.d(null, "Start new game with ${challenge.user.name}")
     }
 
     fun onDecline(challenge: Challenge, dontAsk: Boolean) {
@@ -79,16 +77,16 @@ class ChallengeDeclineDialogFragment(
                     challenge.user.name +
                     getString(R.string.dialog_decline_challenge_msg2)
             builder.setTitle(msg)
-                .setPositiveButton(R.string.dialog_yes) { dialog, btnID ->
+                .setPositiveButton(R.string.dialog_yes) { _, _ ->
                     fragment.onDecline(challenge, dontAsk)
                 }
-                .setNegativeButton(R.string.dialog_no) { dialog, btnID ->
+                .setNegativeButton(R.string.dialog_no) { dialog, _ ->
                     dialog.cancel()
                 }
                 .setMultiChoiceItems(
                     arrayOf(getString(R.string.dialog_decline_challenge_dont_ask)),
                     null
-                ) { dialog, pos, checked ->
+                ) { _, _, checked ->
                     dontAsk = checked
                 }
             builder.create()

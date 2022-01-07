@@ -29,4 +29,8 @@ class ChallengesViewModel : ViewModel() {
         mutChallenges.remove(challenge)
         _challenges.value = mutChallenges
     }
+
+    fun accept(challenge: Challenge) {
+        TODO("Not yet implemented")
+    }
 }
