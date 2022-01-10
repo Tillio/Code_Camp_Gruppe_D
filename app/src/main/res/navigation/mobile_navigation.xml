@@ -28,4 +28,13 @@
         android:name="com.example.group_d.ui.main.ui.settings.SettingsFragment"
         android:label="@string/title_settings"
         tools:layout="@layout/fragment_settings" />
+    <fragment
+        android:id="@+id/ingame_ticTacToeFragment"
+        android:name="com.example.group_d.ui.main.ui.ingame.TicTacToeFragment"
+        android:label="@string/title_tic_tac_toe"
+        tools:layout="@layout/tic_tac_toe_fragment" >
+        <argument
+            android:name="userID"
+            app:argType="string" />
+    </fragment><action android:id="@+id/action_global_ingame_ticTacToeFragment" app:destination="@id/ingame_ticTacToeFragment"/>
 </navigation>

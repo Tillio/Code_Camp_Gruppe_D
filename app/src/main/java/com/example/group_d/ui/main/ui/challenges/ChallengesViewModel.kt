@@ -31,6 +31,6 @@ class ChallengesViewModel : ViewModel() {
     }
 
     fun accept(challenge: Challenge) {
-        TODO("Not yet implemented")
+        //TODO("Not yet implemented")
     }
 }

@@ -10,11 +10,13 @@ import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.group_d.R
 import com.example.group_d.data.model.Challenge
 import com.example.group_d.databinding.FragmentChallengesBinding
+import com.example.group_d.ui.main.ui.ingame.TicTacToeFragmentDirections
 
 class ChallengesFragment : Fragment() {
 
@@ -53,6 +55,10 @@ class ChallengesFragment : Fragment() {
     fun onAccept(challenge: Challenge) {
         challengesViewModel.accept(challenge)
         Log.d(null, "Start new game with ${challenge.user.name}")
+        // TODO Pass user id instead of user name
+        val action =
+            TicTacToeFragmentDirections.actionGlobalIngameTicTacToeFragment(challenge.user.name)
+        findNavController().navigate(action)
     }
 
     fun onDecline(challenge: Challenge, dontAsk: Boolean) {

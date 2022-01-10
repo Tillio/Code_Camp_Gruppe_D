@@ -29,6 +29,9 @@
     <string name="dialog_decline_challenge_msg1">Are you sure you want to decline the challenge from&#160;</string>
     <string name="dialog_decline_challenge_msg2">\?</string>
     <string name="dialog_decline_challenge_dont_ask">Don\'t ask anymore</string>
+
+    <!--tictactoe-->
+    <string name="title_tic_tac_toe">TicTacToe</string>
     <string name="player_you">You</string>
     <string name="button_give_up_text">Give up</string>
 </resources>
