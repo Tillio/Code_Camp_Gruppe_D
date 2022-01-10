@@ -53,11 +53,10 @@ class ChallengesFragment : Fragment() {
     }
 
     fun onAccept(challenge: Challenge) {
-        challengesViewModel.accept(challenge)
         Log.d(null, "Start new game with ${challenge.user.name}")
-        // TODO Pass user id instead of user name
+        val gameID = challengesViewModel.createGame(challenge)
         val action =
-            TicTacToeFragmentDirections.actionGlobalIngameTicTacToeFragment(challenge.user.name)
+            TicTacToeFragmentDirections.actionGlobalIngameTicTacToeFragment(gameID)
         findNavController().navigate(action)
     }
 

@@ -30,7 +30,8 @@ class ChallengesViewModel : ViewModel() {
         _challenges.value = mutChallenges
     }
 
-    fun accept(challenge: Challenge) {
-        //TODO("Not yet implemented")
+    fun createGame(challenge: Challenge): Int {
+        //TODO Create game
+        return 42
     }
 }
