@@ -136,6 +136,84 @@
             android:background="?android:attr/listDivider"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/field_0"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_baseline_close_96"
+            app:layout_constraintStart_toStartOf="@+id/hline1"
+            app:layout_constraintTop_toTopOf="@+id/vline1" />
+
+        <ImageView
+            android:id="@+id/field_1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_baseline_panorama_fish_eye_96"
+            app:layout_constraintEnd_toEndOf="@+id/hline1"
+            app:layout_constraintStart_toStartOf="@+id/hline1"
+            app:layout_constraintTop_toTopOf="@+id/vline1" />
+
+        <ImageView
+            android:id="@+id/field_2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_baseline_close_96"
+            app:layout_constraintEnd_toEndOf="@+id/hline1"
+            app:layout_constraintTop_toTopOf="@+id/vline2" />
+
+        <ImageView
+            android:id="@+id/field_3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_baseline_panorama_fish_eye_96"
+            app:layout_constraintBottom_toBottomOf="@+id/vline1"
+            app:layout_constraintStart_toStartOf="@+id/hline1"
+            app:layout_constraintTop_toTopOf="@+id/vline1" />
+
+        <ImageView
+            android:id="@+id/field_4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_baseline_close_96"
+            app:layout_constraintBottom_toBottomOf="@+id/vline1"
+            app:layout_constraintEnd_toEndOf="@+id/hline1"
+            app:layout_constraintStart_toStartOf="@+id/hline1"
+            app:layout_constraintTop_toTopOf="@+id/vline1" />
+
+        <ImageView
+            android:id="@+id/field_5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_baseline_panorama_fish_eye_96"
+            app:layout_constraintBottom_toBottomOf="@+id/vline2"
+            app:layout_constraintEnd_toEndOf="@+id/hline1"
+            app:layout_constraintTop_toTopOf="@+id/vline2" />
+
+        <ImageView
+            android:id="@+id/field_6"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_baseline_close_96"
+            app:layout_constraintBottom_toBottomOf="@+id/vline1"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <ImageView
+            android:id="@+id/field_7"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_baseline_panorama_fish_eye_96"
+            app:layout_constraintBottom_toBottomOf="@+id/vline1"
+            app:layout_constraintEnd_toEndOf="@+id/hline2"
+            app:layout_constraintStart_toStartOf="@+id/hline2" />
+
+        <ImageView
+            android:id="@+id/field_8"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_baseline_close_96"
+            app:layout_constraintBottom_toBottomOf="@+id/vline2"
+            app:layout_constraintEnd_toEndOf="@+id/hline2" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
