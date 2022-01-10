@@ -28,4 +28,10 @@
         android:name="com.example.group_d.ui.main.ui.settings.SettingsFragment"
         android:label="@string/title_settings"
         tools:layout="@layout/fragment_settings" />
+
+    <fragment
+        android:id="@+id/newGameSetup"
+        android:name="com.example.group_d.ui.main.ui.games.NewGameSetup"
+        android:label="fragment_new_game_setup"
+        tools:layout="@layout/fragment_new_game_setup" /><action android:id="@+id/action_global_newGameSetup" app:destination="@id/newGameSetup"/>
 </navigation>
