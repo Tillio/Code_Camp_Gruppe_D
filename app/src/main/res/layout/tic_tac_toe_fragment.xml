@@ -11,7 +11,7 @@
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_marginStart="40dp"
-        android:layout_marginTop="48dp"
+        android:src="@drawable/ic_baseline_person_24"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:src="@tools:sample/avatars" />
@@ -21,6 +21,7 @@
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_marginEnd="40dp"
+        android:src="@drawable/ic_baseline_person_24"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/player_profile_pic"
         tools:src="@tools:sample/avatars" />
@@ -48,10 +49,9 @@
         android:id="@+id/text_player_action"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="128dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="@+id/player_piece" />
 
     <ProgressBar
         android:id="@+id/wait"
@@ -67,7 +67,7 @@
         android:id="@+id/button_give_up"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="96dp"
+        android:layout_marginBottom="64dp"
         android:text="@string/button_give_up_text"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -87,11 +87,10 @@
         android:id="@+id/op_piece"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
         android:src="@drawable/ic_baseline_close_24"
         app:layout_constraintEnd_toEndOf="@+id/op_profile_pic"
         app:layout_constraintStart_toStartOf="@+id/op_profile_pic"
-        app:layout_constraintTop_toBottomOf="@+id/op_profile_pic" />
+        app:layout_constraintTop_toTopOf="@+id/player_piece" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="wrap_content"
@@ -99,7 +98,8 @@
         app:layout_constraintBottom_toTopOf="@+id/button_give_up"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/wait">
+        app:layout_constraintTop_toBottomOf="@+id/wait"
+        app:layout_constraintVertical_bias="0.125">
 
         <View
             android:id="@+id/hline1"
