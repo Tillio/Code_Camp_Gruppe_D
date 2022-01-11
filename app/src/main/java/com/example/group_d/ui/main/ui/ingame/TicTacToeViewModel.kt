@@ -1,8 +1,11 @@
 package com.example.group_d.ui.main.ui.ingame
 
-import androidx.lifecycle.*
-import com.example.group_d.data.model.tictactoe.Player
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.ViewModel
 import com.example.group_d.data.model.tictactoe.TicTacToeGame
+import kotlin.random.Random
 
 class TicTacToeViewModel(private val state: SavedStateHandle) : ViewModel() {
 
@@ -15,16 +18,28 @@ class TicTacToeViewModel(private val state: SavedStateHandle) : ViewModel() {
         // TODO load from repository
         _game.apply {
             value = TicTacToeGame.buildGame("Erna", "Hans")
-            value!!.currentPlayer = value!!.player1
         }
     }
 
+    fun getOpponentMove(): Int {
+        // TODO load from repository
+        var rand = Random.nextInt(TicTacToeGame.NUM_FIELDS)
+        while (!fieldIsEmpty(rand)) {
+            rand = Random.nextInt(TicTacToeGame.NUM_FIELDS)
+        }
+        return rand
+    }
+
     fun fieldIsEmpty(fieldNum: Int): Boolean {
-        return _game.value!!.fields[fieldNum].player == null
+        return game.value!!.fields[fieldNum].player == null
     }
 
     fun move(fieldNum: Int) {
-        _game.value!!.fields[fieldNum].player = game.value!!.player1
+        game.value!!.fields[fieldNum].player = game.value!!.player1
+    }
+
+    fun moveOpponent(fieldNum: Int) {
+        game.value!!.fields[fieldNum].player = game.value!!.player2
     }
 
     fun checkWin(fieldNum: Int): Boolean {

@@ -11,17 +11,20 @@ class TicTacToeGame() {
             return TicTacToeGame().apply {
                 player1 = Player(player1Name)
                 player2 = Player(player2Name)
+                currentPlayer = player1
                 for ((i, field) in fields.withIndex()) {
                     if (i < NUM_FIELDS - NUM_COLUMNS) {
                         field.south = fields[i + NUM_COLUMNS]
                     }
-                    if ((i + 1) % NUM_COLUMNS != 0) {
-                        field.east = fields[i + 1]
+                    if (i % NUM_COLUMNS != 0) {
+                        field.west = fields[i - 1]
+                        if (i >= NUM_COLUMNS) {
+                            field.northWest = fields[i - NUM_COLUMNS - 1]
+                        }
                         if (i < NUM_FIELDS - NUM_COLUMNS) {
-                            field.southEast = fields[i + NUM_COLUMNS + 1]
+                            field.southWest = fields[i + NUM_COLUMNS - 1]
                         }
                     }
-                    // TODO add southwest fields
                 }
             }
         }

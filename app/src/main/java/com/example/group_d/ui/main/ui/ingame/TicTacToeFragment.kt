@@ -1,13 +1,11 @@
 package com.example.group_d.ui.main.ui.ingame
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.Toast
-import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.navArgs
@@ -36,6 +34,9 @@ class TicTacToeFragment : Fragment() {
         _binding = TicTacToeFragmentBinding.inflate(inflater, container, false)
         val root = binding.root
         val textOpName = binding.textOpName
+        val waitSymbol = binding.wait
+        val textPlayerAction = binding.textPlayerAction
+        textPlayerAction.setText(R.string.action_your_turn)
         ticTacToeViewModel.loadGame(args.gameID)
         textOpName.text = ticTacToeViewModel.opponentName
 
@@ -57,9 +58,25 @@ class TicTacToeFragment : Fragment() {
                 fieldButton.setImageResource(R.drawable.ic_baseline_panorama_fish_eye_96)
                 if (ticTacToeViewModel.checkWin(i)) {
                     // TODO Show winScreen
-                    Toast.makeText(activity, "You win", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(activity, "Congrats! You win", Toast.LENGTH_SHORT).show()
                     return@setOnClickListener
                 }
+                waitSymbol.visibility = View.VISIBLE
+                val actionText = getString(R.string.action_wait_text1) +
+                        ticTacToeViewModel.opponentName +
+                        getString(R.string.action_wait_text2)
+                textPlayerAction.text = actionText
+                val opField = ticTacToeViewModel.getOpponentMove()
+                ticTacToeViewModel.moveOpponent(opField)
+                fieldButtons[opField].setImageResource(R.drawable.ic_baseline_close_96)
+                waitSymbol.visibility = View.INVISIBLE
+                if (ticTacToeViewModel.checkWin(opField)) {
+                    // TODO Show winScreen
+                    Toast.makeText(activity, "Booh! You lose", Toast.LENGTH_SHORT).show()
+                    textPlayerAction.text = ""
+                    return@setOnClickListener
+                }
+                textPlayerAction.setText(R.string.action_your_turn)
             }
         }
         // TODO Show profile pictures
