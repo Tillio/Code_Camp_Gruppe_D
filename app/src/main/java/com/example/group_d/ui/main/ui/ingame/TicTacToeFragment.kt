@@ -47,7 +47,7 @@ class TicTacToeFragment : Fragment() {
         fieldIDs.recycle()
         for ((i, fieldButton) in fieldButtons.withIndex()) {
             // TODO
-            //fieldButton.setImageDrawable(null)
+            fieldButton.setImageDrawable(null)
             fieldButton.setOnClickListener {
                 if (!ticTacToeViewModel.fieldIsEmpty(i)) {
                     Toast.makeText(activity, R.string.field_not_empty, Toast.LENGTH_SHORT).show()
@@ -56,7 +56,9 @@ class TicTacToeFragment : Fragment() {
                 ticTacToeViewModel.move(i)
                 fieldButton.setImageResource(R.drawable.ic_baseline_panorama_fish_eye_96)
                 if (ticTacToeViewModel.checkWin(i)) {
-
+                    // TODO Show winScreen
+                    Toast.makeText(activity, "You win", Toast.LENGTH_SHORT).show()
+                    return@setOnClickListener
                 }
             }
         }
