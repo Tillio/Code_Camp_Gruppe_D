@@ -1,17 +1,16 @@
 package com.example.group_d.data.model.tictactoe
 
-class TicTacToeGame() {
+class TicTacToeGame(val gameID: Int) {
 
     companion object {
         const val NUM_COLUMNS = 3
         const val NUM_ROWS = 3
         const val NUM_FIELDS = NUM_COLUMNS * NUM_ROWS
 
-        fun buildGame(player1Name: String, player2Name: String): TicTacToeGame {
-            return TicTacToeGame().apply {
+        fun buildGame(gameID: Int, player1Name: String, player2Name: String): TicTacToeGame {
+            return TicTacToeGame(gameID).apply {
                 player1 = Player(player1Name)
                 player2 = Player(player2Name)
-                currentPlayer = player1
                 for ((i, field) in fields.withIndex()) {
                     if (i < NUM_FIELDS - NUM_COLUMNS) {
                         field.south = fields[i + NUM_COLUMNS]
@@ -34,27 +33,37 @@ class TicTacToeGame() {
     lateinit var player1: Player
     lateinit var player2: Player
     lateinit var currentPlayer: Player
+    var winner: Player? = null
+    var result: Result? = null
+}
+
+enum class Result {
+    DRAW,
+    WIN
 }
 
 class Player(val name: String) {
 
     private val fields: MutableList<Field> = ArrayList()
+    val amountOfFields get() = fields.size
 
     fun getField(index: Int): Field {
         return fields[index]
     }
 
-    fun withFields(field: Field) {
+    fun withFields(field: Field): Player {
         if (field !in fields) {
             fields.add(field)
             field.player = this
         }
+        return this
     }
 
-    fun withOutFields(field: Field) {
+    fun withOutFields(field: Field): Player {
         if (fields.remove(field)) {
             field.player = null
         }
+        return this
     }
 }
 
