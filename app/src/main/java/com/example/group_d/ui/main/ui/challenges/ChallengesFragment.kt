@@ -1,19 +1,22 @@
 package com.example.group_d.ui.main.ui.challenges
 
+import android.app.AlertDialog
+import android.app.Dialog
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
+import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.group_d.R
 import com.example.group_d.data.model.Challenge
-import com.example.group_d.data.model.GameType
-import com.example.group_d.data.model.User
 import com.example.group_d.databinding.FragmentChallengesBinding
+import com.example.group_d.ui.main.ui.ingame.TicTacToeFragmentDirections
 
 class ChallengesFragment : Fragment() {
 
@@ -35,12 +38,10 @@ class ChallengesFragment : Fragment() {
         _binding = FragmentChallengesBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        val textView: TextView = binding.textChallenges
-        /*challengesViewModel.text.observe(viewLifecycleOwner, Observer {
-            textView.text = it
-        })*/
         val recyclerView: RecyclerView = binding.recyclerViewChallenges
-        recyclerView.adapter = ChallengeAdapter(exampleChallenges())
+        challengesViewModel.challenges.observe(viewLifecycleOwner, {
+            recyclerView.adapter = ChallengeAdapter(it, this)
+        })
         recyclerView.layoutManager = LinearLayoutManager(context)
 
         return root
@@ -51,11 +52,49 @@ class ChallengesFragment : Fragment() {
         _binding = null
     }
 
-    private fun exampleChallenges(): MutableList<Challenge> {
-        val challenges: MutableList<Challenge> = ArrayList()
-        for (i in 1..10) {
-            challenges.add(Challenge(User("$i", "User $i", true), GameType.TIC_TAC_TOE))
+    fun onAccept(challenge: Challenge) {
+        Log.d(null, "Start new game with ${challenge.user.name}")
+        val gameID = challengesViewModel.createGame(challenge)
+        val action =
+            TicTacToeFragmentDirections.actionGlobalIngameTicTacToeFragment(gameID)
+        findNavController().navigate(action)
+    }
+
+    fun onDecline(challenge: Challenge, dontAsk: Boolean) {
+        challengesViewModel.decline(challenge)
+        if (dontAsk) {
+            // TODO Update Settings
+            Log.d(challenge.user.name, "Don't show the decline dialog again!")
         }
-        return challenges
+    }
+}
+
+class ChallengeDeclineDialogFragment(
+    private val challenge: Challenge,
+    private val fragment: ChallengesFragment
+) : DialogFragment() {
+
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        return activity?.let {
+            var dontAsk = false
+            val builder = AlertDialog.Builder(it)
+            val msg = getString(R.string.dialog_decline_challenge_msg1) +
+                    challenge.user.name +
+                    getString(R.string.dialog_decline_challenge_msg2)
+            builder.setTitle(msg)
+                .setPositiveButton(R.string.dialog_yes) { _, _ ->
+                    fragment.onDecline(challenge, dontAsk)
+                }
+                .setNegativeButton(R.string.dialog_no) { dialog, _ ->
+                    dialog.cancel()
+                }
+                .setMultiChoiceItems(
+                    arrayOf(getString(R.string.dialog_decline_challenge_dont_ask)),
+                    null
+                ) { _, _, checked ->
+                    dontAsk = checked
+                }
+            builder.create()
+        } ?: throw IllegalStateException("Activity cannot be null")
     }
 }
