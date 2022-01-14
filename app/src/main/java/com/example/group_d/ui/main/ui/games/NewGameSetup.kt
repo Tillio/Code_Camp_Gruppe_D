@@ -36,7 +36,7 @@ class NewGameSetup : Fragment() {
 
         val buttonCancel: Button = view.findViewById(R.id.buttonCancel)
         val buttonStart: Button = view.findViewById(R.id.buttonStart)
-        buttonCancel.setOnClickListener { view -> view.findNavController().navigate(R.id.nav_host_fragment_activity_main_screen) }
+        buttonCancel.setOnClickListener { view -> view.findNavController().navigate(R.id.navigation_friends) }
         buttonStart.setOnClickListener { """ToDo: create and open new game""" }
 
         return view
