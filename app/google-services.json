@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "36398542810",
+    "project_id": "code-camp-gruppe-d",
+    "storage_bucket": "code-camp-gruppe-d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:36398542810:android:4a176a63538fddad4c1ae3",
+        "android_client_info": {
+          "package_name": "com.example.group_d"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "36398542810-mpdd15a39k4u17il5d2hembtg86pvb52.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDy0XCqtR2SYvDimZeDEnA9W4Yjfo8k644"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "36398542810-mpdd15a39k4u17il5d2hembtg86pvb52.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
