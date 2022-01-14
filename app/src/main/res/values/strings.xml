@@ -17,8 +17,14 @@
     <string name="title_friends">Friends</string>
     <string name="title_settings">Settings</string>
     <string name="title_challenges">Challenges</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="invite_msg_placeholder">invited you to a game</string>
+    <string name="button_challenge_acc_text">Accept</string>
+    <string name="button_challenge_decl">Decline</string>
     <string name="user_id">User-Id</string>
     <string name="send_invite">Send Invite</string>
+    <string name="games_title">Current Games</string>
+    <string name="player_names_placeholder">You vs IDK</string>
+    <string name="game_type">Gametype</string>
+    <string name="whos_turn_placeholder">Your Turn</string>
+
 </resources>

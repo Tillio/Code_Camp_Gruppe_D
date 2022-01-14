@@ -9,19 +9,19 @@
         android:id="@+id/navigation_games"
         android:name="com.example.group_d.ui.main.ui.games.GamesFragment"
         android:label="@string/title_games"
-        tools:layout="@layout/fragment_challenges" />
+        tools:layout="@layout/fragment_games" />
 
     <fragment
         android:id="@+id/navigation_friends"
         android:name="com.example.group_d.ui.main.ui.friends.FriendsFragment"
         android:label="@string/title_friends"
-        tools:layout="@layout/fragment_games" />
+        tools:layout="@layout/fragment_friends_list" />
 
     <fragment
         android:id="@+id/navigation_challenges"
         android:name="com.example.group_d.ui.main.ui.challenges.ChallengesFragment"
         android:label="@string/title_challenges"
-        tools:layout="@layout/fragment_friends_list" />
+        tools:layout="@layout/fragment_challenges" />
 
     <fragment
         android:id="@+id/navigation_settings"

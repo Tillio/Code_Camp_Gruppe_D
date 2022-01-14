@@ -8,7 +8,13 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.example.group_d.data.model.Challenge
+import com.example.group_d.data.model.GameType
+import com.example.group_d.data.model.User
 import com.example.group_d.databinding.FragmentGamesBinding
+import com.example.group_d.ui.main.ui.challenges.ChallengeAdapter
 
 class GamesFragment : Fragment() {
 
@@ -31,14 +37,26 @@ class GamesFragment : Fragment() {
         val root: View = binding.root
 
         val textView: TextView = binding.textGames
-        gamesViewModel.text.observe(viewLifecycleOwner, Observer {
+        /*gamesViewModel.text.observe(viewLifecycleOwner, Observer {
             //textView.text = it
-        })
+        })*/
+        val recyclerView: RecyclerView = binding.recyclerViewGames
+        recyclerView.adapter = GamesAdapter(exampleGames())
+        recyclerView.layoutManager = LinearLayoutManager(context)
+
         return root
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    private fun exampleGames(): MutableList<Challenge> {
+        val games: MutableList<Challenge> = ArrayList()
+        for (i in 1..10) {
+            games.add(Challenge(User("$i", "User $i", true), GameType.TIC_TAC_TOE))
+        }
+        return games
     }
 }
