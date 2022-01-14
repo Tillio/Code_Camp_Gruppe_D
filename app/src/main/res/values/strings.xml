@@ -22,4 +22,9 @@
     <string name="button_challenge_decl">Decline</string>
     <string name="user_id">User-Id</string>
     <string name="send_invite">Send Invite</string>
+    <string name="games_title">Current Games</string>
+    <string name="player_names_placeholder">You vs IDK</string>
+    <string name="game_type">Gametype</string>
+    <string name="whos_turn_placeholder">Your Turn</string>
+
 </resources>
