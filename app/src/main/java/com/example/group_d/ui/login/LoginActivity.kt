@@ -17,6 +17,8 @@ import com.example.group_d.databinding.ActivityLoginBinding
 
 import com.example.group_d.R
 import com.example.group_d.ui.main.MainScreenActivity
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 
 class LoginActivity : AppCompatActivity() {
 
@@ -33,10 +35,10 @@ class LoginActivity : AppCompatActivity() {
         val password = binding.password
         val login = binding.login
         val loading = binding.loading
+        lateinit var auth: FirebaseAuth
 
 
-        loginViewModel = ViewModelProvider(this, LoginViewModelFactory())
-            .get(LoginViewModel::class.java)
+        loginViewModel = ViewModelProvider(this, LoginViewModelFactory())[LoginViewModel::class.java]
 
         loginViewModel.loginFormState.observe(this@LoginActivity, Observer {
             val loginState = it ?: return@Observer
@@ -83,7 +85,7 @@ class LoginActivity : AppCompatActivity() {
                 )
             }
 
-            setOnEditorActionListener { _, actionId, _ ->
+            /*setOnEditorActionListener { _, actionId, _ ->
                 when (actionId) {
                     EditorInfo.IME_ACTION_DONE ->
                         loginViewModel.login(
@@ -92,14 +94,56 @@ class LoginActivity : AppCompatActivity() {
                         )
                 }
                 false
-            }
+            }*/
+
 
             login.setOnClickListener {
                 loading.visibility = View.VISIBLE
-                loginViewModel.login(username.text.toString(), password.text.toString())
-                startMainActivity()
+
+                val email = username.text.toString()
+                val password = password.text.toString()
+                loginOrCreateUser(FirebaseAuth.getInstance(), email, password)
+
+
             }
+
+
         }
+    }
+
+    private fun loginOrCreateUser(auth: FirebaseAuth, email: String, password: String) {
+
+        auth.signInWithEmailAndPassword(email, password)
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    val user = auth.currentUser
+                    startMainActivity(user)
+                    loginViewModel.login(email, password)
+                    finish()
+                }
+
+
+            }.addOnFailureListener { exception ->
+                registerUser(email, password, auth)
+
+            }
+    }
+
+    private fun registerUser(name: String, password: String, auth: FirebaseAuth) {
+        auth.createUserWithEmailAndPassword(name, password).addOnCompleteListener(this){ task ->
+            if(task.isSuccessful){
+                Toast.makeText(
+                    applicationContext,
+                    "created new account",
+                    Toast.LENGTH_LONG
+                ).show()
+                val user   = auth.currentUser
+                startMainActivity(user)
+                finish()
+            }
+
+        }
+
     }
 
     private fun updateUiWithUser(model: LoggedInUserView) {
@@ -117,8 +161,9 @@ class LoginActivity : AppCompatActivity() {
         Toast.makeText(applicationContext, errorString, Toast.LENGTH_SHORT).show()
     }
 
-    private fun startMainActivity() {
-        val i = Intent(this, MainScreenActivity::class.java ).apply {  }
+    private fun startMainActivity(user: FirebaseUser?) {
+        val i = Intent(this, MainScreenActivity::class.java).apply { }
+        i.putExtra("user", user)
         startActivity(i)
     }
 }
