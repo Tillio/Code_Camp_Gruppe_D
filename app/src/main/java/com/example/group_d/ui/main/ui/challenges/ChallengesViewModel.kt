@@ -30,8 +30,8 @@ class ChallengesViewModel : ViewModel() {
         _challenges.value = mutChallenges
     }
 
-    fun createGame(challenge: Challenge): Int {
+    fun createGame(challenge: Challenge): String {
         //TODO Create game
-        return 42
+        return "42"
     }
 }

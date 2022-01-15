@@ -16,7 +16,7 @@ class TicTacToeViewModel(private val state: SavedStateHandle) : ViewModel() {
     val opponentName: String
         get() = gameObj.player2.name
 
-    fun loadGame(gameID: Int) {
+    fun loadGame(gameID: String) {
         // TODO load from repository
         _game.apply {
             value = TicTacToeGame.buildGame(gameID, "Erna", "Hans")

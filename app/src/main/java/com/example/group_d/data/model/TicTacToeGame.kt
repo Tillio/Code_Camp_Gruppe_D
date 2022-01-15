@@ -1,13 +1,13 @@
 package com.example.group_d.data.model.tictactoe
 
-class TicTacToeGame(val gameID: Int) {
+class TicTacToeGame(val gameID: String) {
 
     companion object {
         const val NUM_COLUMNS = 3
         const val NUM_ROWS = 3
         const val NUM_FIELDS = NUM_COLUMNS * NUM_ROWS
 
-        fun buildGame(gameID: Int, player1Name: String, player2Name: String): TicTacToeGame {
+        fun buildGame(gameID: String, player1Name: String, player2Name: String): TicTacToeGame {
             return TicTacToeGame(gameID).apply {
                 player1 = Player(player1Name)
                 player2 = Player(player2Name)
