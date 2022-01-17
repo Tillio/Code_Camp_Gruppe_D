@@ -13,12 +13,14 @@ import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.EditText
 import android.widget.Toast
+import com.example.group_d.*
 import com.example.group_d.databinding.ActivityLoginBinding
 
-import com.example.group_d.R
 import com.example.group_d.ui.main.MainScreenActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 
 class LoginActivity : AppCompatActivity() {
 
@@ -35,7 +37,6 @@ class LoginActivity : AppCompatActivity() {
         val password = binding.password
         val login = binding.login
         val loading = binding.loading
-        lateinit var auth: FirebaseAuth
 
 
         loginViewModel = ViewModelProvider(this, LoginViewModelFactory())[LoginViewModel::class.java]
@@ -116,8 +117,7 @@ class LoginActivity : AppCompatActivity() {
         auth.signInWithEmailAndPassword(email, password)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
-                    val user = auth.currentUser
-                    startMainActivity(user)
+                    startMainActivity()
                     loginViewModel.login(email, password)
                     finish()
                 }
@@ -137,8 +137,20 @@ class LoginActivity : AppCompatActivity() {
                     "created new account",
                     Toast.LENGTH_LONG
                 ).show()
-                val user   = auth.currentUser
-                startMainActivity(user)
+
+                val db = Firebase.firestore
+                val user = hashMapOf(
+                    USER_CHALLENGES to arrayListOf<String>(),
+                    USER_FRIENDS to arrayListOf<String>(),
+                    USER_FRIEND_REQUESTS to arrayListOf<String>(),
+                    USER_GAMES to arrayListOf<String>(),
+                    USER_STATUS to false,
+                    USER_SEARCHING to false
+                )
+                db.collection(COL_USER).document(auth.currentUser?.uid.toString())
+                    .set(user)
+
+                startMainActivity()
                 finish()
             }
 
@@ -161,9 +173,8 @@ class LoginActivity : AppCompatActivity() {
         Toast.makeText(applicationContext, errorString, Toast.LENGTH_SHORT).show()
     }
 
-    private fun startMainActivity(user: FirebaseUser?) {
+    private fun startMainActivity() {
         val i = Intent(this, MainScreenActivity::class.java).apply { }
-        i.putExtra("user", user)
         startActivity(i)
     }
 }
