@@ -4,6 +4,13 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/Users/Nathanael/StudioProjects/Code_Camp_Gruppe_D/app/src/main/res/layout/activity_login.xml" value="0.20104166666666667" />
+        <entry key="..\:/Users/Nathanael/StudioProjects/Code_Camp_Gruppe_D/app/src/main/res/layout/activity_main_screen.xml" value="0.2390625" />
+        <entry key="..\:/Users/Nathanael/StudioProjects/Code_Camp_Gruppe_D/app/src/main/res/layout/fragment_challenges.xml" value="0.25" />
+        <entry key="..\:/Users/Nathanael/StudioProjects/Code_Camp_Gruppe_D/app/src/main/res/layout/fragment_friend_request.xml" value="0.2390625" />
+        <entry key="..\:/Users/Nathanael/StudioProjects/Code_Camp_Gruppe_D/app/src/main/res/layout/fragment_friend_screen.xml" value="0.2390625" />
+        <entry key="..\:/Users/Nathanael/StudioProjects/Code_Camp_Gruppe_D/app/src/main/res/layout/fragment_friends_list.xml" value="0.2390625" />
+        <entry key="..\:/Users/Nathanael/StudioProjects/Code_Camp_Gruppe_D/app/src/main/res/layout/fragment_games.xml" value="0.2390625" />
+        <entry key="..\:/Users/Nathanael/StudioProjects/Code_Camp_Gruppe_D/app/src/main/res/layout/tic_tac_toe_fragment.xml" value="0.33" />
         <entry key="..\:/Users/TillP/Documents/Code_Camp_Gruppe_D/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.3229166666666667" />
         <entry key="..\:/Users/TillP/Documents/Code_Camp_Gruppe_D/app/src/main/res/drawable/ic_baseline_people_24.xml" value="0.18425925925925926" />
         <entry key="..\:/Users/TillP/Documents/Code_Camp_Gruppe_D/app/src/main/res/drawable/ic_dashboard_black_24dp.xml" value="0.3229166666666667" />
