@@ -11,6 +11,8 @@ class TicTacToeGame(val gameID: String) {
             return TicTacToeGame(gameID).apply {
                 player1 = Player(player1Name)
                 player2 = Player(player2Name)
+                player2.previous = player1
+                player2.next = player1
                 for ((i, field) in fields.withIndex()) {
                     if (i < NUM_FIELDS - NUM_COLUMNS) {
                         field.south = fields[i + NUM_COLUMNS]
@@ -34,7 +36,6 @@ class TicTacToeGame(val gameID: String) {
     lateinit var player2: Player
     lateinit var currentPlayer: Player
     var winner: Player? = null
-    var result: Result? = null
 }
 
 enum class Result {
@@ -46,6 +47,26 @@ class Player(val name: String) {
 
     private val fields: MutableList<Field> = ArrayList()
     val amountOfFields get() = fields.size
+
+    var previous: Player? = null
+        set(value) {
+            if (field == value) {
+                return
+            }
+            field?.next = null
+            field = value
+            value?.next = this
+        }
+
+    var next: Player? = null
+        set(value) {
+            if (field == value) {
+                return
+            }
+            field?.previous = null
+            field = value
+            value?.previous = this
+        }
 
     fun getField(index: Int): Field {
         return fields[index]

@@ -1,5 +1,6 @@
 package com.example.group_d.ui.main.ui.ingame
 
+import com.example.group_d.COL_GAMES
 import com.example.group_d.data.model.Challenge
 import com.example.group_d.data.model.Game
 import com.example.group_d.data.model.tictactoe.Field
@@ -16,7 +17,7 @@ class GameManager {
     }
 
     fun loadGameFromServer(gameID: String): Game {
-        val gameDoc = db.collection("games").document(gameID)
+        val gameDoc = db.collection(COL_GAMES).document(gameID)
         TODO("Not implemented")
     }
 }

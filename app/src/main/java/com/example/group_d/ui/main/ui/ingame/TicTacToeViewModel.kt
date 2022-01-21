@@ -4,7 +4,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import com.example.group_d.data.model.tictactoe.Result
+import com.example.group_d.data.model.GameEnding
+import com.example.group_d.data.model.tictactoe.Field
 import com.example.group_d.data.model.tictactoe.TicTacToeGame
 import kotlin.random.Random
 
@@ -12,6 +13,16 @@ class TicTacToeViewModel(private val state: SavedStateHandle) : ViewModel() {
 
     private val _game = MutableLiveData<TicTacToeGame>()
     val game: LiveData<TicTacToeGame> = _game
+
+    private val _nextField = MutableLiveData<Int>()
+    val nextField: LiveData<Int> = _nextField
+
+    private val _isOnTurn = MutableLiveData<Boolean>()
+    val isOnTurn: LiveData<Boolean> = _isOnTurn
+
+    private val _ending = MutableLiveData<GameEnding>()
+    val ending: LiveData<GameEnding> = _ending
+
     private val gameObj: TicTacToeGame get() = game.value!!
     val opponentName: String
         get() = gameObj.player2.name
@@ -21,6 +32,7 @@ class TicTacToeViewModel(private val state: SavedStateHandle) : ViewModel() {
         _game.apply {
             value = TicTacToeGame.buildGame(gameID, "Erna", "Hans")
             value!!.currentPlayer = value!!.player1
+            _isOnTurn.value = true
         }
     }
 
@@ -39,58 +51,57 @@ class TicTacToeViewModel(private val state: SavedStateHandle) : ViewModel() {
     }
 
     fun move(fieldNum: Int) {
-        gameObj.fields[fieldNum].player = gameObj.player1
+        val field = gameObj.fields[fieldNum]
+        field.player = gameObj.player1
+        _nextField.value = fieldNum
+        checkResult(field)
+        nextPlayer()
     }
 
     fun moveOpponent(fieldNum: Int) {
         gameObj.fields[fieldNum].player = gameObj.player2
+        nextPlayer()
     }
 
-    fun checkResult(lastSetFieldNum: Int): Boolean? {
-        val field = gameObj.fields[lastSetFieldNum]
-        val lastPlayer = field.player!!
+    private fun nextPlayer() {
+        gameObj.currentPlayer = gameObj.currentPlayer.next!!
+        _isOnTurn.value = !_isOnTurn.value!!
+    }
 
-        val win = field.west?.player == lastPlayer && field.west?.west?.player == lastPlayer
-                || field.west?.player == lastPlayer && field.east?.player == lastPlayer
-                || field.east?.player == lastPlayer && field.east?.east?.player == lastPlayer
+    private fun checkResult(lastSetField: Field) {
+        val lastPlayer = lastSetField.player!!
 
-                || field.north?.player == lastPlayer && field.north?.north?.player == lastPlayer
-                || field.north?.player == lastPlayer && field.south?.player == lastPlayer
-                || field.south?.player == lastPlayer && field.south?.south?.player == lastPlayer
+        val win = lastSetField.west?.player == lastPlayer && lastSetField.west?.west?.player == lastPlayer
+                || lastSetField.west?.player == lastPlayer && lastSetField.east?.player == lastPlayer
+                || lastSetField.east?.player == lastPlayer && lastSetField.east?.east?.player == lastPlayer
 
-                || field.northWest?.player == lastPlayer && field.northWest?.northWest?.player == lastPlayer
-                || field.northWest?.player == lastPlayer && field.southEast?.player == lastPlayer
-                || field.southEast?.player == lastPlayer && field.southEast?.southEast?.player == lastPlayer
+                || lastSetField.north?.player == lastPlayer && lastSetField.north?.north?.player == lastPlayer
+                || lastSetField.north?.player == lastPlayer && lastSetField.south?.player == lastPlayer
+                || lastSetField.south?.player == lastPlayer && lastSetField.south?.south?.player == lastPlayer
 
-                || field.southWest?.player == lastPlayer && field.southWest?.southWest?.player == lastPlayer
-                || field.southWest?.player == lastPlayer && field.northEast?.player == lastPlayer
-                || field.northEast?.player == lastPlayer && field.northEast?.northEast?.player == lastPlayer
+                || lastSetField.northWest?.player == lastPlayer && lastSetField.northWest?.northWest?.player == lastPlayer
+                || lastSetField.northWest?.player == lastPlayer && lastSetField.southEast?.player == lastPlayer
+                || lastSetField.southEast?.player == lastPlayer && lastSetField.southEast?.southEast?.player == lastPlayer
 
-        if (win) {
+                || lastSetField.southWest?.player == lastPlayer && lastSetField.southWest?.southWest?.player == lastPlayer
+                || lastSetField.southWest?.player == lastPlayer && lastSetField.northEast?.player == lastPlayer
+                || lastSetField.northEast?.player == lastPlayer && lastSetField.northEast?.northEast?.player == lastPlayer
+
+        if (win && isOnTurn.value!!) {
             gameObj.winner = lastPlayer
-            gameObj.result = Result.WIN
-            return true
+            _ending.value = GameEnding.WIN
         }
         if (gameObj.player1.amountOfFields + gameObj.player2.amountOfFields >= TicTacToeGame.NUM_FIELDS) {
-            gameObj.result = Result.DRAW
-            return false
+            _ending.value = GameEnding.DRAW
         }
-        return null
     }
 
     fun giveUp() {
         gameObj.winner = gameObj.player2
+        _ending.value = GameEnding.LOSE
     }
 
     fun isOnTurn(): Boolean {
         return gameObj.currentPlayer == gameObj.player1
-    }
-
-    fun isOwnField(fieldNum: Int): Boolean? {
-        return when (gameObj.fields[fieldNum].player) {
-            gameObj.player1 -> true
-            gameObj.player2 -> false
-            else -> null
-        }
     }
 }
