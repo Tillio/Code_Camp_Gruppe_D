@@ -44,5 +44,10 @@
     <string name="action_wait_text2">…</string>
     <string name="field_not_empty">This field is not empty</string>
     <string name="not_your_turn">It\'s not your turn</string>
+    <string name="game_is_over">The game is over</string>
     <string name="dialog_give_up_msg">Are you sure you want to give up this game?</string>
+
+    <string name="ending_win">Congrats! You win</string>
+    <string name="ending_lose">Booh! You lose</string>
+    <string name="ending_draw">It\'s a draw</string>
 </resources>

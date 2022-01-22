@@ -2,6 +2,8 @@ package com.example.group_d.data.model
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
+import com.example.group_d.COL_GAMES
+import com.example.group_d.COL_USER
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.SetOptions
@@ -94,6 +96,11 @@ class UserDataViewModel : ViewModel() {
         print("create Game")
     }
 
+    fun loadRunningGame(gameID: String) {
+        val docref = db.collection(COL_GAMES).document(gameID)
+        //docref.addSnapshotListener()
+    }
+
     fun loadChallenges() {
         print("load challenges")
     }
@@ -110,7 +117,7 @@ class UserDataViewModel : ViewModel() {
         var returnName = ""
         var returnStatus = false
 
-        db.collection("users").document(uId)
+        db.collection(COL_USER).document(uId)
             .get()
             .addOnSuccessListener { document ->
                 returnName = document["name"].toString()

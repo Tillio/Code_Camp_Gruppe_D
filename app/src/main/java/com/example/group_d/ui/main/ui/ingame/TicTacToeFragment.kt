@@ -82,24 +82,30 @@ class TicTacToeFragment : Fragment() {
             when (ending) {
                 GameEnding.WIN -> {
                     // TODO Show winScreen
-                    Toast.makeText(activity, "Congrats! You win", Toast.LENGTH_SHORT).show()
-                    textPlayerAction.text = ""
+                    Toast.makeText(activity, R.string.ending_win, Toast.LENGTH_SHORT).show()
+                    textPlayerAction.setText(R.string.ending_win)
                 }
                 GameEnding.LOSE -> {
-                    Toast.makeText(activity, "Booh! You lose", Toast.LENGTH_SHORT).show()
-                    textPlayerAction.text = ""
+                    Toast.makeText(activity, R.string.ending_lose, Toast.LENGTH_SHORT).show()
+                    textPlayerAction.setText(R.string.ending_lose)
                 }
                 GameEnding.DRAW -> {
-                    Toast.makeText(activity, "It's a draw", Toast.LENGTH_SHORT).show()
-                    textPlayerAction.text = ""
+                    Toast.makeText(activity, R.string.ending_draw, Toast.LENGTH_SHORT).show()
+                    textPlayerAction.setText(R.string.ending_draw)
                 }
                 else -> {}
             }
+            giveUp.visibility = View.INVISIBLE
+            ticTacToeViewModel.isOnTurn.removeObservers(viewLifecycleOwner)
         }
 
         for ((clickedField, fieldButton) in fieldButtons.withIndex()) {
             fieldButton.setImageDrawable(null)
             fieldButton.setOnClickListener {
+                if (ticTacToeViewModel.ending.value != null) {
+                    Toast.makeText(activity, R.string.game_is_over, Toast.LENGTH_SHORT).show()
+                    return@setOnClickListener
+                }
                 if (!ticTacToeViewModel.isOnTurn()) {
                     Toast.makeText(activity, R.string.not_your_turn, Toast.LENGTH_SHORT).show()
                     return@setOnClickListener
@@ -116,9 +122,12 @@ class TicTacToeFragment : Fragment() {
             GiveUpDialogFragment(this).show(parentFragmentManager, "give_up")
         }
 
-        ticTacToeViewModel.loadGame(args.gameID)
-        textOpName.text = ticTacToeViewModel.opponentName
-        // TODO Show profile pictures
+        ticTacToeViewModel.gameID.observe(viewLifecycleOwner) {newVal ->
+            ticTacToeViewModel.loadGame(newVal)
+            textOpName.text = ticTacToeViewModel.opponentName
+            // TODO Show profile pictures
+        }
+        ticTacToeViewModel.gameID.value = args.gameID
 
         return root
     }

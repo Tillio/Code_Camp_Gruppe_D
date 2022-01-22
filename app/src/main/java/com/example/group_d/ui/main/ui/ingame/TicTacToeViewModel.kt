@@ -23,6 +23,9 @@ class TicTacToeViewModel(private val state: SavedStateHandle) : ViewModel() {
     private val _ending = MutableLiveData<GameEnding>()
     val ending: LiveData<GameEnding> = _ending
 
+    private val _gameID = MutableLiveData<String>()
+    val gameID: MutableLiveData<String> = _gameID
+
     private val gameObj: TicTacToeGame get() = game.value!!
     val opponentName: String
         get() = gameObj.player2.name
@@ -34,6 +37,10 @@ class TicTacToeViewModel(private val state: SavedStateHandle) : ViewModel() {
             value!!.currentPlayer = value!!.player1
             _isOnTurn.value = true
         }
+        move(2)
+        move(5)
+        move(1)
+        move(8)
     }
 
     fun getOpponentMove(): Int {
@@ -52,6 +59,9 @@ class TicTacToeViewModel(private val state: SavedStateHandle) : ViewModel() {
 
     fun move(fieldNum: Int) {
         val field = gameObj.fields[fieldNum]
+        if (field.player != null) {
+            return
+        }
         field.player = gameObj.currentPlayer
         _nextField.value = fieldNum
         checkResult(field)
@@ -82,9 +92,9 @@ class TicTacToeViewModel(private val state: SavedStateHandle) : ViewModel() {
                 || lastSetField.southWest?.player == lastPlayer && lastSetField.northEast?.player == lastPlayer
                 || lastSetField.northEast?.player == lastPlayer && lastSetField.northEast?.northEast?.player == lastPlayer
 
-        if (win && isOnTurn.value!!) {
+        if (win) {
             gameObj.winner = lastPlayer
-            _ending.value = GameEnding.WIN
+            _ending.value = if(isOnTurn.value!!) GameEnding.WIN else GameEnding.LOSE
         }
         if (gameObj.player1.amountOfFields + gameObj.player2.amountOfFields >= TicTacToeGame.NUM_FIELDS) {
             _ending.value = GameEnding.DRAW
