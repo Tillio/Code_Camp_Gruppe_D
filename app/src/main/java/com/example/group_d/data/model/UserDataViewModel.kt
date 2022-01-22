@@ -98,7 +98,16 @@ class UserDataViewModel : ViewModel() {
 
     fun loadRunningGame(gameID: String) {
         val docref = db.collection(COL_GAMES).document(gameID)
-        //docref.addSnapshotListener()
+        docref.addSnapshotListener { value, error ->
+            if (value == null || !value.exists()) {
+                Log.d(null, "Error:")
+                error?.printStackTrace()
+                return@addSnapshotListener
+            }
+
+            val gameData = value["gameData"]
+            TODO("Not implemented")
+        }
     }
 
     fun loadChallenges() {

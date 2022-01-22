@@ -32,6 +32,6 @@ class ChallengesViewModel : ViewModel() {
 
     fun createGame(challenge: Challenge): String {
         //TODO Create game
-        return "42"
+        return "ZpxB5QFj8ZnhbruzK8Ic"
     }
 }
