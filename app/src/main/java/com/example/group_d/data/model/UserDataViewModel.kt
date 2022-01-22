@@ -119,7 +119,7 @@ class UserDataViewModel : ViewModel() {
         db.collection("users").document(uId)
             .get()
             .addOnSuccessListener { document ->
-                returnName = document["name"] as String
+                returnName = document["name"].toString()
                 Log.d(TAG, "successfully got name of user ID: $uId")
             }
             .addOnFailureListener { exeption ->
@@ -129,7 +129,7 @@ class UserDataViewModel : ViewModel() {
         db.collection("users").document(uId)
             .get()
             .addOnSuccessListener { document ->
-                returnStatus = document["status"] as Boolean
+                returnStatus = document["status"].toString().toBoolean()
                 Log.d(TAG, "successfully got status of user ID: $uId")
             }
             .addOnFailureListener { exeption ->
