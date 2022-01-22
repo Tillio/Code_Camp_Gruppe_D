@@ -145,7 +145,8 @@ class LoginActivity : AppCompatActivity() {
                     USER_FRIEND_REQUESTS to arrayListOf<String>(),
                     USER_GAMES to arrayListOf<String>(),
                     USER_STATUS to false,
-                    USER_SEARCHING to false
+                    USER_SEARCHING to false,
+                    USER_NAME to name
                 )
                 db.collection(COL_USER).document(auth.currentUser?.uid.toString())
                     .set(user)
