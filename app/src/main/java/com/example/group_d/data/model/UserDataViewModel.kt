@@ -4,9 +4,11 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.*
 
 class UserDataViewModel : ViewModel() {
 
@@ -24,24 +26,29 @@ class UserDataViewModel : ViewModel() {
     fun sendFriendRequest(username: String): Boolean {
         Log.d(TAG, "sending friend request to: $username")
         Log.d(TAG, "finding userID of $username ...")
-        val otherUid = getUserIdByUsername(username)
+        /*val otherUid = getUserIdByUsername(username)*/
         val ownUid = getOwnUserID()
-        val ownUserInfo = getUserInfo(ownUid)
 
-        if (otherUid != "") {
-            val otherFriendRequests = getFriendRequestsOfUid(otherUid)
-
-            otherFriendRequests.add(ownUid)
-            val data = hashMapOf("friendRequests" to otherFriendRequests)
-
-            db.collection("users").document(otherUid)
-                .set(data, SetOptions.merge())
-            return true
-        }
-        return false
+        /*var otherUid = ""*/
+        /*takes username and returns uid*/
+        db.collection("user")
+            .whereEqualTo("name", username)
+            .get()
+            .addOnSuccessListener { documents ->
+                for (document in documents) {
+                    Log.d(TAG, "uid: ${document.id} of user: ${document["name"]} found")
+                    val otherUid = document.id
+                    db.collection("user").document(otherUid)
+                        .update("friendRequests", FieldValue.arrayUnion(ownUid))
+                }
+            }
+            .addOnFailureListener { exeption ->
+                Log.w(TAG, "Error getting documents: ", exeption)
+            }
+        return true
     }
 
-    fun acceptFriendRequest(newFriendUsername: String) {
+    /*fun acceptFriendRequest(newFriendUsername: String) {
         Log.d(TAG, "accepting friend request of $newFriendUsername")
 
         val ownUid = getOwnUserID()
@@ -70,7 +77,7 @@ class UserDataViewModel : ViewModel() {
             "friends" to friends,
             "friendRequests" to friendRequests
         )
-        db.collection("users").document(ownUid)
+        db.collection("user").document(ownUid)
             .set(ownData, SetOptions.merge())
 
 
@@ -78,9 +85,9 @@ class UserDataViewModel : ViewModel() {
         val newFriendData = hashMapOf(
             "friends" to newFriendFriends
         )
-        db.collection("users").document(newFriendUid)
+        db.collection("user").document(newFriendUid)
             .set(newFriendData, SetOptions.merge())
-    }
+    }*/
 
     fun loadFriends() {
         print("load friends")
@@ -110,7 +117,7 @@ class UserDataViewModel : ViewModel() {
         var returnName = ""
         var returnStatus = false
 
-        db.collection("users").document(uId)
+        db.collection("user").document(uId)
             .get()
             .addOnSuccessListener { document ->
                 returnName = document["name"].toString()
@@ -120,7 +127,7 @@ class UserDataViewModel : ViewModel() {
                 Log.w(TAG, "error getting name of user ID: $uId")
             }
 
-        db.collection("users").document(uId)
+        db.collection("user").document(uId)
             .get()
             .addOnSuccessListener { document ->
                 returnStatus = document["status"].toString().toBoolean()
@@ -135,23 +142,24 @@ class UserDataViewModel : ViewModel() {
         )
     }
 
-    fun getUserIdByUsername(username: String): String {
+    /*fun getUserIdByUsername(username: String, methodToCall: (input: ) -> Unit): String {
         var otherUid = ""
         /*takes username and returns uid*/
-        db.collection("users")
-            .whereEqualTo("username", username)
+        db.collection("user")
+            .whereEqualTo("name", username)
             .get()
             .addOnSuccessListener { documents ->
                 for (document in documents) {
                     Log.d(TAG, "uid: ${document.id} of user: ${document["name"]} found")
                     otherUid = document.id
+
                 }
             }
             .addOnFailureListener { exeption ->
                 Log.w(TAG, "Error getting documents: ", exeption)
             }
         return otherUid
-    }
+    }*/
 
     fun getOwnUserID(): String {
         val ownUid = Firebase.auth.currentUser!!.uid
@@ -160,7 +168,7 @@ class UserDataViewModel : ViewModel() {
 
     private fun getFriendRequestsOfUid(uId: String): ArrayList<String> {
         var friendRequestsOfUid = arrayListOf<String>()
-        db.collection("users").document(uId)
+        db.collection("user").document(uId)
             .get()
             .addOnSuccessListener { document ->
                 friendRequestsOfUid = document["friendRequests"] as ArrayList<String>
@@ -174,7 +182,7 @@ class UserDataViewModel : ViewModel() {
 
     private fun getFriendsOfUid(uId: String): ArrayList<String> {
         var friendsOfUid = arrayListOf<String>()
-        db.collection("users").document(uId)
+        db.collection("user").document(uId)
             .get()
             .addOnSuccessListener { document ->
                 friendsOfUid = document["friends"] as ArrayList<String>

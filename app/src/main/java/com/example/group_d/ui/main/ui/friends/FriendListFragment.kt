@@ -18,6 +18,7 @@ import com.example.group_d.data.model.User
 import com.example.group_d.data.model.UserDataViewModel
 
 import com.example.group_d.databinding.FragmentFriendsListBinding
+import kotlinx.coroutines.*
 
 
 class FriendsListFragment : Fragment() {
