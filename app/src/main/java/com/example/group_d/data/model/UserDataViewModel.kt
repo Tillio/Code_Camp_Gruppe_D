@@ -1,5 +1,7 @@
 package com.example.group_d.data.model
 
+import android.content.ContentValues.TAG
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.group_d.ui.main.ui.friends.FriendRequestFragment
@@ -51,4 +53,23 @@ class UserDataViewModel : ViewModel(){
             name
             status*/
     }
+
+    fun getUserId(username: String): String{
+        var uid = ""
+        /*takes username and returns uid*/
+        db.collection("users")
+            .whereEqualTo("username", username)
+            .get()
+            .addOnSuccessListener { documents ->
+                for (document in documents) {
+                    Log.d(TAG, "uid: ${document.id} of user: ${document["name"]} found")
+                    uid = document.id
+                }
+            }
+            .addOnFailureListener { exeption ->
+                Log.w(TAG, "Error getting documents: ", exeption)
+            }
+        return uid
+    }
+
 }
