@@ -44,4 +44,9 @@
     <string name="action_wait_text2">…</string>
     <string name="field_not_empty">This field is not empty</string>
     <string name="dialog_give_up_msg">Are you sure you want to give up this game?</string>
+
+    <!--NewGameScreen-->
+    <string-array name="new_game_gametypes">
+        <item>TicTacToe</item>
+    </string-array>
 </resources>
