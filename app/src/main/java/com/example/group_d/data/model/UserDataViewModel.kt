@@ -15,8 +15,8 @@ class UserDataViewModel : ViewModel() {
     lateinit var auth: FirebaseAuth
     val db = Firebase.firestore
 
-    var friends = ArrayList<User>()
-    var friendRequests = ArrayList<User>()
+    var friends = ArrayList<String>()
+    var friendRequests = ArrayList<String>()
 
     val games = ArrayList<Game>()
     val challenges = ArrayList<User>()
@@ -31,7 +31,7 @@ class UserDataViewModel : ViewModel() {
         if (otherUid != "") {
             val otherFriendRequests = getFriendRequestsOfUid(otherUid)
 
-            otherFriendRequests.add(User(ownUid, ownUserInfo["name"] as String, false))
+            otherFriendRequests.add(ownUid)
             val data = hashMapOf("friendRequests" to otherFriendRequests)
 
             db.collection("users").document(otherUid)
@@ -49,26 +49,20 @@ class UserDataViewModel : ViewModel() {
         val newFriendUid = getUserIdByUsername(newFriendUsername)
         val newFriendFriends = getFriendsOfUid(newFriendUid)
 
-        var newFriend = User()
+        var newFriend = ""
 
         friendRequests = getFriendRequestsOfUid(ownUid)
         friends = getFriendsOfUid(ownUid)
 
-        for(user in friendRequests) {
-            if(user.name == newFriendUsername) {
-                newFriend = user
+        for(uId in friendRequests) {
+            if(uId == getUserIdByUsername(newFriendUsername)) {
+                newFriend = uId
             }
         }
 
         friends.add(newFriend)
         friendRequests.remove(newFriend)
-        newFriendFriends.add(
-            User(
-                ownUid,
-                ownUserInfo["name"] as String,
-                ownUserInfo["status"] as Boolean
-            )
-        )
+        newFriendFriends.add(ownUid)
 
 
         //pushing own data to the database
@@ -164,12 +158,12 @@ class UserDataViewModel : ViewModel() {
         return ownUid
     }
 
-    private fun getFriendRequestsOfUid(uId: String): ArrayList<User> {
-        var friendRequestsOfUid = arrayListOf<User>()
+    private fun getFriendRequestsOfUid(uId: String): ArrayList<String> {
+        var friendRequestsOfUid = arrayListOf<String>()
         db.collection("users").document(uId)
             .get()
             .addOnSuccessListener { document ->
-                friendRequestsOfUid = document["friendRequests"] as ArrayList<User>
+                friendRequestsOfUid = document["friendRequests"] as ArrayList<String>
                 Log.d(TAG, "successfully got friendRequests of user ID: $uId")
             }
             .addOnFailureListener { exeption ->
@@ -178,12 +172,12 @@ class UserDataViewModel : ViewModel() {
         return friendRequestsOfUid
     }
 
-    private fun getFriendsOfUid(uId: String): ArrayList<User> {
-        var friendsOfUid = arrayListOf<User>()
+    private fun getFriendsOfUid(uId: String): ArrayList<String> {
+        var friendsOfUid = arrayListOf<String>()
         db.collection("users").document(uId)
             .get()
             .addOnSuccessListener { document ->
-                friendsOfUid = document["friends"] as ArrayList<User>
+                friendsOfUid = document["friends"] as ArrayList<String>
                 Log.d(TAG, "successfully got friends of user ID: $uId")
             }
             .addOnFailureListener { exeption ->
