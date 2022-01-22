@@ -12,16 +12,19 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.navArgs
 import com.example.group_d.R
 import com.example.group_d.data.model.GameEnding
+import com.example.group_d.data.model.UserDataViewModel
 import com.example.group_d.data.model.tictactoe.TicTacToeGame
 import com.example.group_d.databinding.TicTacToeFragmentBinding
 
 class TicTacToeFragment : Fragment() {
 
     private lateinit var ticTacToeViewModel: TicTacToeViewModel
+    private val userDataViewModel: UserDataViewModel by activityViewModels()
     private var _binding: TicTacToeFragmentBinding? = null
     private val args: TicTacToeFragmentArgs by navArgs()
     private lateinit var waitSymbol: ProgressBar
