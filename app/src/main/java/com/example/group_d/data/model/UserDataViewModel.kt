@@ -25,11 +25,13 @@ class UserDataViewModel : ViewModel() {
         Log.d(TAG, "sending friend request to: $username")
         Log.d(TAG, "finding userID of $username ...")
         val otherUid = getUserIdByUsername(username)
+        val ownUid = getOwnUserID()
+        val ownUserInfo = getUserInfo(ownUid)
 
         if (otherUid != "") {
             val otherFriendRequests = getFriendRequestsOfUid(otherUid)
 
-            otherFriendRequests.add(User(otherUid, username, false))
+            otherFriendRequests.add(User(ownUid, ownUserInfo["name"] as String, false))
             val data = hashMapOf("friendRequests" to otherFriendRequests)
 
             db.collection("users").document(otherUid)

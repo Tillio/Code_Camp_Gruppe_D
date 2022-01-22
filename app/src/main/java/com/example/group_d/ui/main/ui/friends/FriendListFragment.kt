@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.fragment.app.Fragment
@@ -41,6 +43,13 @@ class FriendsListFragment : Fragment() {
             val parentFrag: FriendsFragment =
                 this.parentFragment as FriendsFragment
                 parentFrag.showAddFriendScreen()
+        }
+
+        val addFriendButton = root.findViewById(R.id.addFriendButton) as Button
+        val newFriendUsername = root.findViewById(R.id.editTextTextPersonName2) as TextView
+        // set on-click listener for sending friend requests
+        addFriendButton.setOnClickListener {
+            userDataViewModel.sendFriendRequest(newFriendUsername.text.toString())
         }
 
         return root

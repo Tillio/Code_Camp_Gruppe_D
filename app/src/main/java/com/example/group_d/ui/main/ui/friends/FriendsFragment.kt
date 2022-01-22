@@ -44,12 +44,6 @@ class FriendsFragment : Fragment() {
             commit()
         }
 
-        val addFriendButton = root.findViewById(R.id.addFriendButton) as Button
-        val newFriendUsername = root.findViewById(R.id.editTextTextPersonName2) as TextView
-        // set on-click listener for sending friend requests
-        addFriendButton.setOnClickListener {
-            userDataViewModel.sendFriendRequest(newFriendUsername.text as String)
-        }
 
         return root
     }
