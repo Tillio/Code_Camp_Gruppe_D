@@ -42,7 +42,7 @@ class TicTacToeViewModel(private val state: SavedStateHandle) : ViewModel() {
         while (!fieldIsEmpty(rand)) {
             rand = Random.nextInt(TicTacToeGame.NUM_FIELDS)
         }
-        moveOpponent(rand)
+        move(rand)
         return rand
     }
 
@@ -52,14 +52,9 @@ class TicTacToeViewModel(private val state: SavedStateHandle) : ViewModel() {
 
     fun move(fieldNum: Int) {
         val field = gameObj.fields[fieldNum]
-        field.player = gameObj.player1
+        field.player = gameObj.currentPlayer
         _nextField.value = fieldNum
         checkResult(field)
-        nextPlayer()
-    }
-
-    fun moveOpponent(fieldNum: Int) {
-        gameObj.fields[fieldNum].player = gameObj.player2
         nextPlayer()
     }
 
