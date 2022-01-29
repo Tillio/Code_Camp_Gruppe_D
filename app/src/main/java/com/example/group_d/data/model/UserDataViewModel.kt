@@ -22,7 +22,6 @@ class UserDataViewModel : ViewModel() {
 
     var friends = ArrayList<String>()
     var friendRequests = ArrayList<String>()
-
     val games = ArrayList<Game>()
     val challenges = ArrayList<User>()
 
@@ -201,7 +200,26 @@ class UserDataViewModel : ViewModel() {
 
 
     fun uidListToUser(uidList: ArrayList<String>) {
+        val convertedIdsList = ArrayList<User>()
+        val foundUserList = ArrayList<String>()
+        //ADD ALL ALREADY known user
+        for (userId in uidList){
+            for (u in user){
+                if(u.id == userId){
+                    convertedIdsList.add(u)
+                    foundUserList.add(userId)
+                }
+            }
+        }
+        //create and add unknown user
+        uidList.removeAll(foundUserList.toSet())
 
+
+    }
+
+    fun createUser(uid: String){
+        val userDoc = db.collection(COL_USER).document(uid)
+        userDoc.
     }
 
     fun setupFireBaseSnapshots() {        //listen to own document
