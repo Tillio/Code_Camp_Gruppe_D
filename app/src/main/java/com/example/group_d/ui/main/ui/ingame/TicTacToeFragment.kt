@@ -123,8 +123,7 @@ class TicTacToeFragment : Fragment() {
         }
 
         ticTacToeViewModel.gameID.observe(viewLifecycleOwner) {newVal ->
-            userDataViewModel.loadRunningGame(newVal)
-            ticTacToeViewModel.loadGame(newVal)
+            ticTacToeViewModel.loadRunningGame(newVal)
             textOpName.text = ticTacToeViewModel.opponentName
             // TODO Show profile pictures
         }

@@ -9,7 +9,7 @@ import com.example.group_d.data.model.tictactoe.Field
 import com.example.group_d.data.model.tictactoe.TicTacToeGame
 import kotlin.random.Random
 
-class TicTacToeViewModel(private val state: SavedStateHandle) : ViewModel() {
+class TicTacToeViewModel(private val state: SavedStateHandle) : GameViewModel() {
 
     private val _game = MutableLiveData<TicTacToeGame>()
     val game: LiveData<TicTacToeGame> = _game
