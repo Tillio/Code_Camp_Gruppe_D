@@ -41,8 +41,8 @@ class UserDataViewModel : ViewModel() {
                         .update("friendRequests", FieldValue.arrayUnion(ownUid))
                 }
             }
-            .addOnFailureListener { exeption ->
-                Log.w(TAG, "Error getting documents: ", exeption)
+            .addOnFailureListener { exception ->
+                Log.w(TAG, "Error getting documents: ", exception)
             }
         return true
     }
@@ -113,7 +113,7 @@ class UserDataViewModel : ViewModel() {
                 returnName = document["name"].toString()
                 Log.d(TAG, "successfully got name of user ID: $uId")
             }
-            .addOnFailureListener { exeption ->
+            .addOnFailureListener { exception ->
                 Log.w(TAG, "error getting name of user ID: $uId")
             }
 
@@ -123,7 +123,7 @@ class UserDataViewModel : ViewModel() {
                 returnStatus = document["status"].toString().toBoolean()
                 Log.d(TAG, "successfully got status of user ID: $uId")
             }
-            .addOnFailureListener { exeption ->
+            .addOnFailureListener { exception ->
                 Log.w(TAG, "error getting status of user ID: $uId")
             }
         return hashMapOf(
@@ -145,8 +145,8 @@ class UserDataViewModel : ViewModel() {
 
                 }
             }
-            .addOnFailureListener { exeption ->
-                Log.w(TAG, "Error getting documents: ", exeption)
+            .addOnFailureListener { exception ->
+                Log.w(TAG, "Error getting documents: ", exception)
             }
         return otherUid
     }*/
@@ -164,7 +164,7 @@ class UserDataViewModel : ViewModel() {
                 friendRequestsOfUid = document["friendRequests"] as ArrayList<String>
                 Log.d(TAG, "successfully got friendRequests of user ID: $uId")
             }
-            .addOnFailureListener { exeption ->
+            .addOnFailureListener { exception ->
                 Log.w(TAG, "error getting friendRequests of user ID: $uId")
             }
         return friendRequestsOfUid
@@ -178,7 +178,7 @@ class UserDataViewModel : ViewModel() {
                 friendsOfUid = document["friends"] as ArrayList<String>
                 Log.d(TAG, "successfully got friends of user ID: $uId")
             }
-            .addOnFailureListener { exeption ->
+            .addOnFailureListener { exception ->
                 Log.w(TAG, "error getting friends of user ID: $uId")
             }
         return friendsOfUid
