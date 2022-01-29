@@ -9,6 +9,7 @@ import androidx.activity.viewModels
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.group_d.R
@@ -33,15 +34,19 @@ class FriendsListFragment : Fragment() {
 
         val friendList: RecyclerView = binding.friendList
         val friendAdapter = FriendAdapter()
-        friendAdapter.friendItems = ArrayList(createFriends())
+        friendAdapter.friendItems = ArrayList(userDataViewModel.friends)
         friendList.adapter = friendAdapter
         friendList.layoutManager = LinearLayoutManager(context)
+
+
 
         binding.addFriendButton.setOnClickListener{
             val parentFrag: FriendsFragment =
                 this.parentFragment as FriendsFragment
                 parentFrag.showAddFriendScreen()
         }
+
+
 
         return root
     }

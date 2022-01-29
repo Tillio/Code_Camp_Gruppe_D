@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.activity.viewModels
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
@@ -21,11 +22,10 @@ import com.google.firebase.auth.FirebaseAuth
 class MainScreenActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainScreenBinding
-
+    private  val  userDataViewModel: UserDataViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         binding = ActivityMainScreenBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
@@ -39,6 +39,8 @@ class MainScreenActivity : AppCompatActivity() {
                 R.id.navigation_games, R.id.navigation_friends, R.id.navigation_challenges, R.id.navigation_settings
             )
         )
+        userDataViewModel.setupFireBaseSnapshots()
+
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
 
