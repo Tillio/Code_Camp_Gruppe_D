@@ -24,7 +24,7 @@ class UserDataViewModel : ViewModel() {
     var friendRequests = ArrayList<String>()
 
     val games = ArrayList<Game>()
-    val challenges = ArrayList<User>()
+    val challenges = ArrayList<Challenge>()
 
     fun sendFriendRequest(username: String): Boolean {
         /*takes username and returns uid*/
@@ -98,8 +98,11 @@ class UserDataViewModel : ViewModel() {
         print("load challenges")
     }
 
-    fun challengeFriend() {
-        print("challenge friend")
+    fun challengeFriend(challange: Challenge) {
+        Log.d(TAG, "creating challange request")
+        // adding me to challanges of other user
+        db.collection("user").document(challange.user.id).collection("userData").document("challanges")
+            .update("challanges", FieldValue.arrayUnion(challange))
     }
 
     /*fun getUserInfo(uId: String): HashMap<String, Any> {

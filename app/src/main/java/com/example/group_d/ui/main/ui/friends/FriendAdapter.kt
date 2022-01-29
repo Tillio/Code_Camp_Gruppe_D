@@ -36,7 +36,7 @@ class FriendAdapter : RecyclerView.Adapter<FriendAdapter.ViewHolder>(){
         val buttonInv = view.findViewById(R.id.invite_button) as Button
         fun bind(user: User){
             panel.text = user.name
-            buttonInv.setOnClickListener { view -> view.findNavController().navigate(R.id.action_global_newGameSetup, bundleOf("user" to user.id)) }
+            buttonInv.setOnClickListener { view -> view.findNavController().navigate(R.id.action_global_newGameSetup, bundleOf("userID" to user.id, "userName" to user.name, "userStatus" to user.online)) }
         }
     }
 }
