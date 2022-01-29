@@ -40,7 +40,7 @@ class UserDataViewModel : ViewModel() {
                 for (document in documents) {
                     Log.d(TAG, "uid: ${document.id} of user: ${document["name"]} found")
                     val otherUid = document.id
-                    db.collection("user").document(otherUid)
+                    db.collection("user").document(otherUid).collection("userData").document("friendRequests")
                         .update("friendRequests", FieldValue.arrayUnion(ownUid))
                 }
             }
@@ -56,20 +56,20 @@ class UserDataViewModel : ViewModel() {
         val ownUid = getOwnUserID()
 
         //adding new friend to my own friendlist
-        db.collection("user").document(ownUid)
+        db.collection("user").document(ownUid).collection("userData").document("friends")
             .update("friends", FieldValue.arrayUnion(newFriendUid))
 
         //removing new friend from my friend requests
-        db.collection("user").document(ownUid)
+        db.collection("user").document(ownUid).collection("userData").document("friendRequests")
             .update("friendRequests", FieldValue.arrayRemove(newFriendUid))
 
         //adding me to my new friends friendlist
-        db.collection("user").document(newFriendUid)
+        db.collection("user").document(newFriendUid).collection("userData").document("friends")
             .update("friends", FieldValue.arrayUnion(ownUid))
     }
 
     fun testAcceptFriendRequest() {
-        db.collection("user").document(getOwnUserID())
+        db.collection("user").document(getOwnUserID()).collection("userData").document("friendRequests")
             .get()
             .addOnSuccessListener { document ->
                 val friendRequestsArray = document["friendRequests"] as ArrayList<String>
@@ -102,7 +102,7 @@ class UserDataViewModel : ViewModel() {
         print("challenge friend")
     }
 
-    fun getUserInfo(uId: String): HashMap<String, Any> {
+    /*fun getUserInfo(uId: String): HashMap<String, Any> {
         /*takes user id and returns:
             name
             status*/
@@ -133,7 +133,7 @@ class UserDataViewModel : ViewModel() {
             "name" to returnName,
             "status" to returnStatus
         )
-    }
+    }*/
 
     /*fun getUserIdByUsername(username: String): String {
         var otherUid = ""
@@ -159,7 +159,7 @@ class UserDataViewModel : ViewModel() {
         return ownUid
     }
 
-    private fun getFriendRequestsOfUid(uId: String): ArrayList<String> {
+    /*private fun getFriendRequestsOfUid(uId: String): ArrayList<String> {
         var friendRequestsOfUid = arrayListOf<String>()
         db.collection("user").document(uId)
             .get()
@@ -171,9 +171,9 @@ class UserDataViewModel : ViewModel() {
                 Log.w(TAG, "error getting friendRequests of user ID: $uId")
             }
         return friendRequestsOfUid
-    }
+    }*/
 
-    private fun getFriendsOfUid(uId: String): ArrayList<String> {
+    /*private fun getFriendsOfUid(uId: String): ArrayList<String> {
         var friendsOfUid = arrayListOf<String>()
         db.collection("user").document(uId)
             .get()
@@ -185,7 +185,7 @@ class UserDataViewModel : ViewModel() {
                 Log.w(TAG, "error getting friends of user ID: $uId")
             }
         return friendsOfUid
-    }
+    }*/
 
 
 
