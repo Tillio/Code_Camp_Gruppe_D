@@ -198,7 +198,7 @@ class UserDataViewModel : ViewModel() {
     }
 
 
-    }
+
 
     fun uidListToUser(uidList: ArrayList<String>) {
 
