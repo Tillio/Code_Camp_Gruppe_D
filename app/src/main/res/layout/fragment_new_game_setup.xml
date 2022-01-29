@@ -46,26 +46,16 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/player_list" />
 
-    <TextView
-        android:id="@+id/textViewGameSelected"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="TikTakToe"
-        android:textSize="24sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewGameLabel" />
-
     <Button
         android:id="@+id/buttonStart"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="48dp"
         android:layout_marginTop="32dp"
         android:text="Start Game"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewGameSelected" />
+        app:layout_constraintTop_toBottomOf="@+id/selectedGameText" />
 
     <Button
         android:id="@+id/buttonCancel"
@@ -75,5 +65,24 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/buttonStart" />
+
+    <Spinner
+        android:id="@+id/game_select"
+        android:entries="@array/new_game_gametypes"
+        android:layout_width="409dp"
+        android:layout_height="24dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textViewGameLabel" />
+
+    <TextView
+        android:id="@+id/selectedGameText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TextView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/game_select" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -50,4 +50,9 @@
     <string name="ending_win">Congrats! You win</string>
     <string name="ending_lose">Booh! You lose</string>
     <string name="ending_draw">It\'s a draw</string>
+
+    <!--NewGameScreen-->
+    <string-array name="new_game_gametypes">
+        <item>TicTacToe</item>
+    </string-array>
 </resources>

@@ -39,7 +39,8 @@ class LoginActivity : AppCompatActivity() {
         val loading = binding.loading
 
 
-        loginViewModel = ViewModelProvider(this, LoginViewModelFactory())[LoginViewModel::class.java]
+        loginViewModel =
+            ViewModelProvider(this, LoginViewModelFactory())[LoginViewModel::class.java]
 
         loginViewModel.loginFormState.observe(this@LoginActivity, Observer {
             val loginState = it ?: return@Observer
@@ -130,8 +131,8 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun registerUser(name: String, password: String, auth: FirebaseAuth) {
-        auth.createUserWithEmailAndPassword(name, password).addOnCompleteListener(this){ task ->
-            if(task.isSuccessful){
+        auth.createUserWithEmailAndPassword(name, password).addOnCompleteListener(this) { task ->
+            if (task.isSuccessful) {
                 Toast.makeText(
                     applicationContext,
                     "created new account",
@@ -140,15 +141,39 @@ class LoginActivity : AppCompatActivity() {
 
                 val db = Firebase.firestore
                 val user = hashMapOf(
-                    USER_CHALLENGES to arrayListOf<String>(),
-                    USER_FRIENDS to arrayListOf<String>(),
-                    USER_FRIEND_REQUESTS to arrayListOf<String>(),
-                    USER_GAMES to arrayListOf<String>(),
                     USER_STATUS to false,
                     USER_SEARCHING to false
                 )
-                db.collection(COL_USER).document(auth.currentUser?.uid.toString())
-                    .set(user)
+                db.collection(COL_USER).document(auth.currentUser?.uid.toString()).set(user)
+
+                val userDataCollection =
+                    db.collection(COL_USER).document(auth.currentUser?.uid.toString()).collection(
+                        USER_DATA
+                    )
+                userDataCollection.document(USER_FRIENDS).set(
+                    hashMapOf(
+                        USER_FRIENDS to arrayListOf<String>()
+                    )
+                )
+
+                userDataCollection.document(USER_CHALLENGES).set(
+                    hashMapOf(
+                        USER_CHALLENGES to arrayListOf<String>()
+                    )
+                )
+
+                userDataCollection.document(USER_FRIEND_REQUESTS).set(
+                    hashMapOf(
+                        USER_FRIEND_REQUESTS to arrayListOf<String>()
+                    )
+                )
+
+                userDataCollection.document(USER_GAMES).set(
+                    hashMapOf(
+                        USER_GAMES to arrayListOf<String>()
+                    )
+                )
+
 
                 startMainActivity()
                 finish()
