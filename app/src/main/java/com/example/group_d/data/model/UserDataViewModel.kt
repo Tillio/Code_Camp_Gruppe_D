@@ -24,13 +24,12 @@ class UserDataViewModel : ViewModel() {
     val challenges = ArrayList<User>()
 
     fun sendFriendRequest(username: String): Boolean {
+        /*takes username and returns uid*/
         Log.d(TAG, "sending friend request to: $username")
         Log.d(TAG, "finding userID of $username ...")
         /*val otherUid = getUserIdByUsername(username)*/
         val ownUid = getOwnUserID()
 
-        /*var otherUid = ""*/
-        /*takes username and returns uid*/
         db.collection("user")
             .whereEqualTo("name", username)
             .get()
@@ -48,46 +47,37 @@ class UserDataViewModel : ViewModel() {
         return true
     }
 
-    /*fun acceptFriendRequest(newFriendUsername: String) {
-        Log.d(TAG, "accepting friend request of $newFriendUsername")
+    fun acceptFriendRequest(newFriendUid: String) {
+        Log.d(TAG, "accepting friend request of $newFriendUid")
 
         val ownUid = getOwnUserID()
-        val ownUserInfo = getUserInfo(ownUid)
-        val newFriendUid = getUserIdByUsername(newFriendUsername)
-        val newFriendFriends = getFriendsOfUid(newFriendUid)
 
-        var newFriend = ""
-
-        friendRequests = getFriendRequestsOfUid(ownUid)
-        friends = getFriendsOfUid(ownUid)
-
-        for(uId in friendRequests) {
-            if(uId == getUserIdByUsername(newFriendUsername)) {
-                newFriend = uId
-            }
-        }
-
-        friends.add(newFriend)
-        friendRequests.remove(newFriend)
-        newFriendFriends.add(ownUid)
-
-
-        //pushing own data to the database
-        val ownData = hashMapOf(
-            "friends" to friends,
-            "friendRequests" to friendRequests
-        )
+        //adding new friend to my own friendlist
         db.collection("user").document(ownUid)
-            .set(ownData, SetOptions.merge())
+            .update("friends", FieldValue.arrayUnion(newFriendUid))
 
+        //removing new friend from my friend requests
+        db.collection("user").document(ownUid)
+            .update("friendRequests", FieldValue.arrayRemove(newFriendUid))
 
-        //pushing data of the newly added friend to the database
-        val newFriendData = hashMapOf(
-            "friends" to newFriendFriends
-        )
+        //adding me to my new friends friendlist
         db.collection("user").document(newFriendUid)
-            .set(newFriendData, SetOptions.merge())
-    }*/
+            .update("friends", FieldValue.arrayUnion(ownUid))
+    }
+
+    fun testAcceptFriendRequest() {
+        db.collection("user").document(getOwnUserID())
+            .get()
+            .addOnSuccessListener { document ->
+                val friendRequestsArray = document["friendRequests"] as ArrayList<String>
+                if(friendRequestsArray.isNotEmpty()) {
+                    acceptFriendRequest(friendRequestsArray.first())
+                }
+            }
+            .addOnFailureListener { exception ->
+                print(exception)
+            }
+    }
 
     fun loadFriends() {
         print("load friends")
@@ -142,7 +132,7 @@ class UserDataViewModel : ViewModel() {
         )
     }
 
-    /*fun getUserIdByUsername(username: String, methodToCall: (input: ) -> Unit): String {
+    /*fun getUserIdByUsername(username: String): String {
         var otherUid = ""
         /*takes username and returns uid*/
         db.collection("user")
