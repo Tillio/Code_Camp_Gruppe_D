@@ -11,6 +11,7 @@ import android.widget.Button
 import android.widget.Spinner
 import android.widget.TextView
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.group_d.R
@@ -20,6 +21,7 @@ class NewGameSetup : Fragment() {
 
     //private var layoutManager: RecyclerView.LayoutManager? = null
     //private var adapter: RecyclerView.Adapter<PlayerAdapter.ViewHolder>? = null
+    //private val args: NewGameSetupArgs by navArgs()
 
     companion object {
         fun newInstance() = NewGameSetup()
@@ -42,7 +44,11 @@ class NewGameSetup : Fragment() {
         val buttonCancel: Button = view.findViewById(R.id.buttonCancel)
         val buttonStart: Button = view.findViewById(R.id.buttonStart)
         buttonCancel.setOnClickListener { view -> view.findNavController().navigate(R.id.navigation_friends) }
-        buttonStart.setOnClickListener { """ToDo: create and open new game""" }
+        buttonStart.setOnClickListener {
+            if (selectedGameText.text.toString() == "TicTacToe") {
+                """TODO: Start game"""
+            }
+        }
 
         val spinnerGameSelect: Spinner = view.findViewById(R.id.game_select)
         spinnerGameSelect.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
@@ -72,7 +78,7 @@ class NewGameSetup : Fragment() {
     fun createPlayers(): List<User> {
         val arrayList = ArrayList<User>()
         arrayList.add(User( name = "you", id = "42", online = true))
-        arrayList.add(User( name = "Opponent", id = "13", online = true))
+        //arrayList.add(args.user)
         return arrayList
     }
 
