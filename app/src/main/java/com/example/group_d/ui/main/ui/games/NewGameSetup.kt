@@ -10,18 +10,25 @@ import android.widget.AdapterView
 import android.widget.Button
 import android.widget.Spinner
 import android.widget.TextView
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.group_d.R
+import com.example.group_d.data.model.Challenge
+import com.example.group_d.data.model.GameType
 import com.example.group_d.data.model.User
+import com.example.group_d.data.model.UserDataViewModel
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 
 class NewGameSetup : Fragment() {
 
     //private var layoutManager: RecyclerView.LayoutManager? = null
     //private var adapter: RecyclerView.Adapter<PlayerAdapter.ViewHolder>? = null
-    //private val args: NewGameSetupArgs by navArgs()
+    private val args: NewGameSetupArgs by navArgs()
+    private val userDataViewModel: UserDataViewModel by activityViewModels()
 
     companion object {
         fun newInstance() = NewGameSetup()
@@ -46,7 +53,7 @@ class NewGameSetup : Fragment() {
         buttonCancel.setOnClickListener { view -> view.findNavController().navigate(R.id.navigation_friends) }
         buttonStart.setOnClickListener {
             if (selectedGameText.text.toString() == "TicTacToe") {
-                """TODO: Start game"""
+                userDataViewModel.challengeFriend(Challenge(User(name = Firebase.auth.currentUser!!.email.toString(), id = userDataViewModel.getOwnUserID(), online = true), GameType.TIC_TAC_TOE))
             }
         }
 
@@ -77,8 +84,8 @@ class NewGameSetup : Fragment() {
 
     fun createPlayers(): List<User> {
         val arrayList = ArrayList<User>()
-        arrayList.add(User( name = "you", id = "42", online = true))
-        //arrayList.add(args.user)
+        arrayList.add(User( name = "you", id = userDataViewModel.getOwnUserID(), online = true))
+        arrayList.add(User( name = args.userName, id = args.userID, online = args.userStatus))
         return arrayList
     }
 

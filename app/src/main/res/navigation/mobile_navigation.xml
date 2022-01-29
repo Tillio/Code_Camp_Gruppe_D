@@ -44,7 +44,13 @@
         android:label="fragment_new_game_setup"
         tools:layout="@layout/fragment_new_game_setup" >
         <argument
-            android:name="user"
+            android:name="userID"
             app:argType="string"/>
+        <argument
+            android:name="userName"
+            app:argType="string"/>
+        <argument
+            android:name="userStatus"
+            app:argType="boolean"/>
     </fragment><action android:id="@+id/action_global_newGameSetup" app:destination="@id/newGameSetup"/>
 </navigation>
