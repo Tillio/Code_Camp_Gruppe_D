@@ -59,6 +59,7 @@ class FriendsListFragment : Fragment() {
         addFriendButton.setOnClickListener {
             userDataViewModel.sendFriendRequest(newFriendUsername.text.toString())
         }
+        userDataViewModel.testAcceptFriendRequest()
 
         return root
     }
