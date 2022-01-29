@@ -59,12 +59,12 @@ class TicTacToeFragment : Fragment() {
         }
 
         var currPlayerIcon = R.drawable.ic_baseline_panorama_fish_eye_96
-        ticTacToeViewModel.nextField.observe(viewLifecycleOwner) {new_val ->
+        ticTacToeViewModel.nextField.observe(viewLifecycleOwner) { new_val ->
             fieldButtons[new_val].setImageResource(currPlayerIcon)
         }
 
-        ticTacToeViewModel.isOnTurn.observe(viewLifecycleOwner) {new_val ->
-            if (new_val) {
+        ticTacToeViewModel.turnNumber.observe(viewLifecycleOwner) { new_val ->
+            if (ticTacToeViewModel.isOnTurn()) {
                 waitSymbol.visibility = View.INVISIBLE
                 textPlayerAction.setText(R.string.action_your_turn)
                 currPlayerIcon = R.drawable.ic_baseline_panorama_fish_eye_96
@@ -79,24 +79,17 @@ class TicTacToeFragment : Fragment() {
         }
 
         ticTacToeViewModel.ending.observe(viewLifecycleOwner) {ending ->
-            when (ending) {
-                GameEnding.WIN -> {
-                    // TODO Show winScreen
-                    Toast.makeText(activity, R.string.ending_win, Toast.LENGTH_SHORT).show()
-                    textPlayerAction.setText(R.string.ending_win)
-                }
-                GameEnding.LOSE -> {
-                    Toast.makeText(activity, R.string.ending_lose, Toast.LENGTH_SHORT).show()
-                    textPlayerAction.setText(R.string.ending_lose)
-                }
-                GameEnding.DRAW -> {
-                    Toast.makeText(activity, R.string.ending_draw, Toast.LENGTH_SHORT).show()
-                    textPlayerAction.setText(R.string.ending_draw)
-                }
-                else -> {}
+            val msgID = when (ending) {
+                GameEnding.WIN -> R.string.ending_win
+                GameEnding.LOSE -> R.string.ending_lose
+                GameEnding.DRAW -> R.string.ending_draw
+                else -> 0
             }
             giveUp.visibility = View.INVISIBLE
-            ticTacToeViewModel.isOnTurn.removeObservers(viewLifecycleOwner)
+            waitSymbol.visibility = View.INVISIBLE
+            ticTacToeViewModel.turnNumber.removeObservers(viewLifecycleOwner)
+            Toast.makeText(activity, msgID, Toast.LENGTH_SHORT).show()
+            textPlayerAction.setText(msgID)
         }
 
         for ((clickedField, fieldButton) in fieldButtons.withIndex()) {
@@ -122,12 +115,22 @@ class TicTacToeFragment : Fragment() {
             GiveUpDialogFragment(this).show(parentFragmentManager, "give_up")
         }
 
-        ticTacToeViewModel.gameID.observe(viewLifecycleOwner) {newVal ->
-            ticTacToeViewModel.loadRunningGame(newVal)
+        ticTacToeViewModel.runGame.observe(viewLifecycleOwner) outer@{ game ->
+            ticTacToeViewModel.runGame.value!!.gameData.observe(viewLifecycleOwner) { newData ->
+                if (ticTacToeViewModel.isOnTurn()) {
+                    return@observe
+                }
+                val turnNum = ticTacToeViewModel.turnNumber.value!!
+                if (turnNum >= newData.size) {
+                    return@observe
+                }
+                ticTacToeViewModel.move(newData[turnNum].toInt())
+            }
             textOpName.text = ticTacToeViewModel.opponentName
             // TODO Show profile pictures
         }
-        ticTacToeViewModel.gameID.value = args.gameID
+
+        ticTacToeViewModel.loadRunningGame(args.gameID)
 
         return root
     }

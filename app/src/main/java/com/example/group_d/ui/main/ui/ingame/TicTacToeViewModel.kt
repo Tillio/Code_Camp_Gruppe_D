@@ -3,45 +3,34 @@ package com.example.group_d.ui.main.ui.ingame
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.ViewModel
+import com.example.group_d.GAME_DATA
+import com.example.group_d.GAME_PLAYERS
+import com.example.group_d.GAME_TYPE_TIC_TAC_TOE
+import com.example.group_d.data.model.Game
 import com.example.group_d.data.model.GameEnding
+import com.example.group_d.data.model.User
 import com.example.group_d.data.model.tictactoe.Field
 import com.example.group_d.data.model.tictactoe.TicTacToeGame
+import com.google.firebase.firestore.DocumentSnapshot
 import kotlin.random.Random
 
 class TicTacToeViewModel(private val state: SavedStateHandle) : GameViewModel() {
 
-    private val _game = MutableLiveData<TicTacToeGame>()
-    val game: LiveData<TicTacToeGame> = _game
+    private val _gameModel = MutableLiveData<TicTacToeGame>()
+    val gameModel: LiveData<TicTacToeGame> = _gameModel
 
     private val _nextField = MutableLiveData<Int>()
     val nextField: LiveData<Int> = _nextField
 
-    private val _isOnTurn = MutableLiveData<Boolean>()
-    val isOnTurn: LiveData<Boolean> = _isOnTurn
+    private val _turnNumber = MutableLiveData<Int>()
+    val turnNumber: LiveData<Int> = _turnNumber
 
     private val _ending = MutableLiveData<GameEnding>()
     val ending: LiveData<GameEnding> = _ending
 
-    private val _gameID = MutableLiveData<String>()
-    val gameID: MutableLiveData<String> = _gameID
-
-    private val gameObj: TicTacToeGame get() = game.value!!
+    private val modelObj: TicTacToeGame get() = gameModel.value!!
     val opponentName: String
-        get() = gameObj.player2.name
-
-    fun loadGame(gameID: String) {
-        // TODO load from repository
-        _game.apply {
-            value = TicTacToeGame.buildGame(gameID, "Erna", "Hans")
-            value!!.currentPlayer = value!!.player1
-            _isOnTurn.value = true
-        }
-        move(2)
-        move(5)
-        move(1)
-        move(8)
-    }
+        get() = modelObj.player2.name
 
     fun getOpponentMove(): Int {
         // TODO load from server
@@ -54,23 +43,23 @@ class TicTacToeViewModel(private val state: SavedStateHandle) : GameViewModel() 
     }
 
     fun fieldIsEmpty(fieldNum: Int): Boolean {
-        return gameObj.fields[fieldNum].player == null
+        return modelObj.fields[fieldNum].player == null
     }
 
     fun move(fieldNum: Int) {
-        val field = gameObj.fields[fieldNum]
+        val field = modelObj.fields[fieldNum]
         if (field.player != null) {
             return
         }
-        field.player = gameObj.currentPlayer
+        field.player = modelObj.currentPlayer
         _nextField.value = fieldNum
         checkResult(field)
         nextPlayer()
     }
 
     private fun nextPlayer() {
-        gameObj.currentPlayer = gameObj.currentPlayer.next!!
-        _isOnTurn.value = !_isOnTurn.value!!
+        modelObj.currentPlayer = modelObj.currentPlayer.next!!
+        _turnNumber.value = _turnNumber.value!! + 1
     }
 
     private fun checkResult(lastSetField: Field) {
@@ -93,20 +82,34 @@ class TicTacToeViewModel(private val state: SavedStateHandle) : GameViewModel() 
                 || lastSetField.northEast?.player == lastPlayer && lastSetField.northEast?.northEast?.player == lastPlayer
 
         if (win) {
-            gameObj.winner = lastPlayer
-            _ending.value = if(isOnTurn.value!!) GameEnding.WIN else GameEnding.LOSE
+            modelObj.winner = lastPlayer
+            _ending.value = if(isOnTurn()) GameEnding.WIN else GameEnding.LOSE
         }
-        if (gameObj.player1.amountOfFields + gameObj.player2.amountOfFields >= TicTacToeGame.NUM_FIELDS) {
+        if (modelObj.player1.amountOfFields + modelObj.player2.amountOfFields >= TicTacToeGame.NUM_FIELDS) {
             _ending.value = GameEnding.DRAW
         }
     }
 
     fun giveUp() {
-        gameObj.winner = gameObj.player2
+        modelObj.winner = modelObj.player2
         _ending.value = GameEnding.LOSE
     }
 
     fun isOnTurn(): Boolean {
-        return gameObj.currentPlayer == gameObj.player1
+        return modelObj.currentPlayer == modelObj.player1
+    }
+
+    override fun initGame(snap: DocumentSnapshot, gameID: String) {
+        val players = snap[GAME_PLAYERS] as List<User>
+        _gameModel.apply {
+            value = TicTacToeGame.buildGame(gameID, "Erna", "Hans")
+            value!!.currentPlayer = value!!.player1
+        }
+        _turnNumber.value = 0
+        val gameData = snap[GAME_DATA] as List<Long>
+        for (fieldNum in gameData) {
+            move(fieldNum.toInt())
+        }
+        runGame.value = Game(gameID, MutableLiveData(gameData), GAME_TYPE_TIC_TAC_TOE, players)
     }
 }
