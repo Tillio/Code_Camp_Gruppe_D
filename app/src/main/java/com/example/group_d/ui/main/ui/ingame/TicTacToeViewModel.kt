@@ -110,6 +110,17 @@ class TicTacToeViewModel(private val state: SavedStateHandle) : GameViewModel() 
         for (fieldNum in gameData) {
             move(fieldNum.toInt())
         }
-        runGame.value = Game(gameID, MutableLiveData(gameData), GAME_TYPE_TIC_TAC_TOE, players)
+        runGame.value = Game(gameID, gameData, GAME_TYPE_TIC_TAC_TOE, players)
+    }
+
+    override fun onGameDataChanged(gameData: List<Long>) {
+        if (isOnTurn()) {
+            return
+        }
+        val turnNum = turnNumber.value!!
+        if (turnNum >= gameData.size) {
+            return
+        }
+        move(gameData[turnNum].toInt())
     }
 }

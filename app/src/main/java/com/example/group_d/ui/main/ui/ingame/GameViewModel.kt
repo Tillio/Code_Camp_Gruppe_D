@@ -18,6 +18,8 @@ abstract class GameViewModel : ViewModel() {
 
     abstract fun initGame(snap: DocumentSnapshot, gameID: String)
 
+    abstract fun onGameDataChanged(gameData: List<Long>)
+
     fun loadRunningGame(gameID: String) {
         val docref = db.collection(COL_GAMES).document(gameID)
         docref.get().addOnSuccessListener {
@@ -29,8 +31,9 @@ abstract class GameViewModel : ViewModel() {
                     return@addSnapshotListener
                 }
 
-                val gameData = value[GAME_DATA] as List<Long>?
-                runGame.value!!.gameData.value = gameData
+                val gameData = value[GAME_DATA] as List<Long>
+                runGame.value!!.gameData = gameData
+                onGameDataChanged(gameData)
             }
         }
     }

@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 
 data class Game(
     val gameID: String,
-    var gameData: MutableLiveData<List<Long>>,
+    var gameData: List<Long>,
     val gameType: String,
     val players: List<User>
 )
