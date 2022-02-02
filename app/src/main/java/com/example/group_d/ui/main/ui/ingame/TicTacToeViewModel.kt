@@ -46,6 +46,12 @@ class TicTacToeViewModel(private val state: SavedStateHandle) : GameViewModel() 
         return modelObj.fields[fieldNum].player == null
     }
 
+    fun playerMove(fieldNum: Int) {
+        runGameRaw.gameData.add(fieldNum.toLong())
+        updateGameData()
+        move(fieldNum)
+    }
+
     fun move(fieldNum: Int) {
         val field = modelObj.fields[fieldNum]
         if (field.player != null) {
@@ -85,7 +91,7 @@ class TicTacToeViewModel(private val state: SavedStateHandle) : GameViewModel() 
             modelObj.winner = lastPlayer
             _ending.value = if(isOnTurn()) GameEnding.WIN else GameEnding.LOSE
         }
-        if (modelObj.player1.amountOfFields + modelObj.player2.amountOfFields >= TicTacToeGame.NUM_FIELDS) {
+        else if (modelObj.player1.amountOfFields + modelObj.player2.amountOfFields >= TicTacToeGame.NUM_FIELDS) {
             _ending.value = GameEnding.DRAW
         }
     }
@@ -106,7 +112,7 @@ class TicTacToeViewModel(private val state: SavedStateHandle) : GameViewModel() 
             value!!.currentPlayer = value!!.player1
         }
         _turnNumber.value = 0
-        val gameData = snap[GAME_DATA] as List<Long>
+        val gameData = snap[GAME_DATA] as MutableList<Long>
         for (fieldNum in gameData) {
             move(fieldNum.toInt())
         }

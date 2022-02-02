@@ -102,7 +102,7 @@ class TicTacToeFragment : Fragment() {
                     Toast.makeText(activity, R.string.field_not_empty, Toast.LENGTH_SHORT).show()
                     return@setOnClickListener
                 }
-                ticTacToeViewModel.move(clickedField)
+                ticTacToeViewModel.playerMove(clickedField)
             }
         }
 
