@@ -9,15 +9,14 @@ import com.example.group_d.GAME_TYPE_TIC_TAC_TOE
 import com.example.group_d.data.model.Game
 import com.example.group_d.data.model.GameEnding
 import com.example.group_d.data.model.User
-import com.example.group_d.data.model.tictactoe.Field
-import com.example.group_d.data.model.tictactoe.TicTacToeGame
+import com.example.group_d.data.model.tictactoe.TicTacToeModel
 import com.google.firebase.firestore.DocumentSnapshot
 import kotlin.random.Random
 
 class TicTacToeViewModel(private val state: SavedStateHandle) : GameViewModel() {
 
-    private val _gameModel = MutableLiveData<TicTacToeGame>()
-    val gameModel: LiveData<TicTacToeGame> = _gameModel
+    private val _gameModel = MutableLiveData<TicTacToeModel>()
+    val gameModel: LiveData<TicTacToeModel> = _gameModel
 
     private val _nextField = MutableLiveData<Int>()
     val nextField: LiveData<Int> = _nextField
@@ -28,15 +27,15 @@ class TicTacToeViewModel(private val state: SavedStateHandle) : GameViewModel() 
     private val _ending = MutableLiveData<GameEnding>()
     val ending: LiveData<GameEnding> = _ending
 
-    private val modelObj: TicTacToeGame get() = gameModel.value!!
+    private val modelObj: TicTacToeModel get() = gameModel.value!!
     val opponentName: String
         get() = modelObj.player2.name
 
     fun getOpponentMove(): Int {
         // TODO load from server
-        var rand = Random.nextInt(TicTacToeGame.NUM_FIELDS)
+        var rand = Random.nextInt(TicTacToeModel.NUM_FIELDS)
         while (!fieldIsEmpty(rand)) {
-            rand = Random.nextInt(TicTacToeGame.NUM_FIELDS)
+            rand = Random.nextInt(TicTacToeModel.NUM_FIELDS)
         }
         move(rand)
         return rand
@@ -68,7 +67,7 @@ class TicTacToeViewModel(private val state: SavedStateHandle) : GameViewModel() 
         _turnNumber.value = _turnNumber.value!! + 1
     }
 
-    private fun checkResult(lastSetField: Field) {
+    private fun checkResult(lastSetField: TicTacToeModel.Field) {
         val lastPlayer = lastSetField.player!!
 
         val win = lastSetField.west?.player == lastPlayer && lastSetField.west?.west?.player == lastPlayer
@@ -91,7 +90,7 @@ class TicTacToeViewModel(private val state: SavedStateHandle) : GameViewModel() 
             modelObj.winner = lastPlayer
             _ending.value = if(isOnTurn()) GameEnding.WIN else GameEnding.LOSE
         }
-        else if (modelObj.player1.amountOfFields + modelObj.player2.amountOfFields >= TicTacToeGame.NUM_FIELDS) {
+        else if (modelObj.player1.amountOfFields + modelObj.player2.amountOfFields >= TicTacToeModel.NUM_FIELDS) {
             _ending.value = GameEnding.DRAW
         }
     }
@@ -108,7 +107,7 @@ class TicTacToeViewModel(private val state: SavedStateHandle) : GameViewModel() 
     override fun initGame(snap: DocumentSnapshot, gameID: String) {
         val players = snap[GAME_PLAYERS] as List<User>
         _gameModel.apply {
-            value = TicTacToeGame.buildGame(gameID, "Erna", "Hans")
+            value = TicTacToeModel.buildGame(gameID, "Erna", "Hans")
             value!!.currentPlayer = value!!.player1
         }
         _turnNumber.value = 0

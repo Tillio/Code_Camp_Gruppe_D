@@ -18,7 +18,7 @@ import androidx.navigation.fragment.navArgs
 import com.example.group_d.R
 import com.example.group_d.data.model.GameEnding
 import com.example.group_d.data.model.UserDataViewModel
-import com.example.group_d.data.model.tictactoe.TicTacToeGame
+import com.example.group_d.data.model.tictactoe.TicTacToeModel
 import com.example.group_d.databinding.TicTacToeFragmentBinding
 
 class TicTacToeFragment : Fragment() {
@@ -51,7 +51,7 @@ class TicTacToeFragment : Fragment() {
         val giveUp = binding.buttonGiveUp
         run {
             val fieldIDs = resources.obtainTypedArray(R.array.tic_tac_toe_fields)
-            fieldButtons = Array(TicTacToeGame.NUM_FIELDS) { i ->
+            fieldButtons = Array(TicTacToeModel.NUM_FIELDS) { i ->
                 val id = fieldIDs.getResourceId(i, -1)
                 root.findViewById(id)
             }
