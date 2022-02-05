@@ -1,5 +1,5 @@
 package com.example.group_d.data.model
 
-class FriendRequest {
+data class FriendRequest(val friendID: String = "") {
 
 }
