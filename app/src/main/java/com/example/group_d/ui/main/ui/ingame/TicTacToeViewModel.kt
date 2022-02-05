@@ -17,6 +17,9 @@ class TicTacToeViewModel() : GameViewModel() {
     private val _nextField = MutableLiveData<Int>()
     val nextField: LiveData<Int> = _nextField
 
+    private val _showOnTurn = MutableLiveData<Boolean>()
+    val showOnTurn: LiveData<Boolean> = _showOnTurn
+
     private var turnNumber: Int = 0
 
     private val _ending = MutableLiveData<GameEnding>()
@@ -34,6 +37,7 @@ class TicTacToeViewModel() : GameViewModel() {
         runGameRaw.gameData.add(fieldNum.toLong())
         updateGameData()
         move(fieldNum)
+        _showOnTurn.value = false
     }
 
     fun move(fieldNum: Int) {
@@ -106,6 +110,7 @@ class TicTacToeViewModel() : GameViewModel() {
                     for (fieldNum in gameData) {
                         move(fieldNum.toInt())
                     }
+                    _showOnTurn.value = isOnTurn()
                     runGame.value = Game(gameID, gameData, GAME_TYPE_TIC_TAC_TOE, playerRefs)
                     docref.addSnapshotListener(this::onServerGameDataChanged)
                 }
@@ -121,5 +126,6 @@ class TicTacToeViewModel() : GameViewModel() {
             return
         }
         move(gameData[turnNumber].toInt())
+        _showOnTurn.value = true
     }
 }

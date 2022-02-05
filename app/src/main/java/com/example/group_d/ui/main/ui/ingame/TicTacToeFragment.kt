@@ -59,17 +59,24 @@ class TicTacToeFragment : Fragment() {
         }
 
         ticTacToeViewModel.nextField.observe(viewLifecycleOwner) { new_val ->
-            if (ticTacToeViewModel.isOnTurn()) {
+            val symID =
+                if (ticTacToeViewModel.isOnTurn()) R.drawable.ic_baseline_panorama_fish_eye_96
+                else R.drawable.ic_baseline_close_96
+            fieldButtons[new_val].setImageResource(symID)
+        }
+
+        ticTacToeViewModel.showOnTurn.observe(viewLifecycleOwner) { isOnTurn ->
+            if (isOnTurn) {
+                waitSymbol.visibility = View.INVISIBLE
+                textPlayerAction.setText(R.string.action_your_turn)
+                giveUp.visibility = View.VISIBLE
+            } else {
                 waitSymbol.visibility = View.VISIBLE
                 val actionText = getString(R.string.action_wait_text1) +
                         ticTacToeViewModel.opponentName +
                         getString(R.string.action_wait_text2)
                 textPlayerAction.text = actionText
-                fieldButtons[new_val].setImageResource(R.drawable.ic_baseline_panorama_fish_eye_96)
-            } else {
-                waitSymbol.visibility = View.INVISIBLE
-                textPlayerAction.setText(R.string.action_your_turn)
-                fieldButtons[new_val].setImageResource(R.drawable.ic_baseline_close_96)
+                giveUp.visibility = View.INVISIBLE
             }
         }
 
