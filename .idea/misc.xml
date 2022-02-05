@@ -4,28 +4,49 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/Users/Nathanael/StudioProjects/Code_Camp_Gruppe_D/app/src/main/res/layout/activity_login.xml" value="0.20104166666666667" />
-        <entry key="..\:/Users/domin/AndroidStudioProjects/Code_Camp_Gruppe_D/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.22135416666666666" />
-        <entry key="..\:/Users/domin/AndroidStudioProjects/Code_Camp_Gruppe_D/app/src/main/res/drawable/ic_baseline_emoji_flags_24.xml" value="0.22135416666666666" />
-        <entry key="..\:/Users/domin/AndroidStudioProjects/Code_Camp_Gruppe_D/app/src/main/res/drawable/ic_baseline_people_24.xml" value="0.22135416666666666" />
-        <entry key="..\:/Users/domin/AndroidStudioProjects/Code_Camp_Gruppe_D/app/src/main/res/drawable/ic_baseline_person_24.xml" value="0.22135416666666666" />
-        <entry key="..\:/Users/domin/AndroidStudioProjects/Code_Camp_Gruppe_D/app/src/main/res/drawable/ic_baseline_settings_24.xml" value="0.22135416666666666" />
-        <entry key="..\:/Users/domin/AndroidStudioProjects/Code_Camp_Gruppe_D/app/src/main/res/drawable/ic_dashboard_black_24dp.xml" value="0.22135416666666666" />
-        <entry key="..\:/Users/domin/AndroidStudioProjects/Code_Camp_Gruppe_D/app/src/main/res/drawable/ic_friends_black.xml" value="0.22135416666666666" />
-        <entry key="..\:/Users/domin/AndroidStudioProjects/Code_Camp_Gruppe_D/app/src/main/res/drawable/ic_home_black_24dp.xml" value="0.22135416666666666" />
-        <entry key="..\:/Users/domin/AndroidStudioProjects/Code_Camp_Gruppe_D/app/src/main/res/drawable/ic_launcher_background.xml" value="0.22135416666666666" />
-        <entry key="..\:/Users/domin/AndroidStudioProjects/Code_Camp_Gruppe_D/app/src/main/res/drawable/ic_notifications_black_24dp.xml" value="0.22135416666666666" />
-        <entry key="..\:/Users/domin/AndroidStudioProjects/Code_Camp_Gruppe_D/app/src/main/res/drawable/ic_outline_videogame_asset_24.xml" value="0.22135416666666666" />
-        <entry key="..\:/Users/domin/AndroidStudioProjects/Code_Camp_Gruppe_D/app/src/main/res/drawable/ic_twotone_sports_esports_24.xml" value="0.22135416666666666" />
-        <entry key="..\:/Users/domin/AndroidStudioProjects/Code_Camp_Gruppe_D/app/src/main/res/layout/activity_login.xml" value="0.6422110552763819" />
-        <entry key="..\:/Users/domin/AndroidStudioProjects/Code_Camp_Gruppe_D/app/src/main/res/layout/activity_main_screen.xml" value="0.28306159420289856" />
-        <entry key="..\:/Users/domin/AndroidStudioProjects/Code_Camp_Gruppe_D/app/src/main/res/layout/fragment_challenge_item.xml" value="0.28306159420289856" />
-        <entry key="..\:/Users/domin/AndroidStudioProjects/Code_Camp_Gruppe_D/app/src/main/res/layout/fragment_challenges.xml" value="0.28306159420289856" />
-        <entry key="..\:/Users/domin/AndroidStudioProjects/Code_Camp_Gruppe_D/app/src/main/res/layout/fragment_friend_request.xml" value="0.2526041666666667" />
-        <entry key="..\:/Users/domin/AndroidStudioProjects/Code_Camp_Gruppe_D/app/src/main/res/layout/fragment_friend_screen.xml" value="0.2526041666666667" />
-        <entry key="..\:/Users/domin/AndroidStudioProjects/Code_Camp_Gruppe_D/app/src/main/res/layout/fragment_friends_list.xml" value="0.28306159420289856" />
-        <entry key="..\:/Users/domin/AndroidStudioProjects/Code_Camp_Gruppe_D/app/src/main/res/layout/fragment_game_item.xml" value="0.33" />
-        <entry key="..\:/Users/domin/AndroidStudioProjects/Code_Camp_Gruppe_D/app/src/main/res/layout/fragment_games.xml" value="0.28306159420289856" />
-        <entry key="..\:/Users/domin/AndroidStudioProjects/Code_Camp_Gruppe_D/app/src/main/res/layout/friend_item.xml" value="0.2526041666666667" />
+        <entry key="..\:/Users/Nathanael/StudioProjects/Code_Camp_Gruppe_D/app/src/main/res/layout/activity_main_screen.xml" value="0.2390625" />
+        <entry key="..\:/Users/Nathanael/StudioProjects/Code_Camp_Gruppe_D/app/src/main/res/layout/fragment_challenge_item.xml" value="0.20625" />
+        <entry key="..\:/Users/Nathanael/StudioProjects/Code_Camp_Gruppe_D/app/src/main/res/layout/fragment_challenges.xml" value="0.25" />
+        <entry key="..\:/Users/Nathanael/StudioProjects/Code_Camp_Gruppe_D/app/src/main/res/layout/fragment_friend_request.xml" value="0.2390625" />
+        <entry key="..\:/Users/Nathanael/StudioProjects/Code_Camp_Gruppe_D/app/src/main/res/layout/fragment_friend_screen.xml" value="0.2390625" />
+        <entry key="..\:/Users/Nathanael/StudioProjects/Code_Camp_Gruppe_D/app/src/main/res/layout/fragment_friends_list.xml" value="0.2390625" />
+        <entry key="..\:/Users/Nathanael/StudioProjects/Code_Camp_Gruppe_D/app/src/main/res/layout/fragment_games.xml" value="0.2390625" />
+        <entry key="..\:/Users/Nathanael/StudioProjects/Code_Camp_Gruppe_D/app/src/main/res/layout/tic_tac_toe_fragment.xml" value="0.33" />
+        <entry key="..\:/Users/TillP/Documents/Code_Camp_Gruppe_D/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.3229166666666667" />
+        <entry key="..\:/Users/TillP/Documents/Code_Camp_Gruppe_D/app/src/main/res/drawable/ic_baseline_people_24.xml" value="0.18425925925925926" />
+        <entry key="..\:/Users/TillP/Documents/Code_Camp_Gruppe_D/app/src/main/res/drawable/ic_dashboard_black_24dp.xml" value="0.3229166666666667" />
+        <entry key="..\:/Users/TillP/Documents/Code_Camp_Gruppe_D/app/src/main/res/drawable/ic_friends_black.xml" value="0.39427083333333335" />
+        <entry key="..\:/Users/TillP/Documents/Code_Camp_Gruppe_D/app/src/main/res/drawable/ic_home_black_24dp.xml" value="0.3229166666666667" />
+        <entry key="..\:/Users/TillP/Documents/Code_Camp_Gruppe_D/app/src/main/res/drawable/ic_launcher_background.xml" value="0.3229166666666667" />
+        <entry key="..\:/Users/TillP/Documents/Code_Camp_Gruppe_D/app/src/main/res/drawable/ic_notifications_black_24dp.xml" value="0.3229166666666667" />
+        <entry key="..\:/Users/TillP/Documents/Code_Camp_Gruppe_D/app/src/main/res/layout-w1240dp/activity_login.xml" value="0.14725568942436412" />
+        <entry key="..\:/Users/TillP/Documents/Code_Camp_Gruppe_D/app/src/main/res/layout/activity_login.xml" value="0.3328804347826087" />
+        <entry key="..\:/Users/TillP/Documents/Code_Camp_Gruppe_D/app/src/main/res/layout/activity_main.xml" value="0.28940217391304346" />
+        <entry key="..\:/Users/TillP/Documents/Code_Camp_Gruppe_D/app/src/main/res/layout/activity_main_screen.xml" value="0.33" />
+        <entry key="..\:/Users/TillP/Documents/Code_Camp_Gruppe_D/app/src/main/res/layout/activity_screen.xml" value="0.3328804347826087" />
+        <entry key="..\:/Users/TillP/Documents/Code_Camp_Gruppe_D/app/src/main/res/layout/content_main.xml" value="0.28940217391304346" />
+        <entry key="..\:/Users/TillP/Documents/Code_Camp_Gruppe_D/app/src/main/res/layout/fragment_dashboard.xml" value="0.22" />
+        <entry key="..\:/Users/TillP/Documents/Code_Camp_Gruppe_D/app/src/main/res/layout/fragment_first.xml" value="0.28940217391304346" />
+        <entry key="..\:/Users/TillP/Documents/Code_Camp_Gruppe_D/app/src/main/res/layout/fragment_friend_list.xml" value="0.2609375" />
+        <entry key="..\:/Users/TillP/Documents/Code_Camp_Gruppe_D/app/src/main/res/layout/fragment_friend_request.xml" value="0.370018115942029" />
+        <entry key="..\:/Users/TillP/Documents/Code_Camp_Gruppe_D/app/src/main/res/layout/fragment_friend_request2.xml" value="0.2609375" />
+        <entry key="..\:/Users/TillP/Documents/Code_Camp_Gruppe_D/app/src/main/res/layout/fragment_friend_screen.xml" value="0.1" />
+        <entry key="..\:/Users/TillP/Documents/Code_Camp_Gruppe_D/app/src/main/res/layout/fragment_friends.xml" value="0.33" />
+        <entry key="..\:/Users/TillP/Documents/Code_Camp_Gruppe_D/app/src/main/res/layout/fragment_friends_list.xml" value="0.26875" />
+        <entry key="..\:/Users/TillP/Documents/Code_Camp_Gruppe_D/app/src/main/res/layout/fragment_games.xml" value="0.579556412729026" />
+        <entry key="..\:/Users/TillP/Documents/Code_Camp_Gruppe_D/app/src/main/res/layout/fragment_home.xml" value="0.22916666666666666" />
+        <entry key="..\:/Users/TillP/Documents/Code_Camp_Gruppe_D/app/src/main/res/layout/fragment_notifications.xml" value="0.22916666666666666" />
+        <entry key="..\:/Users/TillP/Documents/Code_Camp_Gruppe_D/app/src/main/res/layout/fragment_second.xml" value="0.20208333333333334" />
+        <entry key="..\:/Users/TillP/Documents/Code_Camp_Gruppe_D/app/src/main/res/layout/fragment_settings.xml" value="0.5" />
+        <entry key="..\:/Users/TillP/Documents/Code_Camp_Gruppe_D/app/src/main/res/layout/friend__list_fragment.xml" value="0.35260416666666666" />
+        <entry key="..\:/Users/TillP/Documents/Code_Camp_Gruppe_D/app/src/main/res/layout/friend_item.xml" value="0.2604166666666667" />
+        <entry key="..\:/Users/TillP/Documents/Code_Camp_Gruppe_D/app/src/main/res/layout/friend_pane.xml" value="0.33" />
+        <entry key="..\:/Users/TillP/Documents/Code_Camp_Gruppe_D/app/src/main/res/layout/friendpane.xml" value="0.5" />
+        <entry key="..\:/Users/TillP/Documents/Code_Camp_Gruppe_D/app/src/main/res/layout/pers_pane.xml" value="0.5" />
+        <entry key="..\:/Users/TillP/Documents/Code_Camp_Gruppe_D/app/src/main/res/menu/bottom_nav_menu.xml" value="0.32708333333333334" />
+        <entry key="..\:/Users/TillP/Documents/Code_Camp_Gruppe_D/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.34322916666666664" />
+        <entry key="app/src/main/res/layout/friend_item.xml" value="0.22083333333333333" />
+        <entry key="app/src/main/res/layout/player_item.xml" value="0.22083333333333333" />
       </map>
     </option>
   </component>
@@ -34,5 +55,12 @@
   </component>
   <component name="ProjectType">
     <option name="id" value="Android" />
+  </component>
+  <component name="VisualizationToolProject">
+    <option name="state">
+      <ProjectState>
+        <option name="scale" value="0.67" />
+      </ProjectState>
+    </option>
   </component>
 </project>

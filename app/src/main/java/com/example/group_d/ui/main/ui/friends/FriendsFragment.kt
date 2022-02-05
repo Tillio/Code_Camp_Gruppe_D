@@ -4,18 +4,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.FrameLayout
-import android.widget.TextView
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentContainerView
-import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.group_d.R
 import com.example.group_d.data.model.User
-import com.example.group_d.data.model.UserDataViewModel
 
 import com.example.group_d.databinding.FragmentFriendScreenBinding
 
@@ -26,8 +21,6 @@ class FriendsFragment : Fragment() {
     private var _binding: FragmentFriendScreenBinding? = null
 
     private val binding get() = _binding!!
-
-    private val userDataViewModel: UserDataViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -43,7 +36,6 @@ class FriendsFragment : Fragment() {
             replace(R.id.fl_friend_screen, friendList)
             commit()
         }
-
 
         return root
     }
