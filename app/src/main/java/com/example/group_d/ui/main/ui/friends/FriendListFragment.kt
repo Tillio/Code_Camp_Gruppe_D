@@ -37,11 +37,19 @@ class FriendsListFragment : Fragment() {
         friendList.adapter = friendAdapter
         friendList.layoutManager = LinearLayoutManager(context)
 
-        binding.addFriendButton.setOnClickListener{
+        /*binding.addFriendButton.setOnClickListener{
             val parentFrag: FriendsFragment =
                 this.parentFragment as FriendsFragment
                 parentFrag.showAddFriendScreen()
-        }
+        }*/
+
+        val friendRequestList: RecyclerView = binding.friendList
+        val friendRequestAdapter = FriendRequestAdapter()
+        friendRequestAdapter.friendRequestItems = ArrayList(
+            userDataViewModel.friendRequests
+        )
+        friendRequestList.adapter = friendRequestAdapter
+        friendRequestList.layoutManager = LinearLayoutManager(context)
 
         val addFriendButton = root.findViewById(R.id.addFriendButton) as Button
         val newFriendUsername = root.findViewById(R.id.editTextTextPersonName2) as TextView
@@ -49,7 +57,7 @@ class FriendsListFragment : Fragment() {
         addFriendButton.setOnClickListener {
             userDataViewModel.sendFriendRequest(newFriendUsername.text.toString())
         }
-        userDataViewModel.testAcceptFriendRequest()
+        //userDataViewModel.testAcceptFriendRequest()
 
         return root
     }
