@@ -3,13 +3,10 @@ package com.example.group_d.data.model
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.example.group_d.*
-import com.example.group_d.ui.main.ui.friends.FriendRequestFragment
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.DocumentSnapshot
-import com.google.firebase.firestore.FirebaseFirestoreException
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FieldValue
-import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.*
@@ -20,10 +17,10 @@ class UserDataViewModel : ViewModel() {
     val TAG = "UserDataViewModel"
     val db = Firebase.firestore
 
-    var friends = ArrayList<String>()
-    var friendRequests = ArrayList<String>()
+    var friends = ArrayList<User>()
+    var friendRequests = ArrayList<User>()
     val games = ArrayList<Game>()
-    val challenges = ArrayList<User>()
+    val challenges = ArrayList<Challenge>()
 
     fun sendFriendRequest(username: String): Boolean {
         Log.d(TAG, "sending friend request to: $username")
@@ -164,8 +161,7 @@ class UserDataViewModel : ViewModel() {
     }*/
 
     fun getOwnUserID(): String {
-        val ownUid = Firebase.auth.currentUser!!.uid
-        return ownUid
+        return Firebase.auth.currentUser!!.uid
     }
 
     private fun getFriendRequestsOfUid(uId: String): ArrayList<String> {
@@ -196,48 +192,23 @@ class UserDataViewModel : ViewModel() {
         return friendsOfUid
     }
 
+    //listen to own document
+    fun setupFireBaseSnapshots() {
+        val userRef = db.collection(COL_USER).document(auth.uid.toString())
+        val dataCol = userRef.collection(USER_DATA)
 
-
-
-    fun uidListToUser(uidList: ArrayList<String>) {
-        val convertedIdsList = ArrayList<User>()
-        val foundUserList = ArrayList<String>()
-        //ADD ALL ALREADY known user
-        for (userId in uidList){
-            for (u in user){
-                if(u.id == userId){
-                    convertedIdsList.add(u)
-                    foundUserList.add(userId)
-                }
-            }
-        }
-        //create and add unknown user
-        uidList.removeAll(foundUserList.toSet())
-
-
-    }
-
-    fun createUser(uid: String){
-        val userDoc = db.collection(COL_USER).document(uid)
-        userDoc.
-    }
-
-    fun setupFireBaseSnapshots() {        //listen to own document
-
-        val dataRef = db.collection(COL_USER).document(auth.uid.toString()).collection(USER_DATA)
-
-        dataRef.document(USER_FRIEND_REQUESTS).addSnapshotListener { snapshot, e ->
+        dataCol.document(USER_FRIEND_REQUESTS).addSnapshotListener { snapshot, e ->
             if (e != null) {
                 return@addSnapshotListener
             }
             if (snapshot != null && snapshot.exists()) {
-                //succes
+                //success
                 val get = snapshot.data?.get(USER_FRIEND_REQUESTS)
             } else
                 print("pass")
         }
 
-        dataRef.document(USER_GAMES).addSnapshotListener { snapshot, e ->
+        dataCol.document(USER_GAMES).addSnapshotListener { snapshot, e ->
             if (e != null) {
                 return@addSnapshotListener
             }
@@ -247,7 +218,7 @@ class UserDataViewModel : ViewModel() {
                 print("pass")
         }
 
-        dataRef.document(USER_CHALLENGES).addSnapshotListener { snapshot, e ->
+        dataCol.document(USER_CHALLENGES).addSnapshotListener { snapshot, e ->
             if (e != null) {
                 return@addSnapshotListener
             }
@@ -255,12 +226,95 @@ class UserDataViewModel : ViewModel() {
                 print("pass")
             } else
                 print("pass")
+        }
+
+        dataCol.document(USER_FRIENDS).addSnapshotListener { snapshot, e ->
+            if (e != null) {
+                return@addSnapshotListener
+            }
+            friendListListener(snapshot)
         }
         //listen to games
     }
 
-    private fun friendRequestListener() {
+    /**
+     * receives the Users Friends Document and synchronizes it with the local friendList
+     */
+
+    private fun friendListListener(snapshot: DocumentSnapshot?) {
+        if (snapshot != null && snapshot.exists()) {
+            val actualFriends = snapshot.data?.get(USER_FRIENDS) as ArrayList<String>
+            val addFriends = ArrayList<String>()
+            val removeFriends = ArrayList<String>()
+            val currentFriends = ArrayList<String>()
+            friends.forEach {
+                currentFriends.add(it.id)
+            }
+            for (user in actualFriends) {
+                if (user !in currentFriends) {
+                    addFriends.add(user)
+                }
+            }
+            for (user in currentFriends) {
+                if (user !in currentFriends) {
+                    addFriends.add(user)
+                }
+            }
+            removeFriends(removeFriends)
+            addFriends(addFriends)
+
+        } else
+            print("pass")
 
     }
 
+    /**
+     * takes a list of user ids and deletes all user with matching ids
+     */
+    private fun removeFriends(removeFriends: ArrayList<String>) {
+        for (friendId in removeFriends) {
+            removeFriend(friendId)
+        }
+    }
+
+    /**
+     * takes a list of uIds
+     * the it load the data from firestore for each id
+     * and creates user objects when the call completes
+     */
+    private fun addFriends(uidList: ArrayList<String>) {
+        for (uid in uidList) {
+            db.collection(COL_USER).document(uid).get().addOnSuccessListener { doc ->
+                val name = doc.data?.get(USER_NAME) as String
+                val online = doc.data?.get(USER_STATUS) as Boolean
+                val user = User(name = name, online = online, id = uid)
+                addFriend(user)
+            }
+        }
+    }
+
+    /**
+     * adds a user to the friend list if he is not already in the list
+     */
+    private fun addFriend(friend: User) {
+        for (user in friends) {
+            if (user.id == friend.id) {
+                return
+            }
+        }
+        friends.add(friend)
+    }
+
+    /**
+     * takes an uId and removes a matching user if possible
+     */
+    private fun removeFriend(friendId: String): Boolean {
+        for (friend in friends) {
+            if (friend.id == friendId) {
+                friends.remove(friend)
+                return true
+            }
+        }
+        return false
+    }
 }
