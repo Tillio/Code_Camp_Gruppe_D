@@ -20,6 +20,8 @@ abstract class GameViewModel : ViewModel() {
     val runGame = MutableLiveData<Game>()
     protected val runGameRaw: Game get() = runGame.value!!
 
+    lateinit var runGameID: String
+
     abstract fun initGame(snap: DocumentSnapshot, docref: DocumentReference)
 
     abstract fun onGameDataChanged(gameData: List<Long>)
@@ -37,6 +39,7 @@ abstract class GameViewModel : ViewModel() {
     }
 
     fun loadRunningGame(gameID: String) {
+        runGameID = gameID
         val docref = db.collection(COL_GAMES).document(gameID)
         docref.get().addOnSuccessListener {
             initGame(it, docref)
@@ -44,7 +47,7 @@ abstract class GameViewModel : ViewModel() {
     }
 
     fun updateGameData() {
-        val docref = db.collection(COL_GAMES).document(runGameRaw.gameID)
+        val docref = db.collection(COL_GAMES).document(runGameID)
         docref.update(GAME_DATA, runGameRaw.gameData)
     }
 

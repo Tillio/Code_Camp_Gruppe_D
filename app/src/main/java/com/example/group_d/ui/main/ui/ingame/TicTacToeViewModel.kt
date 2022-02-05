@@ -96,8 +96,8 @@ class TicTacToeViewModel() : GameViewModel() {
     override fun initGame(snap: DocumentSnapshot, docref: DocumentReference) {
         val gameID = docref.id
         val playerRefs = snap[GAME_PLAYERS] as List<DocumentReference>
-        val beginnerIndex = snap.getLong(GAME_BEGINNER)
-        val isBeginner = playerRefs[beginnerIndex?.toInt()?:0].id == getOwnUserID()
+        val beginnerIndex = snap.getLong(GAME_BEGINNER)?:0
+        val isBeginner = playerRefs[beginnerIndex.toInt()].id == getOwnUserID()
         for (playerRef in playerRefs) {
             if (playerRef.id != getOwnUserID()) {
                 playerRef.get().addOnSuccessListener { playerSnap ->
@@ -111,7 +111,7 @@ class TicTacToeViewModel() : GameViewModel() {
                         move(fieldNum.toInt())
                     }
                     _showOnTurn.value = isOnTurn()
-                    runGame.value = Game(gameID, gameData, GAME_TYPE_TIC_TAC_TOE, playerRefs)
+                    runGame.value = Game(beginnerIndex, gameData, GAME_TYPE_TIC_TAC_TOE, playerRefs)
                     docref.addSnapshotListener(this::onServerGameDataChanged)
                 }
             }

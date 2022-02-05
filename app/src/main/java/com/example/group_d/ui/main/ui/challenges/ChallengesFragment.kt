@@ -39,9 +39,9 @@ class ChallengesFragment : Fragment() {
         val root: View = binding.root
 
         val recyclerView: RecyclerView = binding.recyclerViewChallenges
-        challengesViewModel.challenges.observe(viewLifecycleOwner, {
+        challengesViewModel.challenges.observe(viewLifecycleOwner) {
             recyclerView.adapter = ChallengeAdapter(it, this)
-        })
+        }
         recyclerView.layoutManager = LinearLayoutManager(context)
 
         return root
@@ -54,10 +54,11 @@ class ChallengesFragment : Fragment() {
 
     fun onAccept(challenge: Challenge) {
         Log.d(null, "Start new game with ${challenge.user.name}")
-        val gameID = challengesViewModel.createGame(challenge)
-        val action =
-            TicTacToeFragmentDirections.actionGlobalIngameTicTacToeFragment(gameID)
-        findNavController().navigate(action)
+        challengesViewModel.createGame(challenge).addOnSuccessListener { docref ->
+            val action =
+                TicTacToeFragmentDirections.actionGlobalIngameTicTacToeFragment(docref.id)
+            findNavController().navigate(action)
+        }
     }
 
     fun onDecline(challenge: Challenge, dontAsk: Boolean) {
