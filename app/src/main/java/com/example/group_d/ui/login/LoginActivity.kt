@@ -175,7 +175,6 @@ class LoginActivity : AppCompatActivity() {
                     )
                 )
 
-
                 startMainActivity()
                 finish()
             }
