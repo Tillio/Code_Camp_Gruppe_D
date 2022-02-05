@@ -3,13 +3,10 @@ package com.example.group_d.data.model
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.example.group_d.*
-import com.example.group_d.ui.main.ui.friends.FriendRequestFragment
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentSnapshot
-import com.google.firebase.firestore.FirebaseFirestoreException
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FieldValue
-import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.*
@@ -39,7 +36,8 @@ class UserDataViewModel : ViewModel() {
                 for (document in documents) {
                     Log.d(TAG, "uid: ${document.id} of user: ${document["name"]} found")
                     val otherUid = document.id
-                    db.collection("user").document(otherUid).collection("userData").document("friendRequests")
+                    db.collection("user").document(otherUid).collection("userData")
+                        .document("friendRequests")
                         .update("friendRequests", FieldValue.arrayUnion(ownUid))
                 }
             }
@@ -68,11 +66,12 @@ class UserDataViewModel : ViewModel() {
     }
 
     fun testAcceptFriendRequest() {
-        db.collection("user").document(getOwnUserID()).collection("userData").document("friendRequests")
+        db.collection("user").document(getOwnUserID()).collection("userData")
+            .document("friendRequests")
             .get()
             .addOnSuccessListener { document ->
                 val friendRequestsArray = document["friendRequests"] as ArrayList<String>
-                if(friendRequestsArray.isNotEmpty()) {
+                if (friendRequestsArray.isNotEmpty()) {
                     acceptFriendRequest(friendRequestsArray.first())
                 }
             }
@@ -97,96 +96,17 @@ class UserDataViewModel : ViewModel() {
         print("load challenges")
     }
 
-    fun challengeFriend(challange: Challenge) {
+    fun challengeFriend(challenge: Challenge) {
         Log.d(TAG, "creating challange request")
-        // adding me to challanges of other user
-        db.collection("user").document(challange.user.id).collection("userData").document("challanges")
-            .update("challanges", FieldValue.arrayUnion(challange))
+        // adding me to challenges of other user
+        db.collection("user").document(challenge.user.id).collection("userData")
+            .document("challenges")
+            .update("challenges", FieldValue.arrayUnion(challenge))
     }
-
-    /*fun getUserInfo(uId: String): HashMap<String, Any> {
-        /*takes user id and returns:
-            name
-            status*/
-
-        var returnName = ""
-        var returnStatus = false
-
-        db.collection("user").document(uId)
-            .get()
-            .addOnSuccessListener { document ->
-                returnName = document["name"].toString()
-                Log.d(TAG, "successfully got name of user ID: $uId")
-            }
-            .addOnFailureListener { exception ->
-                Log.w(TAG, "error getting name of user ID: $uId")
-            }
-
-        db.collection("user").document(uId)
-            .get()
-            .addOnSuccessListener { document ->
-                returnStatus = document["status"].toString().toBoolean()
-                Log.d(TAG, "successfully got status of user ID: $uId")
-            }
-            .addOnFailureListener { exception ->
-                Log.w(TAG, "error getting status of user ID: $uId")
-            }
-        return hashMapOf(
-            "name" to returnName,
-            "status" to returnStatus
-        )
-    }*/
-
-    /*fun getUserIdByUsername(username: String): String {
-        var otherUid = ""
-        /*takes username and returns uid*/
-        db.collection("user")
-            .whereEqualTo("name", username)
-            .get()
-            .addOnSuccessListener { documents ->
-                for (document in documents) {
-                    Log.d(TAG, "uid: ${document.id} of user: ${document["name"]} found")
-                    otherUid = document.id
-
-                }
-            }
-            .addOnFailureListener { exception ->
-                Log.w(TAG, "Error getting documents: ", exception)
-            }
-        return otherUid
-    }*/
 
     fun getOwnUserID(): String {
         return Firebase.auth.currentUser!!.uid
     }
-
-    /*private fun getFriendRequestsOfUid(uId: String): ArrayList<String> {
-        var friendRequestsOfUid = arrayListOf<String>()
-        db.collection("user").document(uId)
-            .get()
-            .addOnSuccessListener { document ->
-                friendRequestsOfUid = document["friendRequests"] as ArrayList<String>
-                Log.d(TAG, "successfully got friendRequests of user ID: $uId")
-            }
-            .addOnFailureListener { exception ->
-                Log.w(TAG, "error getting friendRequests of user ID: $uId")
-            }
-        return friendRequestsOfUid
-    }*/
-
-    /*private fun getFriendsOfUid(uId: String): ArrayList<String> {
-        var friendsOfUid = arrayListOf<String>()
-        db.collection("user").document(uId)
-            .get()
-            .addOnSuccessListener { document ->
-                friendsOfUid = document["friends"] as ArrayList<String>
-                Log.d(TAG, "successfully got friends of user ID: $uId")
-            }
-            .addOnFailureListener { exception ->
-                Log.w(TAG, "error getting friends of user ID: $uId")
-            }
-        return friendsOfUid
-    }*/
 
     //listen to own document
     fun setupFireBaseSnapshots() {
@@ -219,7 +139,7 @@ class UserDataViewModel : ViewModel() {
                 return@addSnapshotListener
             }
             if (snapshot != null && snapshot.exists()) {
-                print("pass")
+                //challengeListener(snapshot)
             } else
                 print("pass")
         }
@@ -228,39 +148,48 @@ class UserDataViewModel : ViewModel() {
             if (e != null) {
                 return@addSnapshotListener
             }
-            friendListListener(snapshot)
+            if (snapshot != null && snapshot.exists()) {
+                friendListListener(snapshot)
+
+            } else {
+                print("pass")
+            }
         }
         //listen to games
     }
+
+    /*private fun challengeListener(snapshot: DocumentSnapshot) {
+        val actualChallenges = snapshot?.data?.get(USER_CHALLENGES) as ArrayList<*>
+        val addChallengesBinding
+
+    }*/
 
     /**
      * receives the Users Friends Document and synchronizes it with the local friendList
      */
 
     private fun friendListListener(snapshot: DocumentSnapshot?) {
-        if (snapshot != null && snapshot.exists()) {
-            val actualFriends = snapshot.data?.get(USER_FRIENDS) as ArrayList<String>
-            val addFriends = ArrayList<String>()
-            val removeFriends = ArrayList<String>()
-            val currentFriends = ArrayList<String>()
-            friends.forEach {
-                currentFriends.add(it.id)
-            }
-            for (user in actualFriends) {
-                if (user !in currentFriends) {
-                    addFriends.add(user)
-                }
-            }
-            for (user in currentFriends) {
-                if (user !in currentFriends) {
-                    addFriends.add(user)
-                }
-            }
-            removeFriends(removeFriends)
-            addFriends(addFriends)
 
-        } else
-            print("pass")
+        val actualFriends = snapshot?.data?.get(USER_FRIENDS) as ArrayList<*>
+        val addFriends = ArrayList<String>()
+        val removeFriends = ArrayList<String>()
+        val currentFriends = ArrayList<String>()
+        friends.forEach {
+            currentFriends.add(it.id)
+        }
+        for (user in actualFriends) {
+            if (user !in currentFriends) {
+                addFriends.add(user as String)
+            }
+        }
+        for (user in currentFriends) {
+            if (user !in currentFriends) {
+                addFriends.add(user)
+            }
+        }
+        removeFriends(removeFriends)
+        addFriends(addFriends)
+
 
     }
 
@@ -292,13 +221,14 @@ class UserDataViewModel : ViewModel() {
     /**
      * adds a user to the friend list if he is not already in the list
      */
-    private fun addFriend(friend: User) {
+    private fun addFriend(friend: User): Boolean {
         for (user in friends) {
             if (user.id == friend.id) {
-                return
+                return false
             }
         }
         friends.add(friend)
+        return true
     }
 
     /**

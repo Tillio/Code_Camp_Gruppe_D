@@ -38,7 +38,7 @@ class FriendsListFragment : Fragment() {
         val friendList: RecyclerView = binding.friendList
         val friendAdapter = FriendAdapter()
         friendAdapter.friendItems = ArrayList(
-            createFriends()
+            userDataViewModel.friends
         )
         friendList.adapter = friendAdapter
         friendList.layoutManager = LinearLayoutManager(context)
