@@ -12,15 +12,19 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.navArgs
 import com.example.group_d.R
-import com.example.group_d.data.model.tictactoe.TicTacToeGame
+import com.example.group_d.data.model.GameEnding
+import com.example.group_d.data.model.UserDataViewModel
+import com.example.group_d.data.model.tictactoe.TicTacToeModel
 import com.example.group_d.databinding.TicTacToeFragmentBinding
 
 class TicTacToeFragment : Fragment() {
 
     private lateinit var ticTacToeViewModel: TicTacToeViewModel
+    private val userDataViewModel: UserDataViewModel by activityViewModels()
     private var _binding: TicTacToeFragmentBinding? = null
     private val args: TicTacToeFragmentArgs by navArgs()
     private lateinit var waitSymbol: ProgressBar
@@ -37,7 +41,7 @@ class TicTacToeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         ticTacToeViewModel =
-            ViewModelProvider(this).get(TicTacToeViewModel::class.java)
+            ViewModelProvider(this)[TicTacToeViewModel::class.java]
 
         _binding = TicTacToeFragmentBinding.inflate(inflater, container, false)
         val root = binding.root
@@ -45,86 +49,83 @@ class TicTacToeFragment : Fragment() {
         waitSymbol = binding.wait
         textPlayerAction = binding.textPlayerAction
         val giveUp = binding.buttonGiveUp
-
-        ticTacToeViewModel.loadGame(args.gameID)
-        if (ticTacToeViewModel.isOnTurn()) {
-            textPlayerAction.setText(R.string.action_your_turn)
-        } else {
-            TODO("other beginner not implemented yet")
+        run {
+            val fieldIDs = resources.obtainTypedArray(R.array.tic_tac_toe_fields)
+            fieldButtons = Array(TicTacToeModel.NUM_FIELDS) { i ->
+                val id = fieldIDs.getResourceId(i, -1)
+                root.findViewById(id)
+            }
+            fieldIDs.recycle()
         }
-        textOpName.text = ticTacToeViewModel.opponentName
-        // TODO Show profile pictures
+
+        ticTacToeViewModel.nextField.observe(viewLifecycleOwner) { new_val ->
+            val symID =
+                if (ticTacToeViewModel.isOnTurn()) R.drawable.ic_baseline_panorama_fish_eye_96
+                else R.drawable.ic_baseline_close_96
+            fieldButtons[new_val].setImageResource(symID)
+        }
+
+        ticTacToeViewModel.showOnTurn.observe(viewLifecycleOwner) { isOnTurn ->
+            if (isOnTurn) {
+                waitSymbol.visibility = View.INVISIBLE
+                textPlayerAction.setText(R.string.action_your_turn)
+                giveUp.visibility = View.VISIBLE
+            } else {
+                waitSymbol.visibility = View.VISIBLE
+                val actionText = getString(R.string.action_wait_text1) +
+                        ticTacToeViewModel.opponentName +
+                        getString(R.string.action_wait_text2)
+                textPlayerAction.text = actionText
+                giveUp.visibility = View.INVISIBLE
+            }
+        }
+
+        ticTacToeViewModel.ending.observe(viewLifecycleOwner) {ending ->
+            val msgID = when (ending) {
+                GameEnding.WIN -> R.string.ending_win
+                GameEnding.LOSE -> R.string.ending_lose
+                GameEnding.DRAW -> R.string.ending_draw
+                else -> 0
+            }
+            giveUp.visibility = View.INVISIBLE
+            waitSymbol.visibility = View.INVISIBLE
+            ticTacToeViewModel.nextField.removeObservers(viewLifecycleOwner)
+            ticTacToeViewModel.showOnTurn.removeObservers(viewLifecycleOwner)
+            Toast.makeText(activity, msgID, Toast.LENGTH_SHORT).show()
+            textPlayerAction.setText(msgID)
+        }
+
+        for ((clickedField, fieldButton) in fieldButtons.withIndex()) {
+            fieldButton.setImageDrawable(null)
+            fieldButton.setOnClickListener {
+                if (ticTacToeViewModel.ending.value != null) {
+                    Toast.makeText(activity, R.string.game_is_over, Toast.LENGTH_SHORT).show()
+                    return@setOnClickListener
+                }
+                if (!ticTacToeViewModel.isOnTurn()) {
+                    Toast.makeText(activity, R.string.not_your_turn, Toast.LENGTH_SHORT).show()
+                    return@setOnClickListener
+                }
+                if (!ticTacToeViewModel.fieldIsEmpty(clickedField)) {
+                    Toast.makeText(activity, R.string.field_not_empty, Toast.LENGTH_SHORT).show()
+                    return@setOnClickListener
+                }
+                ticTacToeViewModel.playerMove(clickedField)
+            }
+        }
 
         giveUp.setOnClickListener {
             GiveUpDialogFragment(this).show(parentFragmentManager, "give_up")
         }
 
-        val fieldIDs = resources.obtainTypedArray(R.array.tic_tac_toe_fields)
-        fieldButtons = Array(TicTacToeGame.NUM_FIELDS) { i ->
-            val id = fieldIDs.getResourceId(i, -1)
-            root.findViewById(id)
+        ticTacToeViewModel.runGame.observe(viewLifecycleOwner) { game ->
+            textOpName.text = ticTacToeViewModel.opponentName
+            // TODO Show profile pictures
         }
-        fieldIDs.recycle()
-        for ((clickedField, fieldButton) in fieldButtons.withIndex()) {
-            when (ticTacToeViewModel.isOwnField(clickedField)) {
-                true -> fieldButton.setImageResource(R.drawable.ic_baseline_panorama_fish_eye_96)
-                false -> fieldButton.setImageResource(R.drawable.ic_baseline_close_96)
-                else -> fieldButton.setImageDrawable(null)
-            }
-            fieldButton.setOnClickListener {
-                if (!ticTacToeViewModel.fieldIsEmpty(clickedField)) {
-                    Toast.makeText(activity, R.string.field_not_empty, Toast.LENGTH_SHORT).show()
-                    return@setOnClickListener
-                }
-                ticTacToeViewModel.move(clickedField)
-                fieldButton.setImageResource(R.drawable.ic_baseline_panorama_fish_eye_96)
-                when (ticTacToeViewModel.checkResult(clickedField)) {
-                    true -> {
-                        // TODO Show winScreen
-                        Toast.makeText(activity, "Congrats! You win", Toast.LENGTH_SHORT).show()
-                        textPlayerAction.text = ""
-                        return@setOnClickListener
-                    }
-                    false -> {
-                        // TODO Show winScreen
-                        Toast.makeText(activity, "It's a draw", Toast.LENGTH_SHORT).show()
-                        textPlayerAction.text = ""
-                        return@setOnClickListener
-                    }
-                    else -> {}
-                }
-                waitForOpponent()
-            }
-        }
+
+        ticTacToeViewModel.loadRunningGame(args.gameID)
 
         return root
-    }
-
-    private fun waitForOpponent() {
-        waitSymbol.visibility = View.VISIBLE
-        val actionText = getString(R.string.action_wait_text1) +
-                ticTacToeViewModel.opponentName +
-                getString(R.string.action_wait_text2)
-        textPlayerAction.text = actionText
-        val opField = ticTacToeViewModel.getOpponentMove()
-        fieldButtons[opField].setImageResource(R.drawable.ic_baseline_close_96)
-        waitSymbol.visibility = View.INVISIBLE
-        when (ticTacToeViewModel.checkResult(opField)) {
-            true -> {
-                // TODO Show winScreen
-                Toast.makeText(activity, "Booh! You lose", Toast.LENGTH_SHORT).show()
-                textPlayerAction.text = ""
-                return
-            }
-            false -> {
-                // TODO Show winScreen
-                Toast.makeText(activity, "It's a draw", Toast.LENGTH_SHORT).show()
-                textPlayerAction.text = ""
-                return
-            }
-            else -> {}
-        }
-        textPlayerAction.setText(R.string.action_your_turn)
     }
 
     override fun onDestroyView() {

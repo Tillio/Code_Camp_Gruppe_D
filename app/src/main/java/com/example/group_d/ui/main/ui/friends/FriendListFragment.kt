@@ -6,20 +6,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
-import android.widget.Toast
-import androidx.activity.viewModels
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.group_d.R
-import com.example.group_d.data.model.User
 import com.example.group_d.data.model.UserDataViewModel
 
 import com.example.group_d.databinding.FragmentFriendsListBinding
-import kotlinx.coroutines.*
 
 
 class FriendsListFragment : Fragment() {
@@ -43,15 +37,11 @@ class FriendsListFragment : Fragment() {
         friendList.adapter = friendAdapter
         friendList.layoutManager = LinearLayoutManager(context)
 
-
-
         binding.addFriendButton.setOnClickListener{
             val parentFrag: FriendsFragment =
                 this.parentFragment as FriendsFragment
                 parentFrag.showAddFriendScreen()
         }
-
-
 
         val addFriendButton = root.findViewById(R.id.addFriendButton) as Button
         val newFriendUsername = root.findViewById(R.id.editTextTextPersonName2) as TextView
@@ -63,32 +53,4 @@ class FriendsListFragment : Fragment() {
 
         return root
     }
-
-    fun createFriends(): List<User> {
-        val arrayList = ArrayList<User>()
-        arrayList.add(User(name ="user1" , id = "0", online = true))
-        arrayList.add(User(name = "user2", id = "1", online = true))
-        arrayList.add(User(name = "user3", id = "2", online = true))
-        arrayList.add(User(name = "user4", id = "3", online = false))
-        arrayList.add(User(name = "user1", id = "0", online = true))
-        arrayList.add(User(name = "user2", id = "1", online = true))
-        arrayList.add(User(name = "user3", id = "2", online = true))
-        arrayList.add(User(name = "user4", id = "3", online = false))
-        arrayList.add(User(name = "user1", id = "0", online = true))
-        arrayList.add(User(name = "user2", id = "1", online = true))
-        arrayList.add(User(name = "user3", id = "2", online = true))
-        arrayList.add(User(name = "user4", id = "3", online = false))
-        arrayList.add(User(name = "user1", id = "0", online = true))
-        arrayList.add(User(name = "user2", id = "1", online = true))
-        arrayList.add(User(name = "user3", id = "2", online = true))
-        arrayList.add(User(name = "user4", id = "88", online = false))
-        arrayList.add(User(name = "user1", id = "0", online = true))
-        arrayList.add(User(name = "user02", id = "1", online = true))
-        arrayList.add(User(name = "user3654", id = "2", online = true))
-        arrayList.add(User(name = "user499", id = "99", online = false))
-
-        return arrayList
-    }
-
-
 }

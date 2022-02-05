@@ -35,7 +35,7 @@
         tools:layout="@layout/tic_tac_toe_fragment" >
         <argument
             android:name="gameID"
-            app:argType="integer" />
+            app:argType="string" />
     </fragment><action android:id="@+id/action_global_ingame_ticTacToeFragment" app:destination="@id/ingame_ticTacToeFragment"/>
 
     <fragment
