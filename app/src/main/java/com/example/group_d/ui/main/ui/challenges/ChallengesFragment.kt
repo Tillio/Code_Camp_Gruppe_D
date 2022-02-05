@@ -9,18 +9,21 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.group_d.R
 import com.example.group_d.data.model.Challenge
+import com.example.group_d.data.model.UserDataViewModel
 import com.example.group_d.databinding.FragmentChallengesBinding
 import com.example.group_d.ui.main.ui.ingame.TicTacToeFragmentDirections
 
 class ChallengesFragment : Fragment() {
 
     private lateinit var challengesViewModel: ChallengesViewModel
+    private val userDataViewModel: UserDataViewModel by activityViewModels()
     private var _binding: FragmentChallengesBinding? = null
 
     // This property is only valid between onCreateView and
@@ -34,6 +37,7 @@ class ChallengesFragment : Fragment() {
     ): View? {
         challengesViewModel =
             ViewModelProvider(this).get(ChallengesViewModel::class.java)
+        challengesViewModel.updateChallenges(userDataViewModel.challenges)
 
         _binding = FragmentChallengesBinding.inflate(inflater, container, false)
         val root: View = binding.root
@@ -43,6 +47,8 @@ class ChallengesFragment : Fragment() {
             recyclerView.adapter = ChallengeAdapter(it, this)
         })
         recyclerView.layoutManager = LinearLayoutManager(context)
+
+
 
         return root
     }

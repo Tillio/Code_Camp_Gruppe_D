@@ -11,6 +11,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.group_d.TIC_TAC_TOE
 import com.example.group_d.data.model.Challenge
 import com.example.group_d.data.model.GameType
 import com.example.group_d.data.model.User
@@ -58,7 +59,7 @@ class GamesFragment : Fragment() {
     private fun exampleGames(): MutableList<Challenge> {
         val games: MutableList<Challenge> = ArrayList()
         for (i in 1..10) {
-            games.add(Challenge(User("$i", "User $i", true), GameType.TIC_TAC_TOE))
+            games.add(Challenge(User("$i", "User $i", true), TIC_TAC_TOE))
 
         }
         return games

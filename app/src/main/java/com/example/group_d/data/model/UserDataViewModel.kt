@@ -20,7 +20,7 @@ class UserDataViewModel : ViewModel() {
     var friends = ArrayList<User>()
     var friendRequests = ArrayList<User>()
     val games = ArrayList<Game>()
-    val challenges = ArrayList<Challenge>()
+    var challenges = ArrayList<Challenge>()
 
     fun sendFriendRequest(username: String): Boolean {
         /*takes username and returns uid*/
@@ -96,7 +96,7 @@ class UserDataViewModel : ViewModel() {
         print("load challenges")
     }
 
-    fun challengeFriend(userid:String, challange: Challenge) {
+    fun challengeFriend(userid: String, challange: Challenge) {
         Log.d(TAG, "creating challange request")
         // adding me to challanges of other user
         db.collection(COL_USER).document(userid).collection(USER_DATA).document(USER_CHALLENGES)
@@ -138,7 +138,7 @@ class UserDataViewModel : ViewModel() {
                 return@addSnapshotListener
             }
             if (snapshot != null && snapshot.exists()) {
-                //challengeListener(snapshot)
+                challengeListener(snapshot)
             } else
                 print("pass")
         }
@@ -157,11 +157,40 @@ class UserDataViewModel : ViewModel() {
         //listen to games
     }
 
-    /*private fun challengeListener(snapshot: DocumentSnapshot) {
-        val actualChallenges = snapshot?.data?.get(USER_CHALLENGES) as ArrayList<*>
-        val addChallengesBinding
+    private fun challengeListener(snapshot: DocumentSnapshot) {
+        val actualChallenges = ArrayList<Challenge>()
 
-    }*/
+        for (chall in snapshot?.data?.get(USER_CHALLENGES) as ArrayList<HashMap<*, *>>) {
+            val type = chall["gameType"]
+            val userMap = chall["user"] as HashMap<*, *>
+            val uid = userMap["id"]
+            val name = userMap["name"]
+            val status = userMap["online"]
+            var userObj =  User(id = uid as String, name = name as String, online = status as Boolean)
+            if (userIsFriend(uid as String)) {
+                for (user in friends) {
+                    if (uid == user.id) {
+                        userObj = user
+                        break;
+                    }
+                }
+            }
+            actualChallenges.add(Challenge(user = userObj, gameType = type as String))
+        }
+        //add new challenges
+        challenges = actualChallenges
+
+    }
+
+    private fun userIsFriend(id: String): Boolean {
+        for (friend in friends) {
+            if (friend.id == id) {
+                return true
+            }
+        }
+        return false
+    }
+
 
     /**
      * receives the Users Friends Document and synchronizes it with the local friendList
@@ -182,8 +211,8 @@ class UserDataViewModel : ViewModel() {
             }
         }
         for (user in currentFriends) {
-            if (user !in currentFriends) {
-                addFriends.add(user)
+            if (user !in actualFriends) {
+                removeFriends.add(user)
             }
         }
         removeFriends(removeFriends)

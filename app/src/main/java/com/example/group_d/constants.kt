@@ -17,3 +17,5 @@ const val USER_DATA = "userData"
 const val GAME_DATA = "gameData"
 const val GAME_TYPE = "gameType"
 const val GAME_PLAYERS = "players"
+
+const val TIC_TAC_TOE = "TIC_TAC_TOE"

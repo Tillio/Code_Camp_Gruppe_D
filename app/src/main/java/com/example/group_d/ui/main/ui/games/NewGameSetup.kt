@@ -17,6 +17,7 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.group_d.R
+import com.example.group_d.TIC_TAC_TOE
 import com.example.group_d.data.model.Challenge
 import com.example.group_d.data.model.GameType
 import com.example.group_d.data.model.User
@@ -54,7 +55,7 @@ class NewGameSetup : Fragment() {
         buttonCancel.setOnClickListener { view -> view.findNavController().navigate(R.id.navigation_friends) }
         buttonStart.setOnClickListener {
             if (selectedGameText.text.toString() == "TicTacToe") {
-                userDataViewModel.challengeFriend(args.userID, Challenge(User(name = Firebase.auth.currentUser!!.email.toString(), id = userDataViewModel.getOwnUserID(), online = true), GameType.TIC_TAC_TOE))
+                userDataViewModel.challengeFriend(args.userID, Challenge(User(name = Firebase.auth.currentUser!!.email.toString(), id = userDataViewModel.getOwnUserID(), online = true), TIC_TAC_TOE))
             }
             findNavController().navigate(R.id.action_global_friendList)
         }
