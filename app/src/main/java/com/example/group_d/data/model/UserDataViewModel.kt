@@ -98,11 +98,11 @@ class UserDataViewModel : ViewModel() {
         print("load challenges")
     }
 
-    fun challengeFriend(challange: Challenge) {
+    fun challengeFriend(userid:String, challange: Challenge) {
         Log.d(TAG, "creating challange request")
         // adding me to challanges of other user
-        db.collection("user").document(challange.user.id).collection("userData").document("challanges")
-            .update("challanges", FieldValue.arrayUnion(challange))
+        db.collection(COL_USER).document(userid).collection(USER_DATA).document(USER_CHALLENGES)
+            .update(USER_CHALLENGES, FieldValue.arrayUnion(challange))
     }
 
     /*fun getUserInfo(uId: String): HashMap<String, Any> {

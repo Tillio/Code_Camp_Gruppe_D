@@ -15,7 +15,7 @@
         android:id="@+id/navigation_friends"
         android:name="com.example.group_d.ui.main.ui.friends.FriendsFragment"
         android:label="@string/title_friends"
-        tools:layout="@layout/fragment_friends_list" />
+        tools:layout="@layout/fragment_friends_list" /><action android:id="@+id/action_global_friendList" app:destination="@id/navigation_friends"/>
 
     <fragment
         android:id="@+id/navigation_challenges"
