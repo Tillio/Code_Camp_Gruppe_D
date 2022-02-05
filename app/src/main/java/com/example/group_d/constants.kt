@@ -14,7 +14,7 @@ const val USER_NAME = "name"
 const val USER_DATA = "userData"
 
 //games keywords
-const val BEGINNER = "beginner"
+const val GAME_BEGINNER = "beginner"
 const val GAME_DATA = "gameData"
 const val GAME_TYPE = "gameType"
 const val GAME_TYPE_TIC_TAC_TOE = "TicTacToe"
