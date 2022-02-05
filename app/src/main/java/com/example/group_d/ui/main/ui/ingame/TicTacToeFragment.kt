@@ -90,6 +90,7 @@ class TicTacToeFragment : Fragment() {
             giveUp.visibility = View.INVISIBLE
             waitSymbol.visibility = View.INVISIBLE
             ticTacToeViewModel.nextField.removeObservers(viewLifecycleOwner)
+            ticTacToeViewModel.showOnTurn.removeObservers(viewLifecycleOwner)
             Toast.makeText(activity, msgID, Toast.LENGTH_SHORT).show()
             textPlayerAction.setText(msgID)
         }
