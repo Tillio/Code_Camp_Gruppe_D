@@ -89,10 +89,10 @@ class TicTacToeFragment : Fragment() {
             }
             giveUp.visibility = View.INVISIBLE
             waitSymbol.visibility = View.INVISIBLE
-            ticTacToeViewModel.nextField.removeObservers(viewLifecycleOwner)
-            ticTacToeViewModel.showOnTurn.removeObservers(viewLifecycleOwner)
+            removeLiveDataObservers()
             Toast.makeText(activity, msgID, Toast.LENGTH_SHORT).show()
             textPlayerAction.setText(msgID)
+            ticTacToeViewModel.deleteLoadedGame()
         }
 
         for ((clickedField, fieldButton) in fieldButtons.withIndex()) {
@@ -135,6 +135,12 @@ class TicTacToeFragment : Fragment() {
 
     fun onGiveUp() {
         ticTacToeViewModel.giveUp()
+    }
+
+    private fun removeLiveDataObservers() {
+        ticTacToeViewModel.nextField.removeObservers(viewLifecycleOwner)
+        ticTacToeViewModel.runGame.removeObservers(viewLifecycleOwner)
+        ticTacToeViewModel.showOnTurn.removeObservers(viewLifecycleOwner)
     }
 }
 

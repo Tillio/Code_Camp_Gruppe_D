@@ -10,6 +10,7 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestoreException
+import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 
@@ -17,10 +18,12 @@ abstract class GameViewModel : ViewModel() {
 
     private val db = Firebase.firestore
 
-    val runGame = MutableLiveData<Game>()
+    val runGame = MutableLiveData<Game?>()
     protected val runGameRaw: Game get() = runGame.value!!
 
     lateinit var runGameID: String
+
+    private lateinit var gameDataSnapshotRegistration: ListenerRegistration
 
     abstract fun initGame(snap: DocumentSnapshot, docref: DocumentReference)
 
@@ -46,13 +49,23 @@ abstract class GameViewModel : ViewModel() {
         }
     }
 
+    fun addGameDataChangedListener(docref: DocumentReference) {
+        gameDataSnapshotRegistration = docref.addSnapshotListener(this::onServerGameDataChanged)
+    }
+
     fun updateGameData() {
         val docref = db.collection(COL_GAMES).document(runGameID)
         docref.update(GAME_DATA, runGameRaw.gameData)
     }
 
+    fun deleteLoadedGame() {
+        gameDataSnapshotRegistration.remove()
+        db.collection(COL_GAMES).document(runGameID).delete()
+        runGame.value = null
+        runGameID = ""
+    }
+
     fun getOwnUserID(): String {
-        val ownUid = Firebase.auth.currentUser!!.uid
-        return ownUid
+        return Firebase.auth.currentUser!!.uid
     }
 }
