@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.example.group_d.*
 import com.example.group_d.data.model.Game
 import com.example.group_d.data.model.GameEnding
-import com.example.group_d.data.model.tictactoe.TicTacToeModel
+import com.example.group_d.data.model.TicTacToeModel
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.DocumentSnapshot
 

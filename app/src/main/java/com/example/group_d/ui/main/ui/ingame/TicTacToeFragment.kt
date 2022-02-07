@@ -18,7 +18,7 @@ import androidx.navigation.fragment.navArgs
 import com.example.group_d.R
 import com.example.group_d.data.model.GameEnding
 import com.example.group_d.data.model.UserDataViewModel
-import com.example.group_d.data.model.tictactoe.TicTacToeModel
+import com.example.group_d.data.model.TicTacToeModel
 import com.example.group_d.databinding.TicTacToeFragmentBinding
 
 class TicTacToeFragment : Fragment() {

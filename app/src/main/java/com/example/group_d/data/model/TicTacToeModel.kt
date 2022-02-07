@@ -1,4 +1,4 @@
-package com.example.group_d.data.model.tictactoe
+package com.example.group_d.data.model
 
 class TicTacToeModel(val gameID: String) {
 
