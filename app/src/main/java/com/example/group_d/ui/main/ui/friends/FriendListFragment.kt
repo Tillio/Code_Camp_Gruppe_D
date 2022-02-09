@@ -6,20 +6,29 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.group_d.R
+import com.example.group_d.data.model.User
 import com.example.group_d.data.model.UserDataViewModel
 
 import com.example.group_d.databinding.FragmentFriendsListBinding
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.firestore.ktx.getField
+import com.google.firebase.ktx.Firebase
 
 
 class FriendsListFragment : Fragment() {
     private var _binding: FragmentFriendsListBinding? = null
     private val userDataViewModel: UserDataViewModel by activityViewModels()
     private val binding get() = _binding!!
+
+    private val db = Firebase.firestore
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -42,7 +51,21 @@ class FriendsListFragment : Fragment() {
                 this.parentFragment as FriendsFragment
                 parentFrag.showAddFriendScreen()
         }*/
-
+        binding.rngButton.setOnClickListener{
+            val ownID: String = userDataViewModel.getOwnUserID()
+            val listUser: MutableList<User> = mutableListOf()
+            db.collection("user").get().addOnCompleteListener {
+                if (it.isSuccessful){
+                    for (document in it.result!!){
+                        if (document.id != ownID){
+                            listUser.add(User(name = document.get("name").toString(), id = document.id, online = document.get("status").toString().toBoolean()))
+                        }
+                    }
+                    val rngUser: User = listUser.asSequence().shuffled().first()
+                    findNavController().navigate(R.id.action_global_newGameSetup, bundleOf("userID" to rngUser.id, "userName" to rngUser.name, "userStatus" to rngUser.online))
+                }
+            }
+        }
         val friendRequestList: RecyclerView = binding.friendRequestList
         val friendRequestAdapter = FriendRequestAdapter()
         friendRequestAdapter.friendRequestItems = ArrayList(
