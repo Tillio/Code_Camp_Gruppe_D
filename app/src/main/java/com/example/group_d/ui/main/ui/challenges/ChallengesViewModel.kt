@@ -30,14 +30,7 @@ class ChallengesViewModel : ViewModel() {
     var challenges: LiveData<List<Challenge>> = _challenges
 
     fun updateChallenges(challenges :ArrayList<Challenge>){
-
-        val _challenges: MutableLiveData<List<Challenge>> by lazy {
-            MutableLiveData<List<Challenge>>().apply {
-                value = challenges
-            }
-        }
-        this.challenges = _challenges
-
+        _challenges.value = challenges
     }
 
     private fun exampleChallenges(): MutableList<Challenge> {
