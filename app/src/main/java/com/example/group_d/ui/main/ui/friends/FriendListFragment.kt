@@ -43,7 +43,7 @@ class FriendsListFragment : Fragment() {
                 parentFrag.showAddFriendScreen()
         }*/
 
-        val friendRequestList: RecyclerView = binding.friendList
+        val friendRequestList: RecyclerView = binding.friendRequestList
         val friendRequestAdapter = FriendRequestAdapter()
         friendRequestAdapter.friendRequestItems = ArrayList(
             userDataViewModel.friendRequests

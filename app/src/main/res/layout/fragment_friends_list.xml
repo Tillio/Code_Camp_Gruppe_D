@@ -37,7 +37,9 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent">
+
+    </androidx.recyclerview.widget.RecyclerView>
 
     <EditText
         android:id="@+id/editTextTextPersonName2"
@@ -59,5 +61,16 @@
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@+id/friend_request_list"
         tools:layout_editor_absoluteX="0dp" />
+
+    <View
+        android:id="@+id/divider"
+        android:layout_width="409dp"
+        android:layout_height="1dp"
+        android:layout_marginBottom="1dp"
+        android:background="?android:attr/listDivider"
+        app:layout_constraintBottom_toTopOf="@+id/friend_list"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/friend_request_list" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
