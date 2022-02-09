@@ -7,14 +7,12 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.group_d.GAME_TYPE_TIC_TAC_TOE
 import com.example.group_d.data.model.*
 import com.example.group_d.databinding.FragmentGamesBinding
-import com.example.group_d.ui.main.ui.challenges.ChallengeAdapter
 import com.google.firebase.firestore.DocumentReference
 
 class GamesFragment : Fragment() {
@@ -43,7 +41,7 @@ class GamesFragment : Fragment() {
             //textView.text = it
         })*/
         val recyclerView: RecyclerView = binding.recyclerViewGames
-        recyclerView.adapter = GamesAdapter(exampleGames())
+        recyclerView.adapter = GamesAdapter(userDataViewModel.games.value)
         recyclerView.layoutManager = LinearLayoutManager(context)
 
         return root
