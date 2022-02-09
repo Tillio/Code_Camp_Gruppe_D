@@ -3,14 +3,10 @@ package com.example.group_d.ui.main.ui.ingame
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.group_d.COL_GAMES
-import com.example.group_d.GAME_DATA
+import com.example.group_d.*
 import com.example.group_d.data.model.Game
 import com.google.firebase.auth.ktx.auth
-import com.google.firebase.firestore.DocumentReference
-import com.google.firebase.firestore.DocumentSnapshot
-import com.google.firebase.firestore.FirebaseFirestoreException
-import com.google.firebase.firestore.ListenerRegistration
+import com.google.firebase.firestore.*
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 
@@ -61,6 +57,11 @@ abstract class GameViewModel : ViewModel() {
     fun deleteLoadedGame() {
         gameDataSnapshotRegistration.remove()
         db.collection(COL_GAMES).document(runGameID).delete()
+        for (playerRef in runGameRaw.players) {
+            db.collection(COL_USER)
+                .document(playerRef.id).collection(USER_DATA)
+                .document(USER_GAMES).update(USER_GAMES, FieldValue.arrayRemove(runGameID))
+        }
         runGame.value = null
         runGameID = ""
     }
