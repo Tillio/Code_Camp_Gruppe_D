@@ -6,14 +6,23 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.group_d.R
+import com.example.group_d.USER_NAME
 import com.example.group_d.data.model.Game
+import com.google.firebase.auth.FirebaseAuth
 
 class GamesAdapter(private val games: ArrayList<Game>) :
     RecyclerView.Adapter<GamesAdapter.ViewHolder>() {
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val ownVsEnemyName: TextView = view.findViewById(R.id.own_vs_enemy_name)
+        init {
+            this.itemView.setOnClickListener {
+
+            }
+        }
     }
+
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
@@ -23,8 +32,18 @@ class GamesAdapter(private val games: ArrayList<Game>) :
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        for(doc in games[position].players) {
+            if(doc.id != FirebaseAuth.getInstance().uid){
+                doc.get().addOnSuccessListener {
+                    val get = it.data?.get(USER_NAME)
+                    holder.ownVsEnemyName.text = "You vs. $get"
+                }
+            }
+        }
 
-        holder.ownVsEnemyName.text = "You vs. " + games[position].beginner
+
+
+        R.layout.fragment_game_item
     }
 
 
