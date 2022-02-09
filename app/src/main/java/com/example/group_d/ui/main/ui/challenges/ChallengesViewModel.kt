@@ -7,7 +7,6 @@ import androidx.lifecycle.ViewModel
 import com.example.group_d.*
 import com.example.group_d.data.model.Challenge
 import com.example.group_d.data.model.Game
-import com.example.group_d.data.model.GameType
 import com.example.group_d.data.model.User
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.ktx.auth
@@ -70,6 +69,13 @@ class ChallengesViewModel : ViewModel() {
             db.collection(COL_USER).document(challenge.user.id)
         )
         val game = Game(Random.nextLong(players.size.toLong()), ArrayList(), challenge.gameType, players)
-        return db.collection(COL_GAMES).add(game)
+        return db.collection(COL_GAMES).add(game).addOnSuccessListener { gameRef ->
+            db.collection(COL_USER)
+                .document(Firebase.auth.currentUser!!.uid).collection(USER_DATA)
+                .document(USER_GAMES).update(USER_GAMES, FieldValue.arrayUnion(gameRef.id))
+            db.collection(COL_USER)
+                .document(challenge.user.id).collection(USER_DATA)
+                .document(USER_GAMES).update(USER_GAMES, FieldValue.arrayUnion(gameRef.id))
+        }
     }
 }
