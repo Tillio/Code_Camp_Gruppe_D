@@ -41,7 +41,7 @@ class FriendRequestAdapter : RecyclerView.Adapter<FriendRequestAdapter.ViewHolde
         val panel = view.findViewById(R.id.friend_request_name_textView) as TextView
         val buttonAcc = view.findViewById(R.id.accept_button) as Button
         fun bind(request: FriendRequest){
-            panel.text = request.friendID
+            //panel.text = request.friendID
             db.collection("user").document(request.friendID)
                 .get()
                 .addOnSuccessListener { document ->
