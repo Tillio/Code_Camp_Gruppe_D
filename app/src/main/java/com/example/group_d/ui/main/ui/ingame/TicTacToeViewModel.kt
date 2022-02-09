@@ -5,11 +5,11 @@ import androidx.lifecycle.MutableLiveData
 import com.example.group_d.*
 import com.example.group_d.data.model.Game
 import com.example.group_d.data.model.GameEnding
-import com.example.group_d.data.model.tictactoe.TicTacToeModel
+import com.example.group_d.data.model.TicTacToeModel
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.DocumentSnapshot
 
-class TicTacToeViewModel() : GameViewModel() {
+class TicTacToeViewModel : GameViewModel() {
 
     private val _gameModel = MutableLiveData<TicTacToeModel>()
     val gameModel: LiveData<TicTacToeModel> = _gameModel
@@ -94,7 +94,6 @@ class TicTacToeViewModel() : GameViewModel() {
     }
 
     override fun initGame(snap: DocumentSnapshot, docref: DocumentReference) {
-        val gameID = docref.id
         val playerRefs = snap[GAME_PLAYERS] as List<DocumentReference>
         val beginnerIndex = snap.getLong(GAME_BEGINNER)?:0
         val isBeginner = playerRefs[beginnerIndex.toInt()].id == getOwnUserID()
@@ -103,7 +102,7 @@ class TicTacToeViewModel() : GameViewModel() {
                 playerRef.get().addOnSuccessListener { playerSnap ->
                     val opponentName = playerSnap.getString(USER_NAME)
                     _gameModel.apply {
-                        value = TicTacToeModel.buildGame(gameID, "You", opponentName?:"")
+                        value = TicTacToeModel.buildGame("You", opponentName?:"")
                         value!!.currentPlayer = if (isBeginner) value!!.player1 else value!!.player2
                     }
                     val gameData = snap[GAME_DATA] as MutableList<Long>
@@ -112,7 +111,7 @@ class TicTacToeViewModel() : GameViewModel() {
                     }
                     _showOnTurn.value = isOnTurn()
                     runGame.value = Game(beginnerIndex, gameData, GAME_TYPE_TIC_TAC_TOE, playerRefs)
-                    docref.addSnapshotListener(this::onServerGameDataChanged)
+                    addGameDataChangedListener(docref)
                 }
             }
         }
