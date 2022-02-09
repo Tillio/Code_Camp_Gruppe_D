@@ -4,7 +4,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.group_d.TIC_TAC_TOE
+
 import com.example.group_d.*
 import com.example.group_d.data.model.Challenge
 import com.example.group_d.data.model.Game

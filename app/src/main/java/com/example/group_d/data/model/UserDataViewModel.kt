@@ -1,12 +1,15 @@
 package com.example.group_d.data.model
 
 import android.util.Log
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.group_d.*
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FieldValue
+import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.*
@@ -19,8 +22,23 @@ class UserDataViewModel : ViewModel() {
 
     var friends = ArrayList<User>()
     var friendRequests = ArrayList<User>()
-    val games = ArrayList<Game>()
+    val games = MutableLiveData<ArrayList<Game>>()
+    val gameListeners: HashMap<String, ListenerRegistration> = HashMap()
     var challenges = ArrayList<Challenge>()
+
+    private fun addGame(game: Game) {
+        var gameCopy = games.value
+        gameCopy?.add(game)
+        games.value = gameCopy!!
+
+    }
+
+    private fun removeGame(game: Game) {
+        var gameList = ArrayList<Game>()
+        gameList.remove(game)
+        games.value = gameList
+
+    }
 
     fun sendFriendRequest(username: String): Boolean {
         /*takes username and returns uid*/
@@ -84,7 +102,7 @@ class UserDataViewModel : ViewModel() {
         print("load friends")
     }
 
-    fun loadGames() {
+    fun loadGames(game: String) {
         print("load games")
     }
 
@@ -128,7 +146,11 @@ class UserDataViewModel : ViewModel() {
                 return@addSnapshotListener
             }
             if (snapshot != null && snapshot.exists()) {
-                print("pass")
+                if (games.value == null) {
+                    val gameList = ArrayList<Game>()
+                    games.value = gameList
+                }
+                gamesListener(snapshot)
             } else
                 print("pass")
         }
@@ -157,16 +179,86 @@ class UserDataViewModel : ViewModel() {
         //listen to games
     }
 
+    /**
+     * listens to the users active games List and manages
+     * attaching listeners to games or deletin them
+     */
+    private fun gamesListener(snapshot: DocumentSnapshot) {
+        val actualGames = snapshot.data?.get(USER_GAMES) as ArrayList<String>
+        //attach listener if game ist unknown
+        for (game in actualGames) {
+            val localGameData = gameIdIsLocal(game)
+            if (localGameData == null) {
+                attachGameListener(game)
+            }
+        }
+        //delete old games
+        for (game in games.value!!) {
+            if (game.id !in actualGames) {
+                gameListeners.remove(game.id)
+                val value2 = games.value
+                value2?.remove(game)
+                games.value = value2!!
+                removeGame(game)
+                return
+            }
+        }
+    }
+
+    /**
+     * takes a games id and returns game with the same id or null if the id is unknown
+     */
+    private fun gameIdIsLocal(gameId: String): Game? {
+        for (game in games.value!!) {
+            if (gameId == game.id) {
+                return game
+            }
+        }
+        return null
+    }
+
+    /**
+     * Adds a snapshotListener to a gameDocument which loads the game and updates it
+     */
+    private fun attachGameListener(gameId: String) {
+        var listener =
+            db.collection(COL_GAMES).document(gameId).addSnapshotListener { snapshot, e ->
+                if (e != null) {
+                    return@addSnapshotListener
+                }
+                if (snapshot != null && snapshot.exists()) {
+                    val localGame = gameIdIsLocal(snapshot.id)
+                    if (localGame == null) {
+                        //create game
+                        val beginner = snapshot[GAME_BEGINNER] as Long
+                        val gameData = snapshot[GAME_DATA] as ArrayList<Long>
+                        val gameType = snapshot[GAME_TYPE] as String
+                        val players = snapshot[GAME_PLAYERS] as ArrayList<DocumentReference>
+                        val newGame = Game(beginner, gameData, gameType, players)
+                        newGame.id = gameId
+                        addGame(newGame)
+                    } else {
+                        localGame.gameData = snapshot[GAME_DATA] as ArrayList<Long>
+                    }
+
+                } else {
+                    print("pass")
+                }
+            }
+        gameListeners[gameId] = listener
+    }
+
     private fun challengeListener(snapshot: DocumentSnapshot) {
         val actualChallenges = ArrayList<Challenge>()
 
-        for (chall in snapshot?.data?.get(USER_CHALLENGES) as ArrayList<HashMap<*, *>>) {
+        for (chall in snapshot.data?.get(USER_CHALLENGES) as ArrayList<HashMap<*, *>>) {
             val type = chall["gameType"]
             val userMap = chall["user"] as HashMap<*, *>
             val uid = userMap["id"]
             val name = userMap["name"]
             val status = userMap["online"]
-            var userObj =  User(id = uid as String, name = name as String, online = status as Boolean)
+            var userObj =
+                User(id = uid as String, name = name as String, online = status as Boolean)
             if (userIsFriend(uid as String)) {
                 for (user in friends) {
                     if (uid == user.id) {

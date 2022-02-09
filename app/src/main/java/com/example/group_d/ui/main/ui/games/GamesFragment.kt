@@ -12,12 +12,10 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.group_d.GAME_TYPE_TIC_TAC_TOE
-import com.example.group_d.data.model.Challenge
-import com.example.group_d.data.model.GameType
-import com.example.group_d.data.model.User
-import com.example.group_d.data.model.UserDataViewModel
+import com.example.group_d.data.model.*
 import com.example.group_d.databinding.FragmentGamesBinding
 import com.example.group_d.ui.main.ui.challenges.ChallengeAdapter
+import com.google.firebase.firestore.DocumentReference
 
 class GamesFragment : Fragment() {
 
@@ -56,12 +54,12 @@ class GamesFragment : Fragment() {
         _binding = null
     }
 
-    private fun exampleGames(): MutableList<Challenge> {
-        val games: MutableList<Challenge> = ArrayList()
-        for (i in 1..10) {
-            games.add(Challenge(User("$i", "User $i", true), GAME_TYPE_TIC_TAC_TOE))
-
-        }
+    private fun exampleGames(): MutableList<Game> {
+        val games: MutableList<Game> = ArrayList()
+        val gameData: MutableList<Long> = ArrayList()
+        val players: ArrayList<DocumentReference> = ArrayList()
+        for (friends in userDataViewModel.friends){
+            Game(beginner = 1, gameData = gameData, gameType = GAME_TYPE_TIC_TAC_TOE,players)        }
         return games
     }
 }

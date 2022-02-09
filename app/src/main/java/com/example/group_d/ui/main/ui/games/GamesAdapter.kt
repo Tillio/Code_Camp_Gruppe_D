@@ -6,9 +6,11 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.group_d.R
+import com.example.group_d.USER_NAME
 import com.example.group_d.data.model.Challenge
+import com.example.group_d.data.model.Game
 
-class GamesAdapter(private val games: MutableList<Challenge>) :
+class GamesAdapter(private val games: MutableList<Game>) :
     RecyclerView.Adapter<GamesAdapter.ViewHolder>() {
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -23,8 +25,13 @@ class GamesAdapter(private val games: MutableList<Challenge>) :
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.ownVsEnemyName.text = "You vs. " + games[position].user.name
+        games[position].players[1].get().addOnCompleteListener{
+            holder.ownVsEnemyName.text = "loaded"
+        }
+        holder.ownVsEnemyName.text = "You vs. " + "loading"
+
     }
+
 
     override fun getItemCount(): Int {
         return games.size
