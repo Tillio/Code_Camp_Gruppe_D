@@ -10,8 +10,6 @@ import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.group_d.R
 import com.example.group_d.data.model.User
-import com.example.group_d.ui.main.ui.games.NewGameSetup
-import com.example.group_d.ui.main.ui.games.NewGameSetupDirections
 
 class FriendAdapter : RecyclerView.Adapter<FriendAdapter.ViewHolder>(){
 
