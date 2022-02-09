@@ -41,7 +41,7 @@
     <fragment
         android:id="@+id/newGameSetup"
         android:name="com.example.group_d.ui.main.ui.games.NewGameSetup"
-        android:label="fragment_new_game_setup"
+        android:label="New Game Setup"
         tools:layout="@layout/fragment_new_game_setup" >
         <argument
             android:name="userID"

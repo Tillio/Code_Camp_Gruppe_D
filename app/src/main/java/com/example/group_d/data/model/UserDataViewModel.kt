@@ -21,7 +21,7 @@ class UserDataViewModel : ViewModel() {
     val db = Firebase.firestore
 
     var friends = ArrayList<User>()
-    var friendRequests = ArrayList<User>()
+    var friendRequests = ArrayList<FriendRequest>()
     val games = MutableLiveData<ArrayList<Game>>()
     val gameListeners: HashMap<String, ListenerRegistration> = HashMap()
     var challenges = ArrayList<Challenge>()
@@ -90,6 +90,7 @@ class UserDataViewModel : ViewModel() {
             .addOnSuccessListener { document ->
                 val friendRequestsArray = document["friendRequests"] as ArrayList<String>
                 if (friendRequestsArray.isNotEmpty()) {
+                    print(friendRequestsArray) //debug
                     acceptFriendRequest(friendRequestsArray.first())
                 }
             }
@@ -102,7 +103,7 @@ class UserDataViewModel : ViewModel() {
         print("load friends")
     }
 
-    fun loadGames(game: String) {
+    fun loadGames() {
         print("load games")
     }
 
@@ -136,7 +137,7 @@ class UserDataViewModel : ViewModel() {
             }
             if (snapshot != null && snapshot.exists()) {
                 //success
-                val get = snapshot.data?.get(USER_FRIEND_REQUESTS)
+                friendRequestsListListener(snapshot)
             } else
                 print("pass")
         }
@@ -358,6 +359,64 @@ class UserDataViewModel : ViewModel() {
         for (friend in friends) {
             if (friend.id == friendId) {
                 friends.remove(friend)
+                return true
+            }
+        }
+        return false
+    }
+
+    private fun friendRequestsListListener(snapshot: DocumentSnapshot?) {
+
+        val actualFriendRequests = snapshot?.data?.get(USER_FRIEND_REQUESTS) as ArrayList<*>
+        val addFriendRequests = ArrayList<String>()
+        val removeFriendRequests = ArrayList<String>()
+        val currentFriendRequests = ArrayList<String>()
+        friendRequests.forEach {
+            currentFriendRequests.add(it.friendID)
+        }
+        for (request in actualFriendRequests) {
+            if (request !in currentFriendRequests) {
+                addFriendRequests.add(request as String)
+            }
+        }
+        for (request in currentFriendRequests) {
+            if (request !in currentFriendRequests) {
+                addFriendRequests.add(request)
+            }
+        }
+        removeFriendRequests(removeFriendRequests)
+        addFriendRequests(addFriendRequests)
+    }
+
+    private fun removeFriendRequests(removeFriendRequests: ArrayList<String>) {
+        for (friendId in removeFriendRequests) {
+            removeFriendRequest(friendId)
+        }
+    }
+
+    private fun addFriendRequests(uidList: ArrayList<String>) {
+        for (uid in uidList) {
+            db.collection(COL_USER).document(uid).get().addOnSuccessListener { doc ->
+                val friendRequest = FriendRequest(friendID = uid)
+                addFriendRequest(friendRequest)
+            }
+        }
+    }
+
+    private fun addFriendRequest(request: FriendRequest): Boolean {
+        for (friendRequest in friendRequests) {
+            if (friendRequest.friendID == request.friendID) {
+                return false
+            }
+        }
+        friendRequests.add(request)
+        return true
+    }
+
+    private fun removeFriendRequest(friendId: String): Boolean {
+        for (friendRequest in friendRequests) {
+            if (friendRequest.friendID == friendId) {
+                friendRequests.remove(friendRequest)
                 return true
             }
         }

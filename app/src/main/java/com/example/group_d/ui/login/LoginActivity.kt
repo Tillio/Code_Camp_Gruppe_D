@@ -142,8 +142,8 @@ class LoginActivity : AppCompatActivity() {
                 val db = Firebase.firestore
                 val user = hashMapOf(
                     USER_STATUS to false,
-                    USER_SEARCHING to false,
-                    USER_NAME to name
+                    USER_NAME to name,
+                    USER_SEARCHING to false
                 )
                 db.collection(COL_USER).document(auth.currentUser?.uid.toString()).set(user)
 
