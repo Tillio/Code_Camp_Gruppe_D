@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.group_d.R
 import com.example.group_d.data.model.Game
 
-class GamesAdapter(private val games: ArrayList<Game>?) :
+class GamesAdapter(private val games: ArrayList<Game>) :
     RecyclerView.Adapter<GamesAdapter.ViewHolder>() {
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -24,7 +24,7 @@ class GamesAdapter(private val games: ArrayList<Game>?) :
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
-        holder.ownVsEnemyName.text = "You vs. " +
+        holder.ownVsEnemyName.text = "You vs. " + games[position].beginner
     }
 
 
