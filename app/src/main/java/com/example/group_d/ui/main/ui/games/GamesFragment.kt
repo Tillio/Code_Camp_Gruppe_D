@@ -41,7 +41,7 @@ class GamesFragment : Fragment() {
             //textView.text = it
         })*/
         val recyclerView: RecyclerView = binding.recyclerViewGames
-        recyclerView.adapter = GamesAdapter(userDataViewModel.games.value)
+        recyclerView.adapter = userDataViewModel.games.value?.let { GamesAdapter(it) }
         recyclerView.layoutManager = LinearLayoutManager(context)
 
         return root
