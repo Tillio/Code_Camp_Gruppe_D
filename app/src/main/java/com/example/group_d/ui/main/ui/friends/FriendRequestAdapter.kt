@@ -52,7 +52,7 @@ class FriendRequestAdapter : RecyclerView.Adapter<FriendRequestAdapter.ViewHolde
                     Log.w("FriendRequestAdapter", "error getting name of user ID: $request.friendID")
                 }
             buttonAcc.setOnClickListener { view ->
-                userDataViewModel.acceptFriendRequest(panel.text.toString())
+                userDataViewModel.acceptFriendRequest(request.friendID)
             }
         }
     }

@@ -8,14 +8,17 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.group_d.COL_GAMES
 import com.example.group_d.GAME_TYPE_TIC_TAC_TOE
 import com.example.group_d.data.model.*
 import com.example.group_d.databinding.FragmentGamesBinding
+import com.example.group_d.ui.main.ui.ingame.TicTacToeFragmentDirections
 import com.google.firebase.firestore.DocumentReference
 
-class GamesFragment : Fragment() {
+class GamesFragment : Fragment(), GamesAdapter.GameStarter{
 
     private lateinit var gamesViewModel: GamesViewModel
     private var _binding: FragmentGamesBinding? = null
@@ -23,7 +26,7 @@ class GamesFragment : Fragment() {
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
-    private  val userDataViewModel: UserDataViewModel by activityViewModels()
+    private val userDataViewModel: UserDataViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -37,11 +40,9 @@ class GamesFragment : Fragment() {
         val root: View = binding.root
 
         val textView: TextView = binding.textGames
-        /*gamesViewModel.text.observe(viewLifecycleOwner, Observer {
-            //textView.text = it
-        })*/
+
         val recyclerView: RecyclerView = binding.recyclerViewGames
-        recyclerView.adapter = userDataViewModel.games.value?.let { GamesAdapter(it) }
+        recyclerView.adapter = userDataViewModel.games.value?.let { GamesAdapter(it, this) }
         recyclerView.layoutManager = LinearLayoutManager(context)
 
         return root
@@ -52,12 +53,13 @@ class GamesFragment : Fragment() {
         _binding = null
     }
 
-    private fun exampleGames(): MutableList<Game> {
-        val games: MutableList<Game> = ArrayList()
-        val gameData: MutableList<Long> = ArrayList()
-        val players: ArrayList<DocumentReference> = ArrayList()
-        for (friends in userDataViewModel.friends){
-            Game(beginner = 1, gameData = gameData, gameType = GAME_TYPE_TIC_TAC_TOE,players)        }
-        return games
+
+    override fun startGame(game: Game) {
+        if (game.gameType == GAME_TYPE_TIC_TAC_TOE) {
+            val action =
+                TicTacToeFragmentDirections.actionGlobalIngameTicTacToeFragment(game.id)
+            findNavController().navigate(action)
+
+        }
     }
 }

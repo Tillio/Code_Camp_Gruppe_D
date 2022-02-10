@@ -380,8 +380,8 @@ class UserDataViewModel : ViewModel() {
             }
         }
         for (request in currentFriendRequests) {
-            if (request !in currentFriendRequests) {
-                addFriendRequests.add(request)
+            if (request !in actualFriendRequests) {
+                removeFriendRequests.add(request)
             }
         }
         removeFriendRequests(removeFriendRequests)

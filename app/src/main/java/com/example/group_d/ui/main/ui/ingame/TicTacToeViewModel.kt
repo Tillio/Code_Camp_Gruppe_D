@@ -106,11 +106,16 @@ class TicTacToeViewModel : GameViewModel() {
                         value!!.currentPlayer = if (isBeginner) value!!.player1 else value!!.player2
                     }
                     val gameData = snap[GAME_DATA] as MutableList<Long>
-                    for (fieldNum in gameData) {
+                    val gameDataLong: MutableList<Long> = gameData
+                    /*for (data in gameData){
+                        gameDataLong.add(data.toLong())
+                    }*/
+
+                    for (fieldNum in gameDataLong) {
                         move(fieldNum.toInt())
                     }
                     _showOnTurn.value = isOnTurn()
-                    runGame.value = Game(beginnerIndex, gameData, GAME_TYPE_TIC_TAC_TOE, playerRefs)
+                    runGame.value = Game(beginnerIndex, gameDataLong, GAME_TYPE_TIC_TAC_TOE, playerRefs)
                     addGameDataChangedListener(docref)
                 }
             }
