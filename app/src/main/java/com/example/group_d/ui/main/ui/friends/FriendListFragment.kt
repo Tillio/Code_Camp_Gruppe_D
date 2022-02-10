@@ -10,6 +10,7 @@ import android.widget.TextView
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.NavDeepLinkBuilder
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -48,12 +49,15 @@ class FriendsListFragment : Fragment() {
         friendList.layoutManager = LinearLayoutManager(context)
         val shareButton = binding.shareButton
         shareButton.setOnClickListener {
-            val intent = Intent()
-            intent.action = Intent.ACTION_SEND
+            val intent = context?.let { it1 -> NavDeepLinkBuilder(it1) }
+                ?.setGraph(R.navigation.mobile_navigation)
+                ?.setDestination(R.id.action_global_friendList)
+                ?.createPendingIntent()
+            /*intent.action = Intent.ACTION_SEND
             // TODO send applink instead
             intent.type = "text/plain"
             intent.putExtra(Intent.EXTRA_TEXT, userDataViewModel.getOwnUserID())
-            startActivity(Intent.createChooser(intent, "Share ID via"))
+            startActivity(Intent.createChooser(intent, "Share ID via"))*/
         }
 
         /*binding.addFriendButton.setOnClickListener{
