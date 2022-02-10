@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id = "@+id/cl_friends_fm"
-    tools:context=".ui.main.ui.friends.FriendsFragment">
+    tools:context=".ui.main.ui.friends.FriendsListFragment">
 
     <Button
         android:id="@+id/addFriendButton"
@@ -92,6 +92,7 @@
         android:clickable="true"
         android:src="?attr/actionModeShareDrawable"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        android:focusable="true" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

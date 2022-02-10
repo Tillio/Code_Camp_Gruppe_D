@@ -1,5 +1,6 @@
 package com.example.group_d.ui.main
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.viewModels
@@ -47,5 +48,4 @@ class MainScreenActivity : AppCompatActivity() {
 
 
     }
-
 }

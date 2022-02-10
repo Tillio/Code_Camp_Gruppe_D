@@ -13,9 +13,15 @@
 
     <fragment
         android:id="@+id/navigation_friends"
-        android:name="com.example.group_d.ui.main.ui.friends.FriendsFragment"
-        android:label="@string/title_friends"
-        tools:layout="@layout/fragment_friends_list" /><action android:id="@+id/action_global_friendList" app:destination="@id/navigation_friends"/>
+        android:name="com.example.group_d.ui.main.ui.friends.FriendsListFragment"
+        android:label="@string/title_friends">
+        <argument
+            android:name="userID"
+            app:argType="string" />
+        <deepLink
+            android:id="@+id/deepLink"
+            app:uri="groupd://group.d/addfriend/{userID}" />
+    </fragment><action android:id="@+id/action_global_friendList" app:destination="@id/navigation_friends"/>
 
     <fragment
         android:id="@+id/navigation_challenges"
