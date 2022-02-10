@@ -1,5 +1,6 @@
 package com.example.group_d.ui.main.ui.friends
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -45,6 +46,15 @@ class FriendsListFragment : Fragment() {
         )
         friendList.adapter = friendAdapter
         friendList.layoutManager = LinearLayoutManager(context)
+        val shareButton = binding.shareButton
+        shareButton.setOnClickListener {
+            val intent = Intent()
+            intent.action = Intent.ACTION_SEND
+            // TODO send applink instead
+            intent.type = "text/plain"
+            intent.putExtra(Intent.EXTRA_TEXT, userDataViewModel.getOwnUserID())
+            startActivity(Intent.createChooser(intent, "Share ID via"))
+        }
 
         /*binding.addFriendButton.setOnClickListener{
             val parentFrag: FriendsFragment =
