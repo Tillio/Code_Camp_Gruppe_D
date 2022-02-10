@@ -422,4 +422,13 @@ class UserDataViewModel : ViewModel() {
         }
         return false
     }
+
+    fun deleteFriend(friend: User) {
+        if (userIsFriend(friend.id)){
+            db.collection(COL_USER).document(auth.uid.toString()).collection(USER_DATA).document(
+                USER_FRIENDS).update(USER_FRIENDS, FieldValue.arrayRemove(friend.id))
+            db.collection(COL_USER).document(friend.id).collection(USER_DATA).document(
+                USER_FRIENDS).update(USER_FRIENDS, FieldValue.arrayRemove(auth.uid.toString()))
+        }
+    }
 }

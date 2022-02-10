@@ -23,7 +23,7 @@ import com.google.firebase.firestore.ktx.getField
 import com.google.firebase.ktx.Firebase
 
 
-class FriendsListFragment : Fragment() {
+class FriendsListFragment : Fragment(), FriendAdapter.FriendDeleter {
     private var _binding: FragmentFriendsListBinding? = null
     private val userDataViewModel: UserDataViewModel by activityViewModels()
     private val binding get() = _binding!!
@@ -39,7 +39,7 @@ class FriendsListFragment : Fragment() {
 
 
         val friendList: RecyclerView = binding.friendList
-        val friendAdapter = FriendAdapter()
+        val friendAdapter = FriendAdapter(this)
         friendAdapter.friendItems = ArrayList(
             userDataViewModel.friends
         )
@@ -83,5 +83,9 @@ class FriendsListFragment : Fragment() {
         //userDataViewModel.testAcceptFriendRequest()
 
         return root
+    }
+
+    override fun deleteFriend(friend: User) {
+        userDataViewModel.deleteFriend(friend)
     }
 }
