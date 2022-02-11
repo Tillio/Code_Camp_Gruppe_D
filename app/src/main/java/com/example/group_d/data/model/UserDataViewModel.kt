@@ -36,13 +36,6 @@ class UserDataViewModel : ViewModel() {
 
     }
 
-    private fun removeGame(game: Game) {
-        val gameList = ArrayList<Game>()
-        gameList.remove(game)
-        games.value = gameList
-
-    }
-
     fun sendFriendRequest(username: String): Boolean {
         /*takes username and returns uid*/
         Log.d(TAG, "sending friend request to: $username")
@@ -191,7 +184,6 @@ class UserDataViewModel : ViewModel() {
                 val value2 = games.value
                 value2?.remove(game)
                 games.value = value2!!
-                removeGame(game)
                 return
             }
         }
