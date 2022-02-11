@@ -41,12 +41,14 @@ class TicTacToeViewModel : GameViewModel() {
     }
 
     fun move(fieldNum: Int) {
-        val field = modelObj.fields[fieldNum]
-        if (field.player != null) {
+        val field = if (fieldNum >= 0) modelObj.fields[fieldNum] else null
+        if (field?.player != null) {
             return
         }
-        field.player = modelObj.currentPlayer
-        _nextField.value = fieldNum
+        if (field != null) {
+            field.player = modelObj.currentPlayer
+            _nextField.value = fieldNum
+        }
         checkResult(field)
         nextPlayer()
     }
@@ -56,7 +58,12 @@ class TicTacToeViewModel : GameViewModel() {
         turnNumber++
     }
 
-    private fun checkResult(lastSetField: TicTacToeModel.Field) {
+    private fun checkResult(lastSetField: TicTacToeModel.Field?) {
+        if (lastSetField == null) {
+            modelObj.winner = modelObj.currentPlayer.next
+            _ending.value = if(isOnTurn()) GameEnding.LOSE else GameEnding.WIN
+            return
+        }
         val lastPlayer = lastSetField.player!!
 
         val win = lastSetField.west?.player == lastPlayer && lastSetField.west?.west?.player == lastPlayer
@@ -85,8 +92,7 @@ class TicTacToeViewModel : GameViewModel() {
     }
 
     fun giveUp() {
-        modelObj.winner = modelObj.player2
-        _ending.value = GameEnding.LOSE
+        playerMove(-1)
     }
 
     fun isOnTurn(): Boolean {
@@ -129,7 +135,8 @@ class TicTacToeViewModel : GameViewModel() {
         if (turnNumber >= gameData.size) {
             return
         }
-        move(gameData[turnNumber].toInt())
+        val movedFieldNum = gameData[turnNumber].toInt()
+        move(movedFieldNum)
         _showOnTurn.value = true
     }
 }

@@ -62,8 +62,6 @@ abstract class GameViewModel : ViewModel() {
                 .document(playerRef.id).collection(USER_DATA)
                 .document(USER_GAMES).update(USER_GAMES, FieldValue.arrayRemove(runGameID))
         }
-        runGame.value = null
-        runGameID = ""
     }
 
     fun getOwnUserID(): String {
