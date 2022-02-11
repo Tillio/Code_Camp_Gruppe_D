@@ -5,14 +5,13 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.group_d.*
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.DocumentReference
+import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import kotlinx.coroutines.*
 
 class UserDataViewModel : ViewModel() {
 
@@ -27,14 +26,14 @@ class UserDataViewModel : ViewModel() {
     var challenges = ArrayList<Challenge>()
 
     private fun addGame(game: Game) {
-        var gameCopy = games.value
+        val gameCopy = games.value
         gameCopy?.add(game)
         games.value = gameCopy!!
 
     }
 
     private fun removeGame(game: Game) {
-        var gameList = ArrayList<Game>()
+        val gameList = ArrayList<Game>()
         gameList.remove(game)
         games.value = gameList
 
@@ -101,22 +100,6 @@ class UserDataViewModel : ViewModel() {
             .addOnFailureListener { exception ->
                 print(exception)
             }
-    }
-
-    fun loadFriends() {
-        print("load friends")
-    }
-
-    fun loadGames() {
-        print("load games")
-    }
-
-    fun createGame() {
-        print("create Game")
-    }
-
-    fun loadChallenges() {
-        print("load challenges")
     }
 
     fun challengeFriend(userid: String, challange: Challenge) {
@@ -226,7 +209,7 @@ class UserDataViewModel : ViewModel() {
      * Adds a snapshotListener to a gameDocument which loads the game and updates it
      */
     private fun attachGameListener(gameId: String) {
-        var listener =
+        val listener =
             db.collection(COL_GAMES).document(gameId).addSnapshotListener { snapshot, e ->
                 if (e != null) {
                     return@addSnapshotListener
@@ -264,11 +247,11 @@ class UserDataViewModel : ViewModel() {
             val status = userMap["online"]
             var userObj =
                 User(id = uid as String, name = name as String, online = status as Boolean)
-            if (userIsFriend(uid as String)) {
+            if (userIsFriend(uid)) {
                 for (user in friends) {
                     if (uid == user.id) {
                         userObj = user
-                        break;
+                        break
                     }
                 }
             }
