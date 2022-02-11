@@ -1,15 +1,13 @@
-package com.example.group_d.ui.main.ui.games
+package com.example.group_d.ui.main.games
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.group_d.R
 import com.example.group_d.USER_NAME
 import com.example.group_d.data.model.Game
-import com.example.group_d.ui.main.ui.ingame.TicTacToeFragmentDirections
 import com.google.firebase.auth.FirebaseAuth
 
 class GamesAdapter(private val games: ArrayList<Game>, private val gameStarter: GameStarter) :

@@ -1,8 +1,7 @@
-package com.example.group_d.ui.main.ui.friends
+package com.example.group_d.ui.main.friends
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,9 +11,7 @@ import android.widget.Toast
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.navigation.NavDeepLinkBuilder
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.group_d.R
@@ -22,9 +19,7 @@ import com.example.group_d.data.model.User
 import com.example.group_d.data.model.UserDataViewModel
 
 import com.example.group_d.databinding.FragmentFriendsListBinding
-import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.firestore.ktx.getField
 import com.google.firebase.ktx.Firebase
 
 

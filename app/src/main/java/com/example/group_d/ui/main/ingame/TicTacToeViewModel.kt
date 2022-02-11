@@ -1,4 +1,4 @@
-package com.example.group_d.ui.main.ui.ingame
+package com.example.group_d.ui.main.ingame
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

@@ -1,4 +1,4 @@
-package com.example.group_d.ui.main.ui.ingame
+package com.example.group_d.ui.main.ingame
 
 import android.util.Log
 import androidx.lifecycle.MutableLiveData

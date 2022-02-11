@@ -1,4 +1,4 @@
-package com.example.group_d.ui.main.ui.games
+package com.example.group_d.ui.main.games
 
 import android.view.LayoutInflater
 import android.view.View

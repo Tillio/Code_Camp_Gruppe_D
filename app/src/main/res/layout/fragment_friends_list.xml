@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id = "@+id/cl_friends_fm"
-    tools:context=".ui.main.ui.friends.FriendsListFragment">
+    tools:context=".ui.main.friends.FriendsListFragment">
 
     <Button
         android:id="@+id/addFriendButton"

@@ -5,7 +5,7 @@
     android:id="@+id/frameLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.main.ui.games.NewGameSetup">
+    tools:context=".ui.main.games.NewGameSetup">
 
     <TextView
         android:id="@+id/textViewTitle"

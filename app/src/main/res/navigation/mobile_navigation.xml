@@ -7,13 +7,13 @@
 
     <fragment
         android:id="@+id/navigation_games"
-        android:name="com.example.group_d.ui.main.ui.games.GamesFragment"
+        android:name="com.example.group_d.ui.main.games.GamesFragment"
         android:label="@string/title_games"
         tools:layout="@layout/fragment_games" />
 
     <fragment
         android:id="@+id/navigation_friends"
-        android:name="com.example.group_d.ui.main.ui.friends.FriendsListFragment"
+        android:name="com.example.group_d.ui.main.friends.FriendsListFragment"
         android:label="@string/title_friends">
         <argument
             android:name="userID"
@@ -25,18 +25,18 @@
 
     <fragment
         android:id="@+id/navigation_challenges"
-        android:name="com.example.group_d.ui.main.ui.challenges.ChallengesFragment"
+        android:name="com.example.group_d.ui.main.challenges.ChallengesFragment"
         android:label="@string/title_challenges"
         tools:layout="@layout/fragment_challenges" />
 
     <fragment
         android:id="@+id/navigation_settings"
-        android:name="com.example.group_d.ui.main.ui.settings.SettingsFragment"
+        android:name="com.example.group_d.ui.main.settings.SettingsFragment"
         android:label="@string/title_settings"
         tools:layout="@layout/fragment_settings" />
     <fragment
         android:id="@+id/ingame_ticTacToeFragment"
-        android:name="com.example.group_d.ui.main.ui.ingame.TicTacToeFragment"
+        android:name="com.example.group_d.ui.main.ingame.TicTacToeFragment"
         android:label="@string/title_tic_tac_toe"
         tools:layout="@layout/tic_tac_toe_fragment" >
         <argument
@@ -46,7 +46,7 @@
 
     <fragment
         android:id="@+id/newGameSetup"
-        android:name="com.example.group_d.ui.main.ui.games.NewGameSetup"
+        android:name="com.example.group_d.ui.main.games.NewGameSetup"
         android:label="New Game Setup"
         tools:layout="@layout/fragment_new_game_setup" >
         <argument

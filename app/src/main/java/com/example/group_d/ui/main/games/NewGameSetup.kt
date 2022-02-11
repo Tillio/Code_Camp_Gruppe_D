@@ -1,4 +1,4 @@
-package com.example.group_d.ui.main.ui.games
+package com.example.group_d.ui.main.games
 
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
@@ -19,7 +19,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.group_d.GAME_TYPE_TIC_TAC_TOE
 import com.example.group_d.R
 import com.example.group_d.data.model.Challenge
-import com.example.group_d.data.model.GameType
 import com.example.group_d.data.model.User
 import com.example.group_d.data.model.UserDataViewModel
 import com.google.firebase.auth.ktx.auth

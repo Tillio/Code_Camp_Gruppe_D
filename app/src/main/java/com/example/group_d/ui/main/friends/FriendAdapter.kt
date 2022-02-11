@@ -1,4 +1,4 @@
-package com.example.group_d.ui.main.ui.friends
+package com.example.group_d.ui.main.friends
 
 import android.view.LayoutInflater
 import android.view.View
@@ -9,7 +9,6 @@ import androidx.core.os.bundleOf
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.group_d.R
-import com.example.group_d.data.model.Game
 import com.example.group_d.data.model.User
 
 class FriendAdapter (private val friendDeleter: FriendDeleter): RecyclerView.Adapter<FriendAdapter.ViewHolder>() {

@@ -1,4 +1,4 @@
-package com.example.group_d.ui.main.ui.challenges
+package com.example.group_d.ui.main.challenges
 
 import android.app.AlertDialog
 import android.app.Dialog
@@ -18,7 +18,7 @@ import com.example.group_d.R
 import com.example.group_d.data.model.Challenge
 import com.example.group_d.data.model.UserDataViewModel
 import com.example.group_d.databinding.FragmentChallengesBinding
-import com.example.group_d.ui.main.ui.ingame.TicTacToeFragmentDirections
+import com.example.group_d.ui.main.ingame.TicTacToeFragmentDirections
 
 class ChallengesFragment : Fragment() {
 

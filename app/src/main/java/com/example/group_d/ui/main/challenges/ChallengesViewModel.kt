@@ -1,13 +1,9 @@
-package com.example.group_d.ui.main.ui.challenges
+package com.example.group_d.ui.main.challenges
 
-import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.group_d.*
 import com.example.group_d.data.model.Challenge
 import com.example.group_d.data.model.Game
-import com.example.group_d.data.model.User
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.DocumentReference
@@ -15,7 +11,6 @@ import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import kotlin.random.Random
-import com.example.group_d.data.model.UserDataViewModel
 
 class ChallengesViewModel : ViewModel() {
 

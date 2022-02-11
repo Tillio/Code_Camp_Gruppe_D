@@ -1,4 +1,4 @@
-package com.example.group_d.ui.main.ui.games
+package com.example.group_d.ui.main.games
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -11,12 +11,10 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.group_d.COL_GAMES
 import com.example.group_d.GAME_TYPE_TIC_TAC_TOE
 import com.example.group_d.data.model.*
 import com.example.group_d.databinding.FragmentGamesBinding
-import com.example.group_d.ui.main.ui.ingame.TicTacToeFragmentDirections
-import com.google.firebase.firestore.DocumentReference
+import com.example.group_d.ui.main.ingame.TicTacToeFragmentDirections
 
 class GamesFragment : Fragment(), GamesAdapter.GameStarter{
 

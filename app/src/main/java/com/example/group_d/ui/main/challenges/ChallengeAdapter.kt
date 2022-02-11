@@ -1,4 +1,4 @@
-package com.example.group_d.ui.main.ui.challenges
+package com.example.group_d.ui.main.challenges
 
 import android.view.LayoutInflater
 import android.view.View

@@ -1,10 +1,6 @@
-package com.example.group_d.ui.main.ui.friends
+package com.example.group_d.ui.main.friends
 
-import android.os.Bundle
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import com.example.group_d.R
 
 // TODO: Rename parameter arguments, choose names that match

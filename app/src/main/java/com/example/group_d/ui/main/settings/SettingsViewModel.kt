@@ -1,4 +1,4 @@
-package com.example.group_d.ui.main.ui.settings
+package com.example.group_d.ui.main.settings
 
 import androidx.lifecycle.ViewModel
 

@@ -1,9 +1,8 @@
-package com.example.group_d.ui.main.ui.friends
+package com.example.group_d.ui.main.friends
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.group_d.data.model.User
 
 class FriendsViewModel : ViewModel() {
 

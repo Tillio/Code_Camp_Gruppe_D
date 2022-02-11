@@ -1,4 +1,4 @@
-package com.example.group_d.ui.main.ui.friends
+package com.example.group_d.ui.main.friends
 
 import android.util.Log
 import android.view.LayoutInflater
@@ -6,12 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
-import androidx.core.os.bundleOf
-import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.group_d.R
 import com.example.group_d.data.model.FriendRequest
-import com.example.group_d.data.model.User
 import com.example.group_d.data.model.UserDataViewModel
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
