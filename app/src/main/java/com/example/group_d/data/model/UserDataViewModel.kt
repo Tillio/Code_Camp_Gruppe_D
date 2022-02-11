@@ -27,7 +27,9 @@ class UserDataViewModel : ViewModel() {
     }
     val games = MutableLiveData<ArrayList<Game>>()
     val gameListeners: HashMap<String, ListenerRegistration> = HashMap()
-    var challenges = ArrayList<Challenge>()
+    var challenges = MutableLiveData<ArrayList<Challenge>>().apply {
+        value = ArrayList()
+    }
 
     private fun addGame(game: Game) {
         val gameCopy = games.value
@@ -254,7 +256,7 @@ class UserDataViewModel : ViewModel() {
             actualChallenges.add(Challenge(user = userObj, gameType = type as String))
         }
         //add new challenges
-        challenges = actualChallenges
+        challenges.value = actualChallenges
 
     }
 

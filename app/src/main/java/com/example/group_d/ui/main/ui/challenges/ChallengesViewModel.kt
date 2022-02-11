@@ -21,34 +21,10 @@ class ChallengesViewModel : ViewModel() {
 
     val db = Firebase.firestore
 
-
-    private val _challenges: MutableLiveData<List<Challenge>> by lazy {
-        MutableLiveData<List<Challenge>>().apply {
-            value = exampleChallenges()
-        }
-    }
-    var challenges: LiveData<List<Challenge>> = _challenges
-
-    fun updateChallenges(challenges :ArrayList<Challenge>){
-        _challenges.value = challenges
-    }
-
-    private fun exampleChallenges(): MutableList<Challenge> {
-        val challenges: MutableList<Challenge> = ArrayList()
-        for (i in 1..10) {
-            challenges.add(Challenge(User("YkqWGRLnRUTm1MaGivvcwb4Mn5s1", "n@m.de", true), GAME_TYPE_TIC_TAC_TOE))
-
-        }
-        return challenges
-    }
-
     private fun removeChallenge(challenge: Challenge) {
         db.collection(COL_USER)
             .document(Firebase.auth.currentUser!!.uid).collection(USER_DATA)
             .document(USER_CHALLENGES).update(USER_CHALLENGES, FieldValue.arrayRemove(challenge))
-        val mutChallenges: MutableList<Challenge> = _challenges.value!!.toMutableList()
-        mutChallenges.remove(challenge)
-        _challenges.value = mutChallenges
     }
 
     fun decline(challenge: Challenge) {

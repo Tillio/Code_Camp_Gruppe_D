@@ -37,18 +37,15 @@ class ChallengesFragment : Fragment() {
     ): View? {
         challengesViewModel =
             ViewModelProvider(this).get(ChallengesViewModel::class.java)
-        challengesViewModel.updateChallenges(userDataViewModel.challenges)
 
         _binding = FragmentChallengesBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
         val recyclerView: RecyclerView = binding.recyclerViewChallenges
-        challengesViewModel.challenges.observe(viewLifecycleOwner) {
+        userDataViewModel.challenges.observe(viewLifecycleOwner) {
             recyclerView.adapter = ChallengeAdapter(it, this)
         }
         recyclerView.layoutManager = LinearLayoutManager(context)
-
-
 
         return root
     }
