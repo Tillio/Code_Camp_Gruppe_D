@@ -17,6 +17,7 @@ class GamesAdapter(private val games: ArrayList<Game>, private val gameStarter: 
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val ownVsEnemyName: TextView = view.findViewById(R.id.own_vs_enemy_name)
+        val gameTypeText: TextView = view.findViewById(R.id.game_type)
 
     }
 
@@ -39,6 +40,9 @@ class GamesAdapter(private val games: ArrayList<Game>, private val gameStarter: 
                 doc.get().addOnSuccessListener {
                     val get = it.data?.get(USER_NAME)
                     holder.ownVsEnemyName.text = "You vs. $get"
+                    if (games[position].gameType == "TIC_TAC_TOE"){
+                        holder.gameTypeText.text = "Tic Tac Toe"
+                    }
                 }
             }
         }
