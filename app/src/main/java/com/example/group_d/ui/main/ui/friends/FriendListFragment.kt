@@ -44,10 +44,15 @@ class FriendsListFragment : Fragment(), FriendAdapter.FriendDeleter {
 
 
         val friendList: RecyclerView = binding.friendList
-        val friendAdapter = FriendAdapter(this)
-        friendAdapter.friendItems = ArrayList(
-            userDataViewModel.friends
-        )
+        var friendAdapter = FriendAdapter(this)
+        userDataViewModel.friends.observe(viewLifecycleOwner) { newFriends ->
+            friendAdapter = FriendAdapter(this)
+            friendAdapter.friendItems = newFriends
+            friendList.adapter = friendAdapter
+        }
+        /*friendAdapter.friendItems = ArrayList(
+            userDataViewModel.friends.value!!
+        )*/
         friendList.adapter = friendAdapter
         friendList.layoutManager = LinearLayoutManager(context)
         val shareButton = binding.shareButton
@@ -82,10 +87,12 @@ class FriendsListFragment : Fragment(), FriendAdapter.FriendDeleter {
             }
         }
         val friendRequestList: RecyclerView = binding.friendRequestList
-        val friendRequestAdapter = FriendRequestAdapter()
-        friendRequestAdapter.friendRequestItems = ArrayList(
-            userDataViewModel.friendRequests
-        )
+        var friendRequestAdapter = FriendRequestAdapter()
+        userDataViewModel.friendRequests.observe(viewLifecycleOwner) { newFriendRequests ->
+            friendRequestAdapter = FriendRequestAdapter()
+            friendRequestAdapter.friendRequestItems = newFriendRequests
+            friendRequestList.adapter = friendRequestAdapter
+        }
         friendRequestList.adapter = friendRequestAdapter
         friendRequestList.layoutManager = LinearLayoutManager(context)
 

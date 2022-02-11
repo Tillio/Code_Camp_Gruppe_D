@@ -19,8 +19,12 @@ class UserDataViewModel : ViewModel() {
     val TAG = "UserDataViewModel"
     val db = Firebase.firestore
 
-    var friends = ArrayList<User>()
-    var friendRequests = ArrayList<FriendRequest>()
+    var friends = MutableLiveData<ArrayList<User>>().apply {
+        value = ArrayList()
+    }
+    var friendRequests = MutableLiveData<ArrayList<FriendRequest>>().apply {
+        value = ArrayList()
+    }
     val games = MutableLiveData<ArrayList<Game>>()
     val gameListeners: HashMap<String, ListenerRegistration> = HashMap()
     var challenges = ArrayList<Challenge>()
@@ -248,7 +252,7 @@ class UserDataViewModel : ViewModel() {
             var userObj =
                 User(id = uid as String, name = name as String, online = status as Boolean)
             if (userIsFriend(uid)) {
-                for (user in friends) {
+                for (user in friends.value!!) {
                     if (uid == user.id) {
                         userObj = user
                         break
@@ -263,7 +267,7 @@ class UserDataViewModel : ViewModel() {
     }
 
     private fun userIsFriend(id: String): Boolean {
-        for (friend in friends) {
+        for (friend in friends.value!!) {
             if (friend.id == id) {
                 return true
             }
@@ -282,7 +286,7 @@ class UserDataViewModel : ViewModel() {
         val addFriends = ArrayList<String>()
         val removeFriends = ArrayList<String>()
         val currentFriends = ArrayList<String>()
-        friends.forEach {
+        friends.value!!.forEach {
             currentFriends.add(it.id)
         }
         for (user in actualFriends) {
@@ -297,8 +301,6 @@ class UserDataViewModel : ViewModel() {
         }
         removeFriends(removeFriends)
         addFriends(addFriends)
-
-
     }
 
     /**
@@ -330,12 +332,13 @@ class UserDataViewModel : ViewModel() {
      * adds a user to the friend list if he is not already in the list
      */
     private fun addFriend(friend: User): Boolean {
-        for (user in friends) {
+        for (user in friends.value!!) {
             if (user.id == friend.id) {
                 return false
             }
         }
-        friends.add(friend)
+        friends.value!!.add(friend)
+        friends.value = friends.value
         return true
     }
 
@@ -343,9 +346,10 @@ class UserDataViewModel : ViewModel() {
      * takes an uId and removes a matching user if possible
      */
     private fun removeFriend(friendId: String): Boolean {
-        for (friend in friends) {
+        for (friend in friends.value!!) {
             if (friend.id == friendId) {
-                friends.remove(friend)
+                friends.value!!.remove(friend)
+                friends.value = friends.value
                 return true
             }
         }
@@ -358,7 +362,7 @@ class UserDataViewModel : ViewModel() {
         val addFriendRequests = ArrayList<String>()
         val removeFriendRequests = ArrayList<String>()
         val currentFriendRequests = ArrayList<String>()
-        friendRequests.forEach {
+        friendRequests.value!!.forEach {
             currentFriendRequests.add(it.friendID)
         }
         for (request in actualFriendRequests) {
@@ -391,19 +395,21 @@ class UserDataViewModel : ViewModel() {
     }
 
     private fun addFriendRequest(request: FriendRequest): Boolean {
-        for (friendRequest in friendRequests) {
+        for (friendRequest in friendRequests.value!!) {
             if (friendRequest.friendID == request.friendID) {
                 return false
             }
         }
-        friendRequests.add(request)
+        friendRequests.value!!.add(request)
+        friendRequests.value = friendRequests.value
         return true
     }
 
     private fun removeFriendRequest(friendId: String): Boolean {
-        for (friendRequest in friendRequests) {
+        for (friendRequest in friendRequests.value!!) {
             if (friendRequest.friendID == friendId) {
-                friendRequests.remove(friendRequest)
+                friendRequests.value!!.remove(friendRequest)
+                friendRequests.value = friendRequests.value
                 return true
             }
         }
