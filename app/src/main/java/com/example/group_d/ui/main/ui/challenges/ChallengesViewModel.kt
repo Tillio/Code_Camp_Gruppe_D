@@ -22,6 +22,8 @@ class ChallengesViewModel : ViewModel() {
     val db = Firebase.firestore
 
     private fun removeChallenge(challenge: Challenge) {
+        // set online status to online so the challenge can be found in database
+        challenge.user.online = true
         db.collection(COL_USER)
             .document(Firebase.auth.currentUser!!.uid).collection(USER_DATA)
             .document(USER_CHALLENGES).update(USER_CHALLENGES, FieldValue.arrayRemove(challenge))
