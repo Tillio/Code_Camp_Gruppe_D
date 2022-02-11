@@ -1,15 +1,20 @@
 package com.example.group_d.ui.main.ui.friends
 
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
+import android.widget.Toast
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.NavDeepLinkBuilder
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.group_d.R
@@ -45,6 +50,16 @@ class FriendsListFragment : Fragment(), FriendAdapter.FriendDeleter {
         )
         friendList.adapter = friendAdapter
         friendList.layoutManager = LinearLayoutManager(context)
+        val shareButton = binding.shareButton
+        shareButton.setOnClickListener {
+            val intent = Intent()
+            intent.action = Intent.ACTION_SEND
+            intent.type = "text/plain"
+            intent.putExtra(Intent.EXTRA_TEXT,
+                "http://groupd.example.com/addfriend/${userDataViewModel.getOwnUserID()}"
+            )
+            startActivity(Intent.createChooser(intent, "Share ID via"))
+        }
 
         /*binding.addFriendButton.setOnClickListener{
             val parentFrag: FriendsFragment =
@@ -82,6 +97,16 @@ class FriendsListFragment : Fragment(), FriendAdapter.FriendDeleter {
         }
         //userDataViewModel.testAcceptFriendRequest()
 
+        arguments?.getString("userID")?.let {
+            if (it == userDataViewModel.getOwnUserID()) {
+                return@let
+            }
+            userDataViewModel.sendFriendRequestToID(it)
+            val requestMsg = getString(R.string.friend_request_to_id1) +
+                    it +
+                    getString(R.string.friend_request_to_id2)
+            Toast.makeText(activity, requestMsg, Toast.LENGTH_SHORT).show()
+        }
         return root
     }
 

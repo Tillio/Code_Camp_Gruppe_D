@@ -45,7 +45,6 @@ class UserDataViewModel : ViewModel() {
         Log.d(TAG, "sending friend request to: $username")
         Log.d(TAG, "finding userID of $username ...")
         /*val otherUid = getUserIdByUsername(username)*/
-        val ownUid = getOwnUserID()
 
         db.collection("user")
             .whereEqualTo("name", username)
@@ -53,16 +52,21 @@ class UserDataViewModel : ViewModel() {
             .addOnSuccessListener { documents ->
                 for (document in documents) {
                     Log.d(TAG, "uid: ${document.id} of user: ${document["name"]} found")
-                    val otherUid = document.id
-                    db.collection("user").document(otherUid).collection("userData")
-                        .document("friendRequests")
-                        .update("friendRequests", FieldValue.arrayUnion(ownUid))
+                    sendFriendRequestToID(document.id)
                 }
             }
             .addOnFailureListener { exception ->
                 Log.w(TAG, "Error getting documents: ", exception)
             }
         return true
+    }
+
+    fun sendFriendRequestToID(userID: String) {
+        if (userID != getOwnUserID()) {
+            db.collection(COL_USER).document(userID).collection(USER_DATA)
+                .document(USER_FRIEND_REQUESTS)
+                .update(USER_FRIEND_REQUESTS, FieldValue.arrayUnion(getOwnUserID()))
+        }
     }
 
     fun acceptFriendRequest(newFriendUid: String) {
