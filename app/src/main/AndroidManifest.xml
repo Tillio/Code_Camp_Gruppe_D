@@ -18,8 +18,8 @@
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="groupd"
-                    android:host="group.d" />
+                <data android:scheme="http"
+                    android:host="groupd.example.com" />
             </intent-filter>
             <nav-graph android:value="@navigation/mobile_navigation" />
         </activity>

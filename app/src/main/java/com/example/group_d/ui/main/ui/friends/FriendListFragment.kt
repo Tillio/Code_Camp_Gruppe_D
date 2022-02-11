@@ -56,7 +56,7 @@ class FriendsListFragment : Fragment() {
             intent.action = Intent.ACTION_SEND
             intent.type = "text/plain"
             intent.putExtra(Intent.EXTRA_TEXT,
-                "groupd://group.d/addfriend/${userDataViewModel.getOwnUserID()}"
+                "http://groupd.example.com/addfriend/${userDataViewModel.getOwnUserID()}"
             )
             startActivity(Intent.createChooser(intent, "Share ID via"))
         }
@@ -98,6 +98,9 @@ class FriendsListFragment : Fragment() {
         //userDataViewModel.testAcceptFriendRequest()
 
         arguments?.getString("userID")?.let {
+            if (it == userDataViewModel.getOwnUserID()) {
+                return@let
+            }
             userDataViewModel.sendFriendRequestToID(it)
             val requestMsg = getString(R.string.friend_request_to_id1) +
                     it +
