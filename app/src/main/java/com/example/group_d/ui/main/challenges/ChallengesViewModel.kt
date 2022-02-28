@@ -34,7 +34,7 @@ class ChallengesViewModel : ViewModel() {
             db.collection(COL_USER).document(Firebase.auth.currentUser!!.uid),
             db.collection(COL_USER).document(challenge.user.id)
         )
-        val game = Game(Random.nextLong(players.size.toLong()), ArrayList(), challenge.gameType, players)
+        val game = Game(Random.nextLong(players.size.toLong()).toString(), ArrayList(), challenge.gameType, players)
         return db.collection(COL_GAMES).add(game).addOnSuccessListener { gameRef ->
             db.collection(COL_USER)
                 .document(Firebase.auth.currentUser!!.uid).collection(USER_DATA)
