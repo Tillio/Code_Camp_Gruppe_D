@@ -59,4 +59,18 @@
             android:name="userStatus"
             app:argType="boolean"/>
     </fragment><action android:id="@+id/action_global_newGameSetup" app:destination="@id/newGameSetup"/>
+    <fragment
+        android:id="@+id/recentGamesFragment"
+        android:name="com.example.group_d.ui.main.recentGames.RecentGamesFragment"
+        android:label="recent_games_fragment"
+        tools:layout="@layout/recent_games_fragment" >
+        <action
+            android:id="@+id/action_recentGamesFragment_to_statistiksFragment"
+            app:destination="@id/statistiksFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/statistiksFragment"
+        android:name="com.example.group_d.ui.main.recentGames.statistiks.StatistiksFragment"
+        android:label="statistiks_fragment"
+        tools:layout="@layout/statistiks_fragment" />
 </navigation>
