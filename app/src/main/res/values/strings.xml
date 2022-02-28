@@ -57,5 +57,6 @@
     <!--NewGameScreen-->
     <string-array name="new_game_gametypes">
         <item>TicTacToe</item>
+        <item>Mental Arithmetics</item>
     </string-array>
 </resources>

@@ -11,9 +11,11 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.group_d.GAME_TYPE_MENTAL_ARITHMETICS
 import com.example.group_d.GAME_TYPE_TIC_TAC_TOE
 import com.example.group_d.data.model.*
 import com.example.group_d.databinding.FragmentGamesBinding
+import com.example.group_d.ui.main.ingame.MentalArithmeticsFragmentDirections
 import com.example.group_d.ui.main.ingame.TicTacToeFragmentDirections
 
 class GamesFragment : Fragment(), GamesAdapter.GameStarter{
@@ -58,10 +60,13 @@ class GamesFragment : Fragment(), GamesAdapter.GameStarter{
 
     override fun startGame(game: Game) {
         if (game.gameType == GAME_TYPE_TIC_TAC_TOE) {
-            val action =
+            findNavController().navigate(
                 TicTacToeFragmentDirections.actionGlobalIngameTicTacToeFragment(game.id)
-            findNavController().navigate(action)
-
+            )
+        } else if(game.gameType == GAME_TYPE_MENTAL_ARITHMETICS) {
+            findNavController().navigate(
+                MentalArithmeticsFragmentDirections.actionGlobalMentalArithmeticsFragment(game.id)
+            )
         }
     }
 }
