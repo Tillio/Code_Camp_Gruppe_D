@@ -31,25 +31,24 @@
             android:id="@+id/stats_name_label"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="136dp"
             android:layout_weight="1"
             android:gravity="center"
             android:text="Name Label"
             android:textSize="25sp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            tools:layout_editor_absoluteY="28dp" />
+            app:layout_constraintStart_toEndOf="@+id/statistik_button"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <Button
             android:id="@+id/statistik_button"
             android:layout_width="50dp"
             android:layout_height="wrap_content"
-
-
+            android:layout_marginStart="15dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/stats_name_label"
-            app:layout_constraintHorizontal_bias="0.451"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="test" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <TextView
