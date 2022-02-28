@@ -29,11 +29,7 @@
         android:label="@string/title_challenges"
         tools:layout="@layout/fragment_challenges" />
 
-    <fragment
-        android:id="@+id/navigation_settings"
-        android:name="com.example.group_d.ui.main.settings.SettingsFragment"
-        android:label="@string/title_settings"
-        tools:layout="@layout/fragment_settings" />
+
     <fragment
         android:id="@+id/ingame_ticTacToeFragment"
         android:name="com.example.group_d.ui.main.ingame.TicTacToeFragment"

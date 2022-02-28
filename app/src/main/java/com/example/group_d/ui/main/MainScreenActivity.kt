@@ -37,7 +37,7 @@ class MainScreenActivity : AppCompatActivity() {
         // menu should be considered as top level destinations.
         val appBarConfiguration = AppBarConfiguration(
             setOf(
-                R.id.navigation_games, R.id.navigation_friends, R.id.navigation_challenges, R.id.navigation_settings
+                R.id.navigation_games, R.id.navigation_friends, R.id.navigation_challenges, R.id.recentGamesFragment
             )
         )
         userDataViewModel.setupFireBaseSnapshots()
