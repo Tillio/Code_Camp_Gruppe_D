@@ -13,6 +13,7 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.group_d.R
+import com.example.group_d.data.handler.NotificationHandler
 import com.example.group_d.data.model.UserDataViewModel
 import com.example.group_d.databinding.ActivityMainScreenBinding
 import com.example.group_d.ui.login.LoginViewModel
@@ -41,6 +42,7 @@ class MainScreenActivity : AppCompatActivity() {
             )
         )
         userDataViewModel.setupFireBaseSnapshots()
+        userDataViewModel.notificationHandler.createNotificationChannel(this)
 
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
