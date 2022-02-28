@@ -11,9 +11,12 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.group_d.GAME_TYPE_COMPASS
 import com.example.group_d.GAME_TYPE_TIC_TAC_TOE
-import com.example.group_d.data.model.*
+import com.example.group_d.data.model.Game
+import com.example.group_d.data.model.UserDataViewModel
 import com.example.group_d.databinding.FragmentGamesBinding
+import com.example.group_d.ui.main.ingame.CompassFragmentDirections
 import com.example.group_d.ui.main.ingame.TicTacToeFragmentDirections
 
 class GamesFragment : Fragment(), GamesAdapter.GameStarter{
@@ -62,6 +65,10 @@ class GamesFragment : Fragment(), GamesAdapter.GameStarter{
                 TicTacToeFragmentDirections.actionGlobalIngameTicTacToeFragment(game.id)
             findNavController().navigate(action)
 
+        } else if (game.gameType == GAME_TYPE_COMPASS) {
+            val action =
+                CompassFragmentDirections.actionGlobalCompassFragment(game.id)
+            findNavController().navigate(action)
         }
     }
 }

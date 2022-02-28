@@ -59,4 +59,14 @@
             android:name="userStatus"
             app:argType="boolean"/>
     </fragment><action android:id="@+id/action_global_newGameSetup" app:destination="@id/newGameSetup"/>
+    <fragment
+        android:id="@+id/compassFragment"
+        android:name="com.example.group_d.ui.main.ingame.CompassFragment"
+        android:label="compass_fragment"
+        tools:layout="@layout/compass_fragment" >
+        <argument
+            android:name="gameID"
+            app:argType="string" />
+    </fragment>
+    <action android:id="@+id/action_global_compassFragment" app:destination="@id/compassFragment" />
 </navigation>

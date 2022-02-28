@@ -1,32 +1,40 @@
 package com.example.group_d.ui.main.ingame
 
-import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.example.group_d.R
+import android.widget.ImageView
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
+import com.example.group_d.databinding.CompassFragmentBinding
 
 class CompassFragment : Fragment() {
+    private lateinit var compassViewModel: CompassViewModel
+    private var _binding: CompassFragmentBinding? = null
 
-    companion object {
-        fun newInstance() = CompassFragment()
-    }
+    private lateinit var compassNeedle: ImageView
 
-    private lateinit var viewModel: CompassViewModel
+    // This property is only valid between onCreateView and
+    // onDestroyView.
+    private val binding get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.compass_fragment, container, false)
+        compassViewModel = ViewModelProvider(this).get(CompassViewModel::class.java)
+
+        _binding = CompassFragmentBinding.inflate(inflater, container, false)
+        val root = binding.root
+        compassNeedle = binding.compassNeedle
+        compassNeedle.rotation = 90F
+
+        return root
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProvider(this).get(CompassViewModel::class.java)
-        // TODO: Use the ViewModel
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
-
 }

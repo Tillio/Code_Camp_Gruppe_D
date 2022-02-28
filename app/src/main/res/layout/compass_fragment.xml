@@ -103,7 +103,7 @@
         app:layout_constraintVertical_bias="0.125">
 
         <ImageView
-            android:id="@+id/imageView6"
+            android:id="@+id/compass_needle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:rotation="0"
