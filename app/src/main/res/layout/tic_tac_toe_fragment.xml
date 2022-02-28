@@ -2,9 +2,10 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/tic_tac_toe_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.main.ingame.TicTacToeFragment" >
+    tools:context=".ui.main.ingame.TicTacToeFragment">
 
     <ImageView
         android:id="@+id/player_profile_pic"

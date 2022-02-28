@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/compass_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.main.ingame.CompassFragment">
+
+    <ImageView
+        android:id="@+id/player_profile_pic"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="40dp"
+        android:src="@drawable/ic_baseline_person_24"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:src="@tools:sample/avatars" />
+
+    <ImageView
+        android:id="@+id/op_profile_pic"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginEnd="40dp"
+        android:src="@drawable/ic_baseline_person_24"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/player_profile_pic"
+        tools:src="@tools:sample/avatars" />
+
+    <TextView
+        android:id="@+id/text_player"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:text="@string/player_you"
+        app:layout_constraintBottom_toBottomOf="@+id/player_profile_pic"
+        app:layout_constraintStart_toEndOf="@+id/player_profile_pic"
+        app:layout_constraintTop_toTopOf="@+id/player_profile_pic" />
+
+    <TextView
+        android:id="@+id/text_op_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintBottom_toBottomOf="@+id/op_profile_pic"
+        app:layout_constraintEnd_toStartOf="@+id/op_profile_pic"
+        app:layout_constraintTop_toTopOf="@+id/op_profile_pic" />
+
+    <TextView
+        android:id="@+id/text_player_action"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/player_piece" />
+
+    <ProgressBar
+        android:id="@+id/wait"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_player_action" />
+
+    <Button
+        android:id="@+id/button_give_up"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="64dp"
+        android:text="@string/button_give_up_text"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <ImageView
+        android:id="@+id/player_piece"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:src="@drawable/ic_baseline_panorama_fish_eye_24"
+        app:layout_constraintEnd_toEndOf="@+id/player_profile_pic"
+        app:layout_constraintStart_toStartOf="@+id/player_profile_pic"
+        app:layout_constraintTop_toBottomOf="@+id/player_profile_pic" />
+
+    <ImageView
+        android:id="@+id/op_piece"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_baseline_close_24"
+        app:layout_constraintEnd_toEndOf="@+id/op_profile_pic"
+        app:layout_constraintStart_toStartOf="@+id/op_profile_pic"
+        app:layout_constraintTop_toTopOf="@+id/player_piece" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="288dp"
+        android:layout_height="288dp"
+        app:layout_constraintBottom_toTopOf="@+id/button_give_up"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/wait"
+        app:layout_constraintVertical_bias="0.125">
+
+        <ImageView
+            android:id="@+id/imageView6"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:rotation="0"
+            android:src="@drawable/ic_baseline_north_192"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/compass_view"
+            app:layout_constraintStart_toStartOf="@+id/compass_view"
+            app:layout_constraintTop_toTopOf="@+id/compass_view" />
+
+        <View
+            android:id="@+id/compass_view"
+            android:layout_width="288dp"
+            android:layout_height="288dp"
+            android:background="@drawable/compass_circle"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="1.0" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
