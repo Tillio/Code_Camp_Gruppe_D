@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.group_d.*
+import com.example.group_d.data.handler.NotificationHandler
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.DocumentReference
@@ -18,6 +19,7 @@ class UserDataViewModel : ViewModel() {
     var auth: FirebaseAuth = FirebaseAuth.getInstance()
     val TAG = "UserDataViewModel"
     val db = Firebase.firestore
+    var notificationHandler: NotificationHandler = NotificationHandler()
 
     var friends = MutableLiveData<ArrayList<User>>().apply {
         value = ArrayList()
@@ -172,12 +174,18 @@ class UserDataViewModel : ViewModel() {
      */
     private fun gamesListener(snapshot: DocumentSnapshot) {
         val actualGames = snapshot.data?.get(USER_GAMES) as ArrayList<String>
-        //attach listener if game ist unknown
+        var intYourTurns = 0
+        //attach listener if game is unknown
         for (game in actualGames) {
             val localGameData = gameIdIsLocal(game)
             if (localGameData == null) {
                 attachGameListener(game)
+                intYourTurns++
             }
+        }
+        if (intYourTurns != 0){
+            var textStr = "It is your Turn in " + intYourTurns + " games!"
+            notificationHandler.sendNotification(textStr)
         }
         //delete old games
         for (game in games.value!!) {
@@ -236,7 +244,13 @@ class UserDataViewModel : ViewModel() {
 
     private fun challengeListener(snapshot: DocumentSnapshot) {
         val actualChallenges = ArrayList<Challenge>()
+        val currentChallenges = ArrayList<Challenge>()
 
+        challenges.value!!.forEach {
+            currentChallenges.add(it)
+        }
+
+        var intYourChallenges = 0
         for (chall in snapshot.data?.get(USER_CHALLENGES) as ArrayList<HashMap<*, *>>) {
             val type = chall["gameType"]
             val userMap = chall["user"] as HashMap<*, *>
@@ -253,7 +267,15 @@ class UserDataViewModel : ViewModel() {
                     }
                 }
             }
-            actualChallenges.add(Challenge(user = userObj, gameType = type as String))
+            var newChallenge = Challenge(user = userObj, gameType = type as String)
+            actualChallenges.add(newChallenge)
+            if (newChallenge !in currentChallenges){
+                intYourChallenges++
+            }
+        }
+        if (intYourChallenges != 0){
+            var textStr = "You have " + intYourChallenges + " Challenges!"
+            notificationHandler.sendNotification(textStr)
         }
         //add new challenges
         challenges.value = actualChallenges
@@ -359,15 +381,21 @@ class UserDataViewModel : ViewModel() {
         friendRequests.value!!.forEach {
             currentFriendRequests.add(it.friendID)
         }
+        var intFriendRequest = 0
         for (request in actualFriendRequests) {
             if (request !in currentFriendRequests) {
                 addFriendRequests.add(request as String)
+                intFriendRequest++
             }
         }
         for (request in currentFriendRequests) {
             if (request !in actualFriendRequests) {
                 removeFriendRequests.add(request)
             }
+        }
+        if (intFriendRequest != 0){
+            var textStr = "You have " + intFriendRequest + " Friendrequests!"
+            notificationHandler.sendNotification(textStr)
         }
         removeFriendRequests(removeFriendRequests)
         addFriendRequests(addFriendRequests)
