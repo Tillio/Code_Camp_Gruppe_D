@@ -23,7 +23,7 @@ abstract class GameViewModel : ViewModel() {
 
     abstract fun initGame(snap: DocumentSnapshot, docref: DocumentReference)
 
-    abstract fun onGameDataChanged(gameData: List<Long>)
+    abstract fun onGameDataChanged(gameData: List<String>)
 
     open fun onServerGameDataChanged(snap: DocumentSnapshot?, error: FirebaseFirestoreException?) {
         if (snap == null || !snap.exists()) {
@@ -32,7 +32,7 @@ abstract class GameViewModel : ViewModel() {
             return
         }
 
-        val gameData = snap[GAME_DATA] as MutableList<Long>
+        val gameData = snap[GAME_DATA] as MutableList<String>
         runGame.value!!.gameData = gameData
         onGameDataChanged(gameData)
     }

@@ -34,7 +34,7 @@ class TicTacToeViewModel : GameViewModel() {
     }
 
     fun playerMove(fieldNum: Int) {
-        runGameRaw.gameData.add(fieldNum.toLong())
+        runGameRaw.gameData.add(fieldNum.toString())
         updateGameData()
         move(fieldNum)
         _showOnTurn.value = false
@@ -101,7 +101,7 @@ class TicTacToeViewModel : GameViewModel() {
 
     override fun initGame(snap: DocumentSnapshot, docref: DocumentReference) {
         val playerRefs = snap[GAME_PLAYERS] as List<DocumentReference>
-        val beginnerIndex = snap.getLong(GAME_BEGINNER)?:0
+        val beginnerIndex = snap.getString(GAME_BEGINNER)?:"0"
         val isBeginner = playerRefs[beginnerIndex.toInt()].id == getOwnUserID()
         for (playerRef in playerRefs) {
             if (playerRef.id != getOwnUserID()) {
@@ -111,8 +111,8 @@ class TicTacToeViewModel : GameViewModel() {
                         value = TicTacToeModel.buildGame("You", opponentName?:"")
                         value!!.currentPlayer = if (isBeginner) value!!.player1 else value!!.player2
                     }
-                    val gameData = snap[GAME_DATA] as MutableList<Long>
-                    val gameDataLong: MutableList<Long> = gameData
+                    val gameData = snap[GAME_DATA] as MutableList<String>
+                    val gameDataLong: MutableList<String> = gameData
                     /*for (data in gameData){
                         gameDataLong.add(data.toLong())
                     }*/
@@ -128,7 +128,7 @@ class TicTacToeViewModel : GameViewModel() {
         }
     }
 
-    override fun onGameDataChanged(gameData: List<Long>) {
+    override fun onGameDataChanged(gameData: List<String>) {
         if (isOnTurn()) {
             return
         }

@@ -216,15 +216,15 @@ class UserDataViewModel : ViewModel() {
                     val localGame = gameIdIsLocal(snapshot.id)
                     if (localGame == null) {
                         //create game
-                        val beginner = snapshot[GAME_BEGINNER] as Long
-                        val gameData = snapshot[GAME_DATA] as ArrayList<Long>
+                        val beginner = snapshot[GAME_BEGINNER] as String
+                        val gameData = snapshot[GAME_DATA] as ArrayList<String>
                         val gameType = snapshot[GAME_TYPE] as String
                         val players = snapshot[GAME_PLAYERS] as ArrayList<DocumentReference>
                         val newGame = Game(beginner, gameData, gameType, players)
                         newGame.id = gameId
                         addGame(newGame)
                     } else {
-                        localGame.gameData = snapshot[GAME_DATA] as ArrayList<Long>
+                        localGame.gameData = snapshot[GAME_DATA] as ArrayList<String>
                     }
 
                 } else {
