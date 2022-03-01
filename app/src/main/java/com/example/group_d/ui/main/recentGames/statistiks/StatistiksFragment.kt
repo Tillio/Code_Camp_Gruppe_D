@@ -7,8 +7,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.example.group_d.R
+import com.example.group_d.databinding.StatistiksFragmentBinding
 
 class StatistiksFragment : Fragment() {
+
+    private var _binding:StatistiksFragmentBinding? = null
+    private val binding get() = _binding!!
 
     companion object {
         fun newInstance() = StatistiksFragment()
@@ -20,7 +24,10 @@ class StatistiksFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.statistiks_fragment, container, false)
+        _binding = StatistiksFragmentBinding.inflate(inflater, container, false)
+        val root = binding.root
+
+        return root
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {

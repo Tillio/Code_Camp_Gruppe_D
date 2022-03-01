@@ -57,6 +57,10 @@ abstract class GameViewModel : ViewModel() {
     fun deleteLoadedGame() {
         gameDataSnapshotRegistration.remove()
         db.collection(COL_GAMES).document(runGameID).delete()
+        runGameRaw.completed = true
+        runGameRaw.completionDate = System.currentTimeMillis()
+
+
         for (playerRef in runGameRaw.players) {
             db.collection(COL_USER)
                 .document(playerRef.id).collection(USER_DATA)

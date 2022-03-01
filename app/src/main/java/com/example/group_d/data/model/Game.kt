@@ -8,6 +8,10 @@ data class Game(
     val gameType: String,
     val players: List<DocumentReference>,
 
+
 ){
+    var completed = false
     var id: String = ""
+    val winner: User? = null
+    var completionDate: Long = 0
 }
