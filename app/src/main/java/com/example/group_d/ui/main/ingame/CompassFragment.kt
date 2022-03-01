@@ -63,8 +63,8 @@ class CompassFragment : Fragment(), SensorEventListener {
         SensorManager.getRotationMatrixFromVector(rotMat, event.values.filterIndexed { index, fl -> index < 3 }.toFloatArray())
         val orientation = FloatArray(3)
         SensorManager.getOrientation(rotMat, orientation)
-        val degrees = Math.toDegrees(360 - orientation[0].toDouble()).toFloat()
-        compassNeedle.rotation = degrees
+        val degrees = Math.toDegrees(orientation[0].toDouble()).toFloat()
+        compassNeedle.rotation = 360 - degrees
     }
 
     override fun onAccuracyChanged(sensor: Sensor, accuracy: Int) {
