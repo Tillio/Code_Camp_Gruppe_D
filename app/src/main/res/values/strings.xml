@@ -14,6 +14,8 @@
 
     <string name="title_activity_main_screen">MainScreenActivity</string>
 
+    <string name="default_notification_channel_id">CC_GD_C</string>
+
     <!--navbar-->
     <string name="title_games">Games</string>
     <string name="title_friends">Friends</string>
