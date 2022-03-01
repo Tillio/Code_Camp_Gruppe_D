@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.Chronometer
 import android.widget.EditText
 import android.widget.TextView
@@ -32,7 +33,8 @@ class MentalArithmeticsFragment : Fragment() {
 
     private lateinit var timer: Chronometer
     private lateinit var assignment: TextView
-    private lateinit var solution: EditText
+    private lateinit var userSolution: EditText
+    private lateinit var submitSolution: Button
 
     companion object {
         fun newInstance() = MentalArithmeticsFragment()
@@ -54,40 +56,50 @@ class MentalArithmeticsFragment : Fragment() {
             val gameData = doc.data!!.get("gameData") as ArrayList<String>
 
             val problems = createProblems(gameData.get(0))
-            timer.start()
-            for(i in 0..10) {
-                var realSolution = 0
-                val currentProblem = problems.first()
-                if(currentProblem.operator == "+") {
-                    realSolution = currentProblem.left + currentProblem.right
-                } else if (currentProblem.operator == "-") {
-                    realSolution = currentProblem.left - currentProblem.right
-                } else if (currentProblem.operator == "*") {
-                    realSolution = currentProblem.left * currentProblem.right
+
+            userSolution = root.findViewById(R.id.solution)
+
+            submitSolution = root.findViewById(R.id.submitSolution)
+
+            submitSolution.text = "Start"
+
+            assignment = root.findViewById(R.id.assignment)
+
+            var currentProblem = Problem(0, 0, "?")
+
+            submitSolution.setOnClickListener {
+                if(submitSolution.text == "Start") {
+                    currentProblem = problems.removeFirst()
+                    val problemText = currentProblem.left.toString() + currentProblem.operator + currentProblem.right.toString()
+                    assignment.text = problemText
+                    submitSolution.text = "Submit"
+                    timer.start()
+                } else if(submitSolution.text == "Submit") {
+
+                    //berechnen die richtige Lösung
+                    var realSolution = 0
+                    if(currentProblem.operator == "+") {
+                        realSolution = currentProblem.left + currentProblem.right
+                    } else if (currentProblem.operator == "-") {
+                        realSolution = currentProblem.left - currentProblem.right
+                    } else if (currentProblem.operator == "*") {
+                        realSolution = currentProblem.left * currentProblem.right
+                    }
+
+                    //Wenn die Lösung richtig ist, wird das nächste Problem eingefügt
+                    if(realSolution.toString() == userSolution.text.toString()) {
+                        if(problems.isNotEmpty()) {
+                            currentProblem = problems.removeFirst()
+                            val problemText =
+                                currentProblem.left.toString() + currentProblem.operator + currentProblem.right.toString()
+                            assignment.text = problemText
+                        } else if(problems.isEmpty()) {
+                            timer.stop()
+                        }
+                    }
                 }
-                val problemText = currentProblem.left.toString() + currentProblem.operator + currentProblem.right.toString()
-                assignment = root.findViewById(R.id.assignment)
-                assignment.text = problemText
-                problems.removeFirst()
-                solution = root.findViewById(R.id.solution)
-
-                solution.addTextChangedListener(object: TextWatcher {
-                    override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                        TODO("Not yet implemented")
-                    }
-
-                    override fun afterTextChanged(p0: Editable?) {
-                        TODO("Not yet implemented")
-                    }
-
-                    override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                        TODO("Not yet implemented")
-                    }
-                })
             }
-            timer.stop()
         }
-
         return root
     }
 
