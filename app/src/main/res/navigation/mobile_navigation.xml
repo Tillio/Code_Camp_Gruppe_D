@@ -65,7 +65,7 @@
     <fragment
         android:id="@+id/mentalArithmeticsFragment"
         android:name="com.example.group_d.ui.main.ingame.MentalArithmeticsFragment"
-        android:label="mental_arithmetics_fragment"
+        android:label="Mental Arithmetics"
         tools:layout="@layout/mental_arithmetics_fragment" >
         <argument
             android:name="gameID"
