@@ -12,6 +12,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import com.example.group_d.R
 import com.example.group_d.databinding.CompassFragmentBinding
 
 class CompassFragment : Fragment(), SensorEventListener {
@@ -39,6 +40,7 @@ class CompassFragment : Fragment(), SensorEventListener {
 
         sensorManager = activity?.getSystemService(Context.SENSOR_SERVICE) as SensorManager?
         rotVecSensor = sensorManager?.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR)
+        compassViewModel.loadLocations(String(resources.openRawResource(R.raw.compass_data).readBytes()))
 
         return root
     }
