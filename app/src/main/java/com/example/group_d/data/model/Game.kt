@@ -10,8 +10,6 @@ data class Game(
 
 
 ){
-    var completed = false
     var id: String = ""
-    val winner: User? = null
     var completionDate: Long = 0
 }

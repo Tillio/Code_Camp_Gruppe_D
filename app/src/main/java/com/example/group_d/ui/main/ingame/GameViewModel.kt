@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.group_d.*
 import com.example.group_d.data.model.Game
+import com.example.group_d.data.model.GameEnding
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.*
 import com.google.firebase.firestore.ktx.firestore
@@ -56,10 +57,10 @@ abstract class GameViewModel : ViewModel() {
 
     fun deleteLoadedGame() {
         gameDataSnapshotRegistration.remove()
-        db.collection(COL_GAMES).document(runGameID).delete()
-        runGameRaw.completed = true
-        runGameRaw.completionDate = System.currentTimeMillis()
 
+        runGameRaw.completionDate = System.currentTimeMillis()
+        val docref = db.collection(COL_GAMES).document(runGameID)
+        docref.update(GAME_COMPLETION_DATE, runGameRaw.completionDate)
 
         for (playerRef in runGameRaw.players) {
             db.collection(COL_USER)

@@ -21,7 +21,7 @@ class RecentGamesAdapter(private val recentGames: ArrayList<Game>, private val g
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val opponentName: TextView = view.findViewById(R.id.opponent)
         val gameTypeText: TextView = view.findViewById(R.id.gameType)
-        val winImageview: ImageView = view.findViewById(R.id.winIcon)
+        //val winImageview: ImageView = view.findViewById(R.id.winIcon)
         val defeatImageview: ImageView = view.findViewById(R.id.defeatIcon)
         val gameDetailButton: ImageButton = view.findViewById(R.id.gameDetailsButton)
 

@@ -59,7 +59,7 @@
         android:id="@+id/recentGamesFragment"
         android:name="com.example.group_d.ui.main.recentGames.RecentGamesFragment"
         android:label="recent_games_fragment"
-        tools:layout="@layout/recent_games_fragment" >
+        tools:layout="@layout/fragment_recent_games" >
         <action
             android:id="@+id/action_recentGamesFragment_to_statistiksFragment"
             app:destination="@id/statistiksFragment" />
