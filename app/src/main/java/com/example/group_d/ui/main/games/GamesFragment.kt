@@ -12,10 +12,12 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.group_d.GAME_TYPE_MENTAL_ARITHMETICS
+import com.example.group_d.GAME_TYPE_STEPS_GAME
 import com.example.group_d.GAME_TYPE_TIC_TAC_TOE
 import com.example.group_d.data.model.*
 import com.example.group_d.databinding.FragmentGamesBinding
 import com.example.group_d.ui.main.ingame.MentalArithmeticsFragmentDirections
+import com.example.group_d.ui.main.ingame.StepsGameFragmentDirections
 import com.example.group_d.ui.main.ingame.TicTacToeFragmentDirections
 
 class GamesFragment : Fragment(), GamesAdapter.GameStarter{
@@ -66,6 +68,10 @@ class GamesFragment : Fragment(), GamesAdapter.GameStarter{
         } else if(game.gameType == GAME_TYPE_MENTAL_ARITHMETICS) {
             findNavController().navigate(
                 MentalArithmeticsFragmentDirections.actionGlobalMentalArithmeticsFragment(game.id)
+            )
+        } else if(game.gameType == GAME_TYPE_STEPS_GAME) {
+            findNavController().navigate(
+                StepsGameFragmentDirections.actionGlobalStepsGameFragment(game.id)
             )
         }
     }

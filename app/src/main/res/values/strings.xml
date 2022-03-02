@@ -60,5 +60,6 @@
     <string-array name="new_game_gametypes">
         <item>TicTacToe</item>
         <item>Mental Arithmetics</item>
+        <item>Steps Game</item>
     </string-array>
 </resources>

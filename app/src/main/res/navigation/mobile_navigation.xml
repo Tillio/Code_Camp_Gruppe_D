@@ -45,6 +45,9 @@
     </fragment><action android:id="@+id/action_global_ingame_ticTacToeFragment" app:destination="@id/ingame_ticTacToeFragment"/>
 
     <action
+        android:id="@+id/action_global_steps_game_fragment"
+        app:destination="@id/stepsGameFragment" />
+    <action
         android:id="@+id/action_global_mental_arithmetics_fragment"
         app:destination="@id/mentalArithmeticsFragment" />
     <fragment
@@ -67,6 +70,15 @@
         android:name="com.example.group_d.ui.main.ingame.MentalArithmeticsFragment"
         android:label="Mental Arithmetics"
         tools:layout="@layout/mental_arithmetics_fragment" >
+        <argument
+            android:name="gameID"
+            app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/stepsGameFragment"
+        android:name="com.example.group_d.ui.main.ingame.StepsGameFragment"
+        android:label="Steps Game"
+        tools:layout="@layout/fragment_steps_game" >
         <argument
             android:name="gameID"
             app:argType="string" />
