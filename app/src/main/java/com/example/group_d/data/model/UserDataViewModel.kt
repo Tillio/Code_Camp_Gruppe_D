@@ -194,7 +194,7 @@ class UserDataViewModel : ViewModel() {
     /**
      * takes a games id and returns game with the same id or null if the id is unknown
      */
-    private fun gameIdIsLocal(gameId: String): Game? {
+    fun gameIdIsLocal(gameId: String): Game? {
         for (game in games.value!!) {
             if (gameId == game.id) {
                 return game
