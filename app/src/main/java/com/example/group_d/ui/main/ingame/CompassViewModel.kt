@@ -20,6 +20,7 @@ class CompassViewModel : GameViewModel() {
     val opponentName: LiveData<String> = _opponentName
     private val _currentLocation = MutableLiveData<CompassLocation>()
     val currentLocation: LiveData<CompassLocation> = _currentLocation
+    private val requestedLocationIndices: MutableList<Int> = ArrayList()
 
     override fun initGame(snap: DocumentSnapshot, docref: DocumentReference) {
         val playerRefs = snap[GAME_PLAYERS] as List<DocumentReference>
@@ -29,20 +30,15 @@ class CompassViewModel : GameViewModel() {
                 playerRef.get().addOnSuccessListener { playerSnap ->
                     _opponentName.value = playerSnap.getString(USER_NAME)
                     val gameData = snap[GAME_DATA] as MutableList<String>
-                    if (gameData.size > 0) {
-                        random = Random(gameData[0].toLong())
-                        for (i in 1 until gameData.size) {
-                            var nextRandomVal = random.nextInt(locations.size)
-                            while (gameData[i].toInt() != nextRandomVal) {
-                                nextRandomVal = random.nextInt(locations.size)
-                            }
+                    random = Random(gameData[0].toLong())
+                    for (i in 1..10) {
+                        var nextLocationIndex = random.nextInt(locations.size)
+                        while (nextLocationIndex in requestedLocationIndices) {
+                            nextLocationIndex = random.nextInt(locations.size)
                         }
-                    } else {
-                        val seed = Random.nextLong()
-                        random = Random(seed)
-                        gameData.add(seed.toString())
+                        requestedLocationIndices.add(nextLocationIndex)
                     }
-                    _currentLocation.value = locations[gameData[gameData.size - 1].toInt()]
+                    _currentLocation.value = locations[requestedLocationIndices.removeFirst()]
                     runGame.value = Game(beginnerIndex, gameData, GAME_TYPE_TIC_TAC_TOE, playerRefs)
                     updateGameData()
                     addGameDataChangedListener(docref)
@@ -74,12 +70,8 @@ class CompassViewModel : GameViewModel() {
     }
 
     fun nextLocation() {
-        var nextLocationIndex = random.nextInt(locations.size)
-        while (nextLocationIndex.toString() in runGameRaw.gameData) {
-            nextLocationIndex = random.nextInt(locations.size)
+        if (!requestedLocationIndices.isEmpty()) {
+            _currentLocation.value = locations[requestedLocationIndices.removeFirst()]
         }
-        runGameRaw.gameData.add(nextLocationIndex.toString())
-        updateGameData()
-        _currentLocation.value = locations.get(nextLocationIndex)
     }
 }

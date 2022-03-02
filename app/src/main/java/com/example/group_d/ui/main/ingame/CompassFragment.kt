@@ -45,6 +45,7 @@ class CompassFragment : Fragment(), SensorEventListener {
         textPlayerAction = binding.textPlayerAction
         compassNeedle = binding.compassNeedle
         val compassView = binding.compassView
+        val buttonGiveUp = binding.buttonGiveUp
 
         compassViewModel.opponentName.observe(viewLifecycleOwner) { opName ->
             textOpName.text = opName
@@ -55,6 +56,10 @@ class CompassFragment : Fragment(), SensorEventListener {
         }
 
         compassView.setOnClickListener(this::onLocationConfirmed)
+
+        buttonGiveUp.setOnClickListener {
+            compassViewModel.deleteLoadedGame()
+        }
 
         sensorManager = activity?.getSystemService(Context.SENSOR_SERVICE) as SensorManager?
         rotVecSensor = sensorManager?.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR)
