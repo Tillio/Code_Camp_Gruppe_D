@@ -40,6 +40,9 @@
             app:argType="string" />
     </fragment><action android:id="@+id/action_global_ingame_ticTacToeFragment" app:destination="@id/ingame_ticTacToeFragment"/>
 
+    <action
+        android:id="@+id/action_global_mental_arithmetics_fragment"
+        app:destination="@id/mentalArithmeticsFragment" />
     <fragment
         android:id="@+id/newGameSetup"
         android:name="com.example.group_d.ui.main.games.NewGameSetup"
@@ -55,6 +58,15 @@
             android:name="userStatus"
             app:argType="boolean"/>
     </fragment><action android:id="@+id/action_global_newGameSetup" app:destination="@id/newGameSetup"/>
+    <fragment
+        android:id="@+id/mentalArithmeticsFragment"
+        android:name="com.example.group_d.ui.main.ingame.MentalArithmeticsFragment"
+        android:label="Mental Arithmetics"
+        tools:layout="@layout/mental_arithmetics_fragment" >
+        <argument
+            android:name="gameID"
+            app:argType="string" />
+    </fragment>
     <fragment
         android:id="@+id/recentGamesFragment"
         android:name="com.example.group_d.ui.main.recentGames.RecentGamesFragment"

@@ -172,7 +172,7 @@ class UserDataViewModel : ViewModel() {
      */
     private fun gamesListener(snapshot: DocumentSnapshot) {
         val actualGames = snapshot.data?.get(USER_GAMES) as ArrayList<String>
-        //attach listener if game ist unknown
+        //attach listener if game is unknown
         for (game in actualGames) {
             val localGameData = gameIdIsLocal(game)
             if (localGameData == null) {
@@ -194,7 +194,7 @@ class UserDataViewModel : ViewModel() {
     /**
      * takes a games id and returns game with the same id or null if the id is unknown
      */
-    private fun gameIdIsLocal(gameId: String): Game? {
+    fun gameIdIsLocal(gameId: String): Game? {
         for (game in games.value!!) {
             if (gameId == game.id) {
                 return game
@@ -240,6 +240,11 @@ class UserDataViewModel : ViewModel() {
 
     private fun challengeListener(snapshot: DocumentSnapshot) {
         val actualChallenges = ArrayList<Challenge>()
+        val currentChallenges = ArrayList<Challenge>()
+
+        challenges.value!!.forEach {
+            currentChallenges.add(it)
+        }
 
         for (chall in snapshot.data?.get(USER_CHALLENGES) as ArrayList<HashMap<*, *>>) {
             val type = chall["gameType"]
@@ -257,7 +262,8 @@ class UserDataViewModel : ViewModel() {
                     }
                 }
             }
-            actualChallenges.add(Challenge(user = userObj, gameType = type as String))
+            var newChallenge = Challenge(user = userObj, gameType = type as String)
+            actualChallenges.add(newChallenge)
         }
         //add new challenges
         challenges.value = actualChallenges

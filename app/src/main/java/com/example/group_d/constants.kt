@@ -18,6 +18,7 @@ const val GAME_BEGINNER = "beginner"
 const val GAME_DATA = "gameData"
 const val GAME_TYPE = "gameType"
 const val GAME_TYPE_TIC_TAC_TOE = "TIC_TAC_TOE"
+const val GAME_TYPE_MENTAL_ARITHMETICS = "Mental Arithmetics"
 const val GAME_PLAYERS = "players"
 const val GAME_COMPLETION_DATE = "completionDate"
 

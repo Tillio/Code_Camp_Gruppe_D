@@ -11,13 +11,18 @@ import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.NavDirections
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.group_d.GAME_TYPE_MENTAL_ARITHMETICS
+import com.example.group_d.GAME_TYPE_TIC_TAC_TOE
 import com.example.group_d.R
 import com.example.group_d.data.model.Challenge
 import com.example.group_d.data.model.UserDataViewModel
 import com.example.group_d.databinding.FragmentChallengesBinding
+import com.example.group_d.ui.main.games.GamesFragmentDirections
+import com.example.group_d.ui.main.ingame.MentalArithmeticsFragmentDirections
 import com.example.group_d.ui.main.ingame.TicTacToeFragmentDirections
 
 class ChallengesFragment : Fragment() {
@@ -58,9 +63,14 @@ class ChallengesFragment : Fragment() {
     fun onAccept(challenge: Challenge) {
         Log.d(null, "Start new game with ${challenge.user.name}")
         challengesViewModel.createGame(challenge).addOnSuccessListener { docref ->
-            val action =
-                TicTacToeFragmentDirections.actionGlobalIngameTicTacToeFragment(docref.id)
-            findNavController().navigate(action)
+            if(challenge.gameType == GAME_TYPE_TIC_TAC_TOE) {
+                findNavController().navigate(
+                    TicTacToeFragmentDirections.actionGlobalIngameTicTacToeFragment(docref.id))
+            } else if (challenge.gameType == GAME_TYPE_MENTAL_ARITHMETICS) {
+                findNavController().navigate(
+                    MentalArithmeticsFragmentDirections.actionGlobalMentalArithmeticsFragment(docref.id))
+            }
+
         }
     }
 

@@ -107,6 +107,7 @@
             android:layout_height="2dp"
             android:layout_marginTop="96dp"
             android:background="?android:attr/listDivider"
+            android:backgroundTint="@color/hlineColor"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -116,6 +117,7 @@
             android:layout_height="2dp"
             android:layout_marginBottom="96dp"
             android:background="?android:attr/listDivider"
+            android:backgroundTint="@color/hlineColor"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
@@ -125,6 +127,7 @@
             android:layout_height="288dp"
             android:layout_marginStart="96dp"
             android:background="?android:attr/listDivider"
+            android:backgroundTint="@color/hlineColor"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -134,6 +137,7 @@
             android:layout_height="288dp"
             android:layout_marginEnd="96dp"
             android:background="?android:attr/listDivider"
+            android:backgroundTint="@color/hlineColor"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
