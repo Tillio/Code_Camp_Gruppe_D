@@ -13,7 +13,7 @@ import com.example.group_d.R
 import com.example.group_d.USER_NAME
 import com.example.group_d.data.model.Game
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.DocumentReference
+
 
 class RecentGamesAdapter(private val recentGames: ArrayList<Game>, private val gameStarter: GameStarter) :
     RecyclerView.Adapter<RecentGamesAdapter.ViewHolder>() {
@@ -36,7 +36,6 @@ class RecentGamesAdapter(private val recentGames: ArrayList<Game>, private val g
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.recent_game_item, parent, false)
 
-
         return ViewHolder(view)
     }
 
@@ -47,7 +46,6 @@ class RecentGamesAdapter(private val recentGames: ArrayList<Game>, private val g
 
         holder.gameTypeText.text = GAME_TYPE_NAMES[game.gameType]
         holder.defeatImageview.isVisible = false
-
 
     }
 

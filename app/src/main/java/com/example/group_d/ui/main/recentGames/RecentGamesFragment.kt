@@ -49,7 +49,7 @@ class RecentGamesFragment : Fragment(), RecentGamesAdapter.GameStarter {
 
         //open statistics fragment on button click
         val statsButton: Button = root.findViewById(R.id.statistik_button)
-        statsButton.setOnClickListener { view ->
+        statsButton.setOnClickListener {
             val action =
                 RecentGamesFragmentDirections.actionRecentGamesFragmentToStatistiksFragment()
             findNavController().navigate(action)
@@ -62,14 +62,12 @@ class RecentGamesFragment : Fragment(), RecentGamesAdapter.GameStarter {
             viewModel.recentGamesLive.value?.let { RecentGamesAdapter(it, this) }
         recentGamesRecycler.layoutManager = LinearLayoutManager(context)
 
-        viewModel.recentGamesLive.observe(viewLifecycleOwner){newList ->
+        viewModel.recentGamesLive.observe(viewLifecycleOwner) { newList ->
             val recentGamesAdapter = RecentGamesAdapter(newList, this)
             recentGamesRecycler.adapter = recentGamesAdapter
         }
-
         return root
     }
-
 
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
