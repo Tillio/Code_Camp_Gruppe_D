@@ -54,9 +54,7 @@ class CompassFragment : Fragment(), SensorEventListener {
             textPlayerAction.text = "${curLocation.name}, ${curLocation.addr}"
         }
 
-        compassView.setOnClickListener {
-            compassViewModel.nextLocation()
-        }
+        compassView.setOnClickListener(this::onLocationConfirmed)
 
         sensorManager = activity?.getSystemService(Context.SENSOR_SERVICE) as SensorManager?
         rotVecSensor = sensorManager?.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR)
@@ -64,6 +62,10 @@ class CompassFragment : Fragment(), SensorEventListener {
         compassViewModel.loadRunningGame(args.gameID)
 
         return root
+    }
+
+    private fun onLocationConfirmed(view: View) {
+        compassViewModel.nextLocation()
     }
 
     override fun onPause() {
