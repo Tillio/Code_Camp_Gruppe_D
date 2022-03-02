@@ -20,6 +20,8 @@
         android:id="@+id/text_player_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textSize="20sp"
+        android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/invite_msg"
         app:layout_constraintEnd_toStartOf="@+id/button_challenge_acc"
         app:layout_constraintStart_toEndOf="@+id/profile_pic" />
@@ -29,6 +31,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/invite_msg_placeholder"
+        android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/button_challenge_acc"
         app:layout_constraintStart_toEndOf="@+id/profile_pic"

@@ -67,7 +67,7 @@
         android:layout_height="wrap_content"
         android:text="Opponent: 0:00"
         android:textAlignment="viewEnd"
-        android:textColor="#FF0000"
+        android:textColor="#e14646"
         android:textSize="34sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
