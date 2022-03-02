@@ -10,15 +10,20 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.navArgs
 import com.example.group_d.R
 import com.example.group_d.databinding.CompassFragmentBinding
 
 class CompassFragment : Fragment(), SensorEventListener {
     private lateinit var compassViewModel: CompassViewModel
     private var _binding: CompassFragmentBinding? = null
+    private val args: CompassFragmentArgs by navArgs()
 
+    private lateinit var textOpName: TextView
+    private lateinit var textPlayerAction: TextView
     private lateinit var compassNeedle: ImageView
 
     private var sensorManager: SensorManager? = null
@@ -36,11 +41,27 @@ class CompassFragment : Fragment(), SensorEventListener {
 
         _binding = CompassFragmentBinding.inflate(inflater, container, false)
         val root = binding.root
+        textOpName = binding.textOpName
+        textPlayerAction = binding.textPlayerAction
         compassNeedle = binding.compassNeedle
+        val compassView = binding.compassView
+
+        compassViewModel.opponentName.observe(viewLifecycleOwner) { opName ->
+            textOpName.text = opName
+        }
+
+        compassViewModel.currentLocation.observe(viewLifecycleOwner) { curLocation ->
+            textPlayerAction.text = "${curLocation.name}, ${curLocation.addr}"
+        }
+
+        compassView.setOnClickListener {
+            compassViewModel.nextLocation()
+        }
 
         sensorManager = activity?.getSystemService(Context.SENSOR_SERVICE) as SensorManager?
         rotVecSensor = sensorManager?.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR)
         compassViewModel.loadLocations(String(resources.openRawResource(R.raw.compass_data).readBytes()))
+        compassViewModel.loadRunningGame(args.gameID)
 
         return root
     }

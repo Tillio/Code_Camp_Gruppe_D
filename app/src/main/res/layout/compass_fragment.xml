@@ -50,9 +50,10 @@
         android:id="@+id/text_player_action"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/player_piece" />
+        app:layout_constraintTop_toBottomOf="@+id/player_profile_pic" />
 
     <ProgressBar
         android:id="@+id/wait"
@@ -74,25 +75,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <ImageView
-        android:id="@+id/player_piece"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:src="@drawable/ic_baseline_panorama_fish_eye_24"
-        app:layout_constraintEnd_toEndOf="@+id/player_profile_pic"
-        app:layout_constraintStart_toStartOf="@+id/player_profile_pic"
-        app:layout_constraintTop_toBottomOf="@+id/player_profile_pic" />
-
-    <ImageView
-        android:id="@+id/op_piece"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/ic_baseline_close_24"
-        app:layout_constraintEnd_toEndOf="@+id/op_profile_pic"
-        app:layout_constraintStart_toStartOf="@+id/op_profile_pic"
-        app:layout_constraintTop_toTopOf="@+id/player_piece" />
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="288dp"
         android:layout_height="288dp"
@@ -108,7 +90,7 @@
             android:layout_height="wrap_content"
             android:rotation="0"
             android:src="@drawable/ic_baseline_north_192"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toBottomOf="@+id/compass_view"
             app:layout_constraintEnd_toEndOf="@+id/compass_view"
             app:layout_constraintStart_toStartOf="@+id/compass_view"
             app:layout_constraintTop_toTopOf="@+id/compass_view" />
