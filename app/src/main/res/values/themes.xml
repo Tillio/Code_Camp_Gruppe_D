@@ -23,9 +23,4 @@
         <item name="android:textColorPrimary">@color/textColor</item>
         <item name="cardBackgroundColor">@color/cardBackgroundColor</item>
     </style>
-
-    <style name="ThemeOverlay.Group_D.FullscreenContainer" parent="">
-        <item name="fullscreenBackgroundColor">@color/light_blue_600</item>
-        <item name="fullscreenTextColor">@color/light_blue_A200</item>
-    </style>
 </resources>
