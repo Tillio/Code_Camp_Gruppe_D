@@ -72,7 +72,8 @@ class CompassViewModel : GameViewModel() {
 
     fun nextLocation() {
         if (!requestedLocationIndices.isEmpty()) {
-            _currentLocation.value = locations[requestedLocationIndices.removeFirst()]
+            // use postValue instead of setValue because this method is called from another thread
+            _currentLocation.postValue(locations[requestedLocationIndices.removeFirst()])
         }
     }
 

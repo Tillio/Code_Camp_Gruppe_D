@@ -12,6 +12,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Chronometer
 import android.widget.ImageView
+import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -19,6 +20,7 @@ import androidx.navigation.fragment.navArgs
 import com.example.group_d.R
 import com.example.group_d.data.model.Game
 import com.example.group_d.databinding.CompassFragmentBinding
+import java.util.*
 
 class CompassFragment : Fragment(), SensorEventListener {
     private lateinit var compassViewModel: CompassViewModel
@@ -27,11 +29,13 @@ class CompassFragment : Fragment(), SensorEventListener {
 
     private lateinit var textOpName: TextView
     private lateinit var textPlayerAction: TextView
+    private lateinit var waitSymbol: ProgressBar
     private lateinit var timer: Chronometer
     private lateinit var compassNeedle: ImageView
 
     private var sensorManager: SensorManager? = null
     private var rotVecSensor: Sensor? = null
+    private var waiting: Boolean = false
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -47,6 +51,7 @@ class CompassFragment : Fragment(), SensorEventListener {
         val root = binding.root
         textOpName = binding.textOpName
         textPlayerAction = binding.textPlayerAction
+        waitSymbol = binding.wait
         timer = binding.compassTimer
         compassNeedle = binding.compassNeedle
         val compassView = binding.compassView
@@ -85,7 +90,23 @@ class CompassFragment : Fragment(), SensorEventListener {
     }
 
     private fun onLocationConfirmed(view: View) {
+        if (waiting) {
+            return
+        }
+        waiting = true
+        Timer().schedule(object : TimerTask() {
+            override fun run() {
+                waitTimerFinished()
+            }
+        }, 5000)
+        waitSymbol.visibility = View.VISIBLE
+    }
+
+    private fun waitTimerFinished() {
+        // TODO: Check if the device point in the right direction
         compassViewModel.nextLocation()
+        waitSymbol.visibility = View.INVISIBLE
+        waiting = false
     }
 
     override fun onPause() {
