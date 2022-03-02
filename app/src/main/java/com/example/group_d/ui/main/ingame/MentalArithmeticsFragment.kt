@@ -78,6 +78,23 @@ class MentalArithmeticsFragment : Fragment() {
 
         val game = db.collection(COL_GAMES).document(args.gameID).get().addOnSuccessListener { doc ->
             val gameData = doc.data!!.get("gameData") as ArrayList<String>
+            var problemNumber = 1
+            var started = false
+            var timerBase: Long = 0
+            if(gameData.size > 1) {
+                for (i in 1 until (gameData.size)) {
+                    val dataItem = gameData[i].split("=")
+                    if ((dataItem.get(0) == Firebase.auth.currentUser!!.email) && (dataItem.get(1) == "started")) {
+                        started = true
+                    }
+                    if((dataItem.get(0) == Firebase.auth.currentUser!!.email) && (dataItem.get(1) == "timerBase")) {
+                        timerBase = dataItem.get(2).toLong()
+                    }
+                    if((dataItem.get(0) == Firebase.auth.currentUser!!.email) && (dataItem.get(1) == "problemNumber")) {
+                        problemNumber = dataItem.get(2).toInt()
+                    }
+                }
+            }
 
             val problems = createProblems(gameData.get(0))
 
@@ -85,20 +102,35 @@ class MentalArithmeticsFragment : Fragment() {
 
             submitSolution = root.findViewById(R.id.submitSolution)
 
-            submitSolution.text = "Start"
-
             assignment = root.findViewById(R.id.assignment)
 
             var currentProblem = Problem(0, 0, "?")
 
+            if(started) {
+                submitSolution.text = "Submit"
+                for(i in 0 until problemNumber) {
+                    currentProblem = problems.removeFirst()
+                }
+                val problemText = currentProblem.left.toString() + currentProblem.operator + currentProblem.right.toString()
+                assignment.text = problemText
+                timer.base = timerBase
+                timer.start()
+            }
+
             submitSolution.setOnClickListener {
                 if(submitSolution.text == "Start") {
+                    //schreibt in die Datenbank, dass das Spiel gestartet wurde
+                    db.collection(COL_GAMES).document(args.gameID).update(GAME_DATA, FieldValue.arrayUnion(
+                        Firebase.auth.currentUser!!.email + "=" + "started"))
                     currentProblem = problems.removeFirst()
                     val problemText = currentProblem.left.toString() + currentProblem.operator + currentProblem.right.toString()
                     assignment.text = problemText
                     submitSolution.text = "Submit"
-                    timer.setBase(SystemClock.elapsedRealtime())
+                    timer.base = SystemClock.elapsedRealtime()
                     timer.start()
+                    db.collection(COL_GAMES).document(args.gameID).update(GAME_DATA, FieldValue.arrayUnion(
+                        Firebase.auth.currentUser!!.email + "=" + "timerBase" + "=" + timer.base
+                    ))
                 } else if(submitSolution.text == "Submit") {
 
                     //berechnen die richtige Lösung
@@ -113,6 +145,17 @@ class MentalArithmeticsFragment : Fragment() {
 
                     //Wenn die Lösung richtig ist, wird das nächste Problem eingefügt oder das Spiel beendet
                     if(realSolution.toString() == userSolution.text.toString()) {
+                        db.collection(COL_GAMES).document(args.gameID).update(
+                            GAME_DATA, FieldValue.arrayRemove(
+                                Firebase.auth.currentUser!!.email + "=" + "problemNumber" + "=" + problemNumber
+                            )
+                        )
+                        problemNumber += 1
+                        db.collection(COL_GAMES).document(args.gameID).update(
+                            GAME_DATA, FieldValue.arrayUnion(
+                                Firebase.auth.currentUser!!.email + "=" + "problemNumber" + "=" + problemNumber
+                            )
+                        )
                         if(problems.isNotEmpty()) {
                             currentProblem = problems.removeFirst()
                             val problemText =
@@ -122,7 +165,7 @@ class MentalArithmeticsFragment : Fragment() {
                             timer.stop()
                             assignment.setText("FINISHED")
                             db.collection(COL_GAMES).document(args.gameID).update(GAME_DATA, FieldValue.arrayUnion(
-                                Firebase.auth.currentUser!!.email + "=" + timer.text))
+                                Firebase.auth.currentUser!!.email + "=" + "finalTime" + "=" + timer.text))
                         }
                     }
                 }

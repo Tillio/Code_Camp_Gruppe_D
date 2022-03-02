@@ -32,27 +32,34 @@ class MentalArithmeticsViewModel : GameViewModel() {
     }
 
     override fun onGameDataChanged(gameData: List<String>) {
+        var playerOneData: List<String> = emptyList()
+        var playerTwoData: List<String> = emptyList()
         if(gameData.size > 1) {
-            for (i in 1..(gameData.size - 1)) {
+            for (i in 1 until (gameData.size)) {
                 val dataItem = gameData[i].split("=")
-                if (dataItem.get(0) != Firebase.auth.currentUser!!.email) {
-                    _opponentTime.value = dataItem.get(1)
+                if (dataItem[0] != Firebase.auth.currentUser!!.email && dataItem[1] == "finalTime") {
+                    _opponentTime.value = dataItem[2]
+                }
+                if (dataItem[1] == "finalTime") {
+                    if (playerOneData.isEmpty()) {
+                        playerOneData = dataItem
+                    } else if (playerOneData.isNotEmpty()) {
+                        playerTwoData = dataItem
+                    }
                 }
             }
         }
 
-        if(gameData.size == 3) {
-            val playerOneData = gameData.get(1).split("=")
-            val playerOneName = playerOneData.get(0)
-            val playerOneTime = playerOneData.get(1)
+        if(playerOneData.isNotEmpty() && playerTwoData.isNotEmpty()) {
+            val playerOneName = playerOneData[0]
+            val playerOneTime = playerOneData[2]
             val playerOneTimeData = playerOneTime.split(":")
-            val playerOneSeconds = playerOneTimeData.get(0).toInt()*60 + playerOneTimeData.get(1).toInt()
+            val playerOneSeconds = playerOneTimeData[0].toInt()*60 + playerOneTimeData[1].toInt()
 
-            val playerTwoData = gameData.get(2).split("=")
-            val playerTwoName = playerTwoData.get(0)
-            val playerTwoTime = playerTwoData.get(1)
+            val playerTwoName = playerTwoData[0]
+            val playerTwoTime = playerTwoData[2]
             val playerTwoTimeData = playerTwoTime.split(":")
-            val playerTwoSeconds = playerTwoTimeData.get(0).toInt()*60 + playerTwoTimeData.get(1).toInt()
+            val playerTwoSeconds = playerTwoTimeData[0].toInt()*60 + playerTwoTimeData[1].toInt()
 
             if (playerTwoSeconds < playerOneSeconds) {
                 _winner.value = playerTwoName
