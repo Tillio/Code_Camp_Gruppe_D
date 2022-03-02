@@ -54,6 +54,11 @@ abstract class GameViewModel : ViewModel() {
         docref.update(GAME_DATA, runGameRaw.gameData)
     }
 
+    fun updateGameData(value: String) {
+        val docref = db.collection(COL_GAMES).document(runGameID)
+        docref.update(GAME_DATA, FieldValue.arrayUnion(value))
+    }
+
     fun deleteLoadedGame() {
         gameDataSnapshotRegistration.remove()
         db.collection(COL_GAMES).document(runGameID).delete()

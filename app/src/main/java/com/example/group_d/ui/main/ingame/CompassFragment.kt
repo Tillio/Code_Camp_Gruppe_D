@@ -6,15 +6,18 @@ import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import android.os.Bundle
+import android.os.SystemClock
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Chronometer
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.navArgs
 import com.example.group_d.R
+import com.example.group_d.data.model.Game
 import com.example.group_d.databinding.CompassFragmentBinding
 
 class CompassFragment : Fragment(), SensorEventListener {
@@ -24,6 +27,7 @@ class CompassFragment : Fragment(), SensorEventListener {
 
     private lateinit var textOpName: TextView
     private lateinit var textPlayerAction: TextView
+    private lateinit var timer: Chronometer
     private lateinit var compassNeedle: ImageView
 
     private var sensorManager: SensorManager? = null
@@ -43,6 +47,7 @@ class CompassFragment : Fragment(), SensorEventListener {
         val root = binding.root
         textOpName = binding.textOpName
         textPlayerAction = binding.textPlayerAction
+        timer = binding.compassTimer
         compassNeedle = binding.compassNeedle
         val compassView = binding.compassView
         val buttonGiveUp = binding.buttonGiveUp
@@ -64,9 +69,19 @@ class CompassFragment : Fragment(), SensorEventListener {
         sensorManager = activity?.getSystemService(Context.SENSOR_SERVICE) as SensorManager?
         rotVecSensor = sensorManager?.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR)
         compassViewModel.loadLocations(String(resources.openRawResource(R.raw.compass_data).readBytes()))
+        compassViewModel.runGame.observe(viewLifecycleOwner, this::onGameLoaded)
+
         compassViewModel.loadRunningGame(args.gameID)
 
         return root
+    }
+
+    fun onGameLoaded(game: Game?) {
+        var timerBase = compassViewModel.loadTimerBase()
+        timerBase = if (timerBase != 0L) timerBase else SystemClock.elapsedRealtime()
+        timer.base = timerBase
+        timer.start()
+        compassViewModel.saveTimerBase(timerBase)
     }
 
     private fun onLocationConfirmed(view: View) {

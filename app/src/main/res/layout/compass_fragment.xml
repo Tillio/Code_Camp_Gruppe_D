@@ -65,6 +65,17 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/text_player_action" />
 
+    <Chronometer
+        android:id="@+id/compass_timer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#4CAF50"
+        android:textSize="34sp"
+        app:layout_constraintBottom_toTopOf="@+id/constraintLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/wait" />
+
     <Button
         android:id="@+id/button_give_up"
         android:layout_width="wrap_content"
@@ -76,29 +87,30 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="288dp"
-        android:layout_height="288dp"
+        android:id="@+id/constraintLayout"
+        android:layout_width="180dp"
+        android:layout_height="180dp"
         app:layout_constraintBottom_toTopOf="@+id/button_give_up"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/wait"
-        app:layout_constraintVertical_bias="0.125">
+        app:layout_constraintTop_toBottomOf="@+id/wait">
 
         <ImageView
             android:id="@+id/compass_needle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:rotation="0"
-            android:src="@drawable/ic_baseline_north_192"
+            android:src="@drawable/ic_baseline_north_144"
             app:layout_constraintBottom_toBottomOf="@+id/compass_view"
             app:layout_constraintEnd_toEndOf="@+id/compass_view"
             app:layout_constraintStart_toStartOf="@+id/compass_view"
-            app:layout_constraintTop_toTopOf="@+id/compass_view" />
+            app:layout_constraintTop_toTopOf="@+id/compass_view"
+            app:srcCompat="@drawable/ic_baseline_north_144" />
 
         <View
             android:id="@+id/compass_view"
-            android:layout_width="288dp"
-            android:layout_height="288dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:background="@drawable/compass_circle"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

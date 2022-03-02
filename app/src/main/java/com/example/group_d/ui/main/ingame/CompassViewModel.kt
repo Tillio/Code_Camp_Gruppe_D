@@ -5,8 +5,10 @@ import androidx.lifecycle.MutableLiveData
 import com.example.group_d.*
 import com.example.group_d.data.model.CompassLocation
 import com.example.group_d.data.model.Game
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.DocumentSnapshot
+import com.google.firebase.ktx.Firebase
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import kotlin.random.Random
@@ -40,7 +42,6 @@ class CompassViewModel : GameViewModel() {
                     }
                     _currentLocation.value = locations[requestedLocationIndices.removeFirst()]
                     runGame.value = Game(beginnerIndex, gameData, GAME_TYPE_TIC_TAC_TOE, playerRefs)
-                    updateGameData()
                     addGameDataChangedListener(docref)
                 }
             }
@@ -73,5 +74,19 @@ class CompassViewModel : GameViewModel() {
         if (!requestedLocationIndices.isEmpty()) {
             _currentLocation.value = locations[requestedLocationIndices.removeFirst()]
         }
+    }
+
+    fun loadTimerBase(): Long {
+        for (str in runGameRaw.gameData) {
+            if (str.startsWith("tB_${Firebase.auth.currentUser!!.email}")) {
+                return str.split("=")[1].toLong()
+            }
+        }
+        return 0L
+    }
+
+    fun saveTimerBase(timerBase: Long) {
+        val gameDataVal = "tB_${Firebase.auth.currentUser!!.email}=$timerBase"
+        updateGameData(gameDataVal)
     }
 }
