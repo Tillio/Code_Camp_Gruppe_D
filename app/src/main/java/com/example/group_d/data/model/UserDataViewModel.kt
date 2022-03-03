@@ -101,11 +101,11 @@ class UserDataViewModel : ViewModel() {
             }
     }
 
-    fun challengeFriend(userid: String, challange: Challenge) {
+    fun challengeFriend(userid: String, challenge: Challenge) {
         Log.d(TAG, "creating challange request")
         // adding me to challanges of other user
         db.collection(COL_USER).document(userid).collection(USER_DATA).document(USER_CHALLENGES)
-            .update(USER_CHALLENGES, FieldValue.arrayUnion(challange))
+            .update(USER_CHALLENGES, FieldValue.arrayUnion(challenge))
     }
 
     fun getOwnUserID(): String {
@@ -248,6 +248,7 @@ class UserDataViewModel : ViewModel() {
 
         for (chall in snapshot.data?.get(USER_CHALLENGES) as ArrayList<HashMap<*, *>>) {
             val type = chall["gameType"]
+            val step_game_time = chall["step_game_time"] as Long
             val userMap = chall["user"] as HashMap<*, *>
             val uid = userMap["id"]
             val name = userMap["name"]
@@ -263,6 +264,7 @@ class UserDataViewModel : ViewModel() {
                 }
             }
             var newChallenge = Challenge(user = userObj, gameType = type as String)
+            newChallenge.step_game_time=step_game_time
             actualChallenges.add(newChallenge)
         }
         //add new challenges

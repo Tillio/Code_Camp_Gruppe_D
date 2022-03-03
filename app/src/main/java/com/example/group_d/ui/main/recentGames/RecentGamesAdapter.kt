@@ -8,7 +8,8 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
-import com.example.group_d.GAME_TYPE_NAMES
+import com.example.group_d.GAME_TYPE_MAP
+
 import com.example.group_d.R
 import com.example.group_d.USER_NAME
 import com.example.group_d.data.model.Game
@@ -44,7 +45,7 @@ class RecentGamesAdapter(private val recentGames: ArrayList<Game>, private val g
 
         loadOpponent(holder, game)
 
-        holder.gameTypeText.text = GAME_TYPE_NAMES[game.gameType]
+        holder.gameTypeText.text = GAME_TYPE_MAP[game.gameType]
         holder.defeatImageview.isVisible = false
 
     }

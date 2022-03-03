@@ -62,6 +62,13 @@
         <item>Mental Arithmetics</item>
         <item>Steps Game</item>
     </string-array>
+    <string-array name="step_game_time_options">
+        <item>debug</item>
+        <item>5</item>
+        <item>15</item>
+        <item>30</item>
+        <item>60</item>
+    </string-array>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="dummy_button">Dummy Button</string>
