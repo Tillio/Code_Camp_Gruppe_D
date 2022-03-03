@@ -40,12 +40,12 @@ class CompassFragment : Fragment(), SensorEventListener {
     private lateinit var textOpName: TextView
     private lateinit var textPlayerAction: TextView
     private lateinit var waitSymbol: ProgressBar
-    private lateinit var timer: Chronometer
+    private lateinit var timeCount: Chronometer
     private lateinit var compassNeedle: ImageView
 
     private var sensorManager: SensorManager? = null
     private var rotVecSensor: Sensor? = null
-    private var waiting: Boolean = false
+    private lateinit var waitTimer: Timer
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -70,7 +70,7 @@ class CompassFragment : Fragment(), SensorEventListener {
         textOpName = binding.textOpName
         textPlayerAction = binding.textPlayerAction
         waitSymbol = binding.wait
-        timer = binding.compassTimer
+        timeCount = binding.compassTimer
         compassNeedle = binding.compassNeedle
         val compassView = binding.compassView
         val buttonGiveUp = binding.buttonGiveUp
@@ -124,25 +124,28 @@ class CompassFragment : Fragment(), SensorEventListener {
 
     }
 
-    fun onGameLoaded(game: Game?) {
+    private fun onGameLoaded(game: Game?) {
         var timerBase = compassViewModel.loadTimerBase()
         timerBase = if (timerBase != 0L) timerBase else SystemClock.elapsedRealtime()
-        timer.base = timerBase
-        timer.start()
+        timeCount.base = timerBase
+        timeCount.start()
         compassViewModel.saveTimerBase(timerBase)
     }
 
     private fun onLocationConfirmed(view: View) {
-        if (waiting) {
+        if (waitSymbol.visibility == View.VISIBLE) {
+            // cancel confirmation if the user is waiting
+            waitTimer.cancel()
+            waitSymbol.visibility = View.INVISIBLE
             return
         }
-        waiting = true
-        Timer().schedule(object : TimerTask() {
+        waitSymbol.visibility = View.VISIBLE
+        waitTimer = Timer()
+        waitTimer.schedule(object : TimerTask() {
             override fun run() {
                 waitTimerFinished()
             }
         }, 5000)
-        waitSymbol.visibility = View.VISIBLE
         if (ContextCompat.checkSelfPermission(
                 requireContext(),
                 Manifest.permission.ACCESS_FINE_LOCATION
@@ -164,7 +167,6 @@ class CompassFragment : Fragment(), SensorEventListener {
         // TODO: Check if the device points in the right direction
         compassViewModel.nextLocation()
         waitSymbol.visibility = View.INVISIBLE
-        waiting = false
     }
 
     override fun onPause() {
