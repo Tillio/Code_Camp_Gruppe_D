@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.group_d.*
+import com.example.group_d.data.handler.NotificationHandler
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.DocumentReference
@@ -12,12 +13,16 @@ import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.messaging.FirebaseMessaging
+import com.google.firebase.messaging.RemoteMessage
+
 
 class UserDataViewModel : ViewModel() {
 
     var auth: FirebaseAuth = FirebaseAuth.getInstance()
     val TAG = "UserDataViewModel"
     val db = Firebase.firestore
+    var notificationHandler: NotificationHandler = NotificationHandler()
 
     var friends = MutableLiveData<ArrayList<User>>().apply {
         value = ArrayList()
@@ -51,11 +56,14 @@ class UserDataViewModel : ViewModel() {
                 for (document in documents) {
                     Log.d(TAG, "uid: ${document.id} of user: ${document["name"]} found")
                     sendFriendRequestToID(document.id)
+                    sendMessageToTopic(document.id, "New Friend request!")
                 }
             }
             .addOnFailureListener { exception ->
                 Log.w(TAG, "Error getting documents: ", exception)
             }
+
+
         return true
     }
 
@@ -106,6 +114,7 @@ class UserDataViewModel : ViewModel() {
         // adding me to challanges of other user
         db.collection(COL_USER).document(userid).collection(USER_DATA).document(USER_CHALLENGES)
             .update(USER_CHALLENGES, FieldValue.arrayUnion(challange))
+        sendMessageToTopic(userid, "New Challenge!")
     }
 
     fun getOwnUserID(): String {
@@ -423,5 +432,10 @@ class UserDataViewModel : ViewModel() {
             db.collection(COL_USER).document(friend.id).collection(USER_DATA).document(
                 USER_FRIENDS).update(USER_FRIENDS, FieldValue.arrayRemove(auth.uid.toString()))
         }
+    }
+
+    fun sendMessageToTopic(topic: String, msgType: String){
+        val message: RemoteMessage = RemoteMessage.Builder(topic).addData("type", msgType).build()
+        FirebaseMessaging.getInstance().send(message)
     }
 }
