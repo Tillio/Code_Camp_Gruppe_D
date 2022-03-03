@@ -1,5 +1,6 @@
 package com.example.group_d.ui.main.ingame
 
+import android.location.Location
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.group_d.*
@@ -11,6 +12,9 @@ import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.ktx.Firebase
 import com.google.gson.Gson
 import com.google.gson.JsonObject
+import kotlin.math.abs
+import kotlin.math.acos
+import kotlin.math.sqrt
 import kotlin.random.Random
 
 class CompassViewModel : GameViewModel() {
@@ -60,7 +64,7 @@ class CompassViewModel : GameViewModel() {
             }
             val jsonObj = element.asJsonObject
             val coordinates = jsonObj.get("geometry").asJsonObject.get("coordinates").asJsonArray.run {
-                FloatArray(2) { get(it).asFloat }
+                DoubleArray(2) { get(it).asDouble }
             }
             val jsonProps = jsonObj.get("properties").asJsonObject
             val name = jsonProps.get("Objekt").asString
@@ -75,6 +79,29 @@ class CompassViewModel : GameViewModel() {
             // use postValue instead of setValue because this method is called from another thread
             _currentLocation.postValue(locations[requestedLocationIndices.removeFirst()])
         }
+    }
+
+    fun checkRightDirection(userPos: Location, orientation: Float): Boolean {
+        // set altitudes to 0 because the geoportal doesn't provide them
+        val userPosEcef =
+            CompassLocation.geodeticToEcef(userPos.latitude, userPos.longitude, 0.0)
+        val currentLocationEcef = _currentLocation.value!!.run {
+            CompassLocation.geodeticToEcef(coordinates[1], coordinates[0], 0.0)
+        }
+        val locationEnu = CompassLocation.EcefToEnu(userPosEcef, currentLocationEcef)
+        val magneticNorthEnu = CompassLocation.EcefToEnu(userPosEcef, CompassLocation.magneticNorthEcef)
+        val locationEnuNorm = sqrt(locationEnu.map { it * it }.sum())
+        val magneticNorthEnuNorm = sqrt(magneticNorthEnu.map { it * it }.sum())
+        val locationDir = locationEnu.map { it / locationEnuNorm }
+        val magneticNorthDir = magneticNorthEnu.map { it / magneticNorthEnuNorm }
+        val diff = locationDir.mapIndexed { i, d -> d - magneticNorthDir[i] }
+        val dotProd = locationDir.mapIndexed { i, d -> d * magneticNorthDir[i] }.sum()
+        var rightOrientation = acos(dotProd)
+        if (diff[0] < 0) {
+            rightOrientation = -rightOrientation
+        }
+        // tolerance of 10 degrees
+        return abs(Math.toDegrees(rightOrientation) - orientation) <= 10
     }
 
     fun loadTimerBase(): Long {

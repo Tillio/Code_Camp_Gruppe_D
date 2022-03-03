@@ -18,7 +18,6 @@ import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -52,7 +51,8 @@ class CompassFragment : Fragment(), SensorEventListener {
     private val binding get() = _binding!!
 
     private lateinit var fusedLocationClient: FusedLocationProviderClient
-    private var lastLocation: Location? = null
+    private var lastUserPosition: Location? = null
+    private var lastOrientation: Float = 0.0F
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -149,7 +149,7 @@ class CompassFragment : Fragment(), SensorEventListener {
         if (ContextCompat.checkSelfPermission(
                 requireContext(),
                 Manifest.permission.ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+            ) != PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(
                 requireContext(),
                 Manifest.permission.ACCESS_COARSE_LOCATION
             ) != PackageManager.PERMISSION_GRANTED
@@ -157,15 +157,17 @@ class CompassFragment : Fragment(), SensorEventListener {
             return
         }
         val cancelToken = CancellationTokenSource().token
-        fusedLocationClient.getCurrentLocation(LocationRequest.PRIORITY_HIGH_ACCURACY, cancelToken)
-            .addOnSuccessListener { location ->
-                lastLocation = location
-            }
+        fusedLocationClient.getCurrentLocation(
+            LocationRequest.PRIORITY_HIGH_ACCURACY, cancelToken
+        ).addOnSuccessListener { location ->
+            lastUserPosition = location
+        }
     }
 
     private fun waitTimerFinished() {
-        // TODO: Check if the device points in the right direction
-        compassViewModel.nextLocation()
+        if (compassViewModel.checkRightDirection(lastUserPosition!!, lastOrientation)) {
+            compassViewModel.nextLocation()
+        }
         waitSymbol.visibility = View.INVISIBLE
     }
 
@@ -191,6 +193,10 @@ class CompassFragment : Fragment(), SensorEventListener {
         SensorManager.getOrientation(rotMat, orientation)
         val degrees = Math.toDegrees(orientation[0].toDouble()).toFloat()
         compassNeedle.rotation = 360 - degrees
+        if (waitSymbol.visibility != View.VISIBLE) {
+            // only update last location if the user isn't waiting
+            lastOrientation = degrees
+        }
     }
 
     override fun onAccuracyChanged(sensor: Sensor, accuracy: Int) {
