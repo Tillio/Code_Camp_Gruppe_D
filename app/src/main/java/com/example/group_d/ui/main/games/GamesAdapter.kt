@@ -5,6 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.example.group_d.GAME_TYPE_MAP
 import com.example.group_d.R
 import com.example.group_d.USER_NAME
 import com.example.group_d.data.model.Game
@@ -38,9 +39,8 @@ class GamesAdapter(private val games: ArrayList<Game>, private val gameStarter: 
                 doc.get().addOnSuccessListener {
                     val get = it.data?.get(USER_NAME)
                     holder.ownVsEnemyName.text = "You vs. $get"
-                    if (games[position].gameType == "TIC_TAC_TOE"){
-                        holder.gameTypeText.text = "Tic Tac Toe"
-                    }
+                    val gameTypeString = GAME_TYPE_MAP[games[position].gameType]
+                    holder.gameTypeText.text = gameTypeString
                 }
             }
         }

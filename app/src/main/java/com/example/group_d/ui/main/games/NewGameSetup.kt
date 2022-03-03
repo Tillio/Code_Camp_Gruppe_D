@@ -17,6 +17,7 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.group_d.GAME_TYPE_MENTAL_ARITHMETICS
+import com.example.group_d.GAME_TYPE_STEPS_GAME
 import com.example.group_d.GAME_TYPE_TIC_TAC_TOE
 import com.example.group_d.R
 import com.example.group_d.data.model.Challenge
@@ -58,6 +59,17 @@ class NewGameSetup : Fragment() {
                 userDataViewModel.challengeFriend(args.userID, Challenge(User(name = Firebase.auth.currentUser!!.email.toString(), id = userDataViewModel.getOwnUserID(), online = true), GAME_TYPE_TIC_TAC_TOE))
             } else if (selectedGameText.text.toString() == "Mental Arithmetics") {
                 userDataViewModel.challengeFriend(args.userID, Challenge(User(name = Firebase.auth.currentUser!!.email.toString(), id = userDataViewModel.getOwnUserID(), online = true), GAME_TYPE_MENTAL_ARITHMETICS))
+            } else if (selectedGameText.text.toString() == "Steps Game") {
+                userDataViewModel.challengeFriend(
+                    args.userID,
+                    Challenge(
+                        User(
+                            name = Firebase.auth.currentUser!!.email.toString(),
+                            id = userDataViewModel.getOwnUserID(),
+                            online = true
+                        ), GAME_TYPE_STEPS_GAME
+                    )
+                )
             }
             findNavController().navigate(R.id.action_global_friendList)
         }

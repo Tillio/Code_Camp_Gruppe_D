@@ -147,7 +147,7 @@ class MentalArithmeticsFragment : Fragment() {
                     if(realSolution.toString() == userSolution.text.toString()) {
                         db.collection(COL_GAMES).document(args.gameID).update(
                             GAME_DATA, FieldValue.arrayRemove(
-                                Firebase.auth.currentUser!!.email + "=" + "problemNumber" + "=" + problemNumber
+                                Firebase.auth.currentUser!!.email + "=" + "problemNumber" + problemNumber
                             )
                         )
                         problemNumber += 1
