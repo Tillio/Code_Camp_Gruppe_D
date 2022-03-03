@@ -16,6 +16,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.group_d.GAME_TYPE_MENTAL_ARITHMETICS
+import com.example.group_d.GAME_TYPE_STEPS_GAME
 import com.example.group_d.GAME_TYPE_TIC_TAC_TOE
 import com.example.group_d.R
 import com.example.group_d.data.model.Challenge
@@ -23,6 +24,7 @@ import com.example.group_d.data.model.UserDataViewModel
 import com.example.group_d.databinding.FragmentChallengesBinding
 import com.example.group_d.ui.main.games.GamesFragmentDirections
 import com.example.group_d.ui.main.ingame.MentalArithmeticsFragmentDirections
+import com.example.group_d.ui.main.ingame.StepsGameFragmentDirections
 import com.example.group_d.ui.main.ingame.TicTacToeFragmentDirections
 
 class ChallengesFragment : Fragment() {
@@ -69,6 +71,10 @@ class ChallengesFragment : Fragment() {
             } else if (challenge.gameType == GAME_TYPE_MENTAL_ARITHMETICS) {
                 findNavController().navigate(
                     MentalArithmeticsFragmentDirections.actionGlobalMentalArithmeticsFragment(docref.id))
+            } else if (challenge.gameType == GAME_TYPE_STEPS_GAME) {
+                findNavController().navigate(
+                    StepsGameFragmentDirections.actionGlobalStepsGameFragment(docref.id)
+                )
             }
 
         }
