@@ -69,4 +69,6 @@ class MentalArithmeticsViewModel : GameViewModel() {
         }
     }
 
+
+
 }
