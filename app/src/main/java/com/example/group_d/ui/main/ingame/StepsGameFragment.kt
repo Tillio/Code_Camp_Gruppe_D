@@ -121,6 +121,7 @@ class StepsGameFragment : Fragment() {
         val game = db.collection(COL_GAMES).document(args.gameID).get().addOnSuccessListener { doc ->
             val gameData = doc.data!!.get("gameData") as ArrayList<String>
             var stepsStarted = false
+            var finished = false
             var remainingTime: Long = 0
 
             //dursucht die Datenbank nach bestimmten Schlüsselwörtern
@@ -139,14 +140,18 @@ class StepsGameFragment : Fragment() {
                     stepsBase = dataItem[2].toInt()
                 }
                 if((dataItem[0] == Firebase.auth.currentUser!!.email) && dataItem[1] == "finalStepsAmount") {
-                    stepsDone.text = "FINISHED:\n" + stepsGameViewModel.actualSteps.value.toString()
+                    finished = true
                 }
             }
 
             if(stepsStarted) {
                 startStepsButton.visibility = View.GONE
 
-                stepsDone.text = currentSteps.toString()
+                if(finished) {
+                    stepsDone.text = "FINISHED:\n" + currentSteps.toString()
+                } else {
+                    stepsDone.text = currentSteps.toString()
+                }
 
                 startTimer(remainingTime)
             }
@@ -174,7 +179,7 @@ class StepsGameFragment : Fragment() {
     }
 
     private fun startTimer(time_in_milli_seconds: Long) {
-        if(time_in_milli_seconds > 1000) {
+        if(time_in_milli_seconds > 1000L) {
             countdown_timer = object : CountDownTimer(time_in_milli_seconds, 1000) {
                 override fun onFinish() {
                     //stoppe Schrittsensor
@@ -185,7 +190,6 @@ class StepsGameFragment : Fragment() {
                             Firebase.auth.currentUser!!.email + "=" + "finalStepsAmount" + "=" + stepsGameViewModel.actualSteps.value
                         )
                     )
-
 
                     stepsDone.text = "FINISHED:\n" + stepsGameViewModel.actualSteps.value.toString()
                 }

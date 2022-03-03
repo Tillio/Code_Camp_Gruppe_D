@@ -25,7 +25,7 @@ class StepsGameViewModel : GameViewModel(), SensorEventListener {
     private val _stepsWinner = MutableLiveData<String>()
     val stepsWinner: LiveData<String> = _stepsWinner
 
-    private val _actualSteps = MutableLiveData<Int>()
+    private val _actualSteps = MutableLiveData<Int>(0)
     var actualSteps: LiveData<Int> = _actualSteps
 
     var stepsBase: Int = 0
