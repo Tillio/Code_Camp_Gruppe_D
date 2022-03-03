@@ -83,6 +83,12 @@ class CompassFragment : Fragment(), SensorEventListener {
             textPlayerAction.text = "${curLocation.name}, ${curLocation.addr}"
         }
 
+        compassViewModel.foundAllLocations.observe(viewLifecycleOwner) { foundAllLocations ->
+            if (foundAllLocations) {
+                onAllLocationsFound()
+            }
+        }
+
         compassView.setOnClickListener(this::onLocationConfirmed)
 
         buttonGiveUp.setOnClickListener {
@@ -170,6 +176,23 @@ class CompassFragment : Fragment(), SensorEventListener {
         }
         waitSymbol.visibility = View.INVISIBLE
     }
+
+    private fun onAllLocationsFound() {
+        timeCount.stop()
+        val neededTime = timeCount.text.split(":").run {
+            var result = 0
+            forEach {
+                result *= 60
+                result += it.toInt()
+            }
+            result
+        }
+        compassViewModel.saveNeededTime(neededTime)
+        textPlayerAction.text =
+            getString(R.string.compass_waiting_for_opponent, compassViewModel.opponentName.value?:"?")
+    }
+
+
 
     override fun onPause() {
         super.onPause()

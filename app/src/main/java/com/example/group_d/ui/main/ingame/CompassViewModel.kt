@@ -24,9 +24,18 @@ class CompassViewModel : GameViewModel() {
     private lateinit var random: Random
     private val _opponentName = MutableLiveData<String>()
     val opponentName: LiveData<String> = _opponentName
+
     private val _currentLocation = MutableLiveData<CompassLocation>()
     val currentLocation: LiveData<CompassLocation> = _currentLocation
     private val requestedLocationIndices: MutableList<Int> = ArrayList()
+
+    private val _foundAllLocations = MutableLiveData<Boolean>()
+    val foundAllLocations: LiveData<Boolean> = _foundAllLocations
+
+    private val _gameIsOver = MutableLiveData<Boolean>()
+    val gameIsOver: LiveData<Boolean> = _gameIsOver
+
+    private var neededTimeSaved: Boolean = false
 
     override fun initGame(snap: DocumentSnapshot, docref: DocumentReference) {
         val playerRefs = snap[GAME_PLAYERS] as List<DocumentReference>
@@ -44,8 +53,18 @@ class CompassViewModel : GameViewModel() {
                         }
                         requestedLocationIndices.add(nextLocationIndex)
                     }
+                    for (str in gameData) {
+                        if (str.startsWith("fL_${Firebase.auth.currentUser!!.email}=")) {
+                            val foundLocations = str.split("=")[1].toInt()
+                            for (i in 1..foundLocations) {
+                                requestedLocationIndices.removeFirst()
+                            }
+                            break
+                        }
+                    }
                     _currentLocation.value = locations[requestedLocationIndices.removeFirst()]
                     runGame.value = Game(beginnerIndex, gameData, GAME_TYPE_TIC_TAC_TOE, playerRefs)
+                    onGameDataChanged(gameData)
                     addGameDataChangedListener(docref)
                 }
             }
@@ -53,7 +72,19 @@ class CompassViewModel : GameViewModel() {
     }
 
     override fun onGameDataChanged(gameData: List<String>) {
-        // TODO("Not yet implemented")
+        var readyPlayers = 0
+        for (str in gameData) {
+            if (str.startsWith("nT_")) {
+                readyPlayers += 1
+                if (str.startsWith("nT_${Firebase.auth.currentUser!!.email}=")) {
+                    neededTimeSaved = true
+                    _foundAllLocations.value = true
+                }
+            }
+        }
+        if (readyPlayers == 2) {
+            _gameIsOver.value = true
+        }
     }
 
     fun loadLocations(json: String) {
@@ -78,7 +109,14 @@ class CompassViewModel : GameViewModel() {
         if (!requestedLocationIndices.isEmpty()) {
             // use postValue instead of setValue because this method is called from another thread
             _currentLocation.postValue(locations[requestedLocationIndices.removeFirst()])
+        } else {
+            _foundAllLocations.postValue(true)
         }
+        val oldGameDataVal =
+            "fL_${Firebase.auth.currentUser!!.email}=${10 - requestedLocationIndices.size - 2}"
+        deleteFromGameData(oldGameDataVal)
+        val gameDataVal = "fL_${Firebase.auth.currentUser!!.email}=${10 - requestedLocationIndices.size - 1}"
+        updateGameData(gameDataVal)
     }
 
     fun checkRightDirection(userPos: Location, orientation: Float): Boolean {
@@ -106,7 +144,7 @@ class CompassViewModel : GameViewModel() {
 
     fun loadTimerBase(): Long {
         for (str in runGameRaw.gameData) {
-            if (str.startsWith("tB_${Firebase.auth.currentUser!!.email}")) {
+            if (str.startsWith("tB_${Firebase.auth.currentUser!!.email}=")) {
                 return str.split("=")[1].toLong()
             }
         }
@@ -116,5 +154,14 @@ class CompassViewModel : GameViewModel() {
     fun saveTimerBase(timerBase: Long) {
         val gameDataVal = "tB_${Firebase.auth.currentUser!!.email}=$timerBase"
         updateGameData(gameDataVal)
+    }
+
+    fun saveNeededTime(neededTime: Int) {
+        if (neededTimeSaved) {
+            return
+        }
+        val gameDataVal = "nT_${Firebase.auth.currentUser!!.email}=$neededTime"
+        updateGameData(gameDataVal)
+        neededTimeSaved = true
     }
 }
