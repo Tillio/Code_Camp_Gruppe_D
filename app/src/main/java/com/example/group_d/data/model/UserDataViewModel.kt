@@ -248,6 +248,7 @@ class UserDataViewModel : ViewModel() {
 
         for (chall in snapshot.data?.get(USER_CHALLENGES) as ArrayList<HashMap<*, *>>) {
             val type = chall["gameType"]
+            val step_game_time = chall["step_game_time"] as Long
             val userMap = chall["user"] as HashMap<*, *>
             val uid = userMap["id"]
             val name = userMap["name"]
@@ -263,6 +264,7 @@ class UserDataViewModel : ViewModel() {
                 }
             }
             var newChallenge = Challenge(user = userObj, gameType = type as String)
+            newChallenge.step_game_time=step_game_time
             actualChallenges.add(newChallenge)
         }
         //add new challenges

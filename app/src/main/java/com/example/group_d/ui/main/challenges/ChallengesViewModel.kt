@@ -34,10 +34,20 @@ class ChallengesViewModel : ViewModel() {
             db.collection(COL_USER).document(Firebase.auth.currentUser!!.uid),
             db.collection(COL_USER).document(challenge.user.id)
         )
-        val game = Game(Random.nextLong(players.size.toLong()).toString(), ArrayList(), challenge.gameType, players)
-        if(challenge.gameType == GAME_TYPE_MENTAL_ARITHMETICS) {
+        val game = Game(
+            Random.nextLong(players.size.toLong()).toString(),
+            ArrayList(),
+            challenge.gameType,
+            players
+        )
+        if (challenge.gameType == GAME_TYPE_MENTAL_ARITHMETICS) {
             val seed = Random.nextInt(1000000, 10000000)
             val gameData = arrayListOf<String>(seed.toString())
+            game.gameData = gameData
+        } else if (challenge.gameType == GAME_TYPE_STEPS_GAME) {
+
+            val gameData =
+                arrayListOf<String>(Firebase.auth.currentUser!!.email + "=" + "gameTime" + "=" + challenge.step_game_time.toString())
             game.gameData = gameData
         }
         return db.collection(COL_GAMES).add(game).addOnSuccessListener { gameRef ->
