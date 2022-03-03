@@ -20,6 +20,7 @@
         android:id="@+id/text_player_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:text="name"
         android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/invite_msg"

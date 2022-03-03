@@ -21,4 +21,13 @@ const val GAME_TYPE_TIC_TAC_TOE = "TIC_TAC_TOE"
 const val GAME_TYPE_MENTAL_ARITHMETICS = "Mental Arithmetics"
 const val GAME_TYPE_STEPS_GAME = "Steps Game"
 const val GAME_PLAYERS = "players"
+const val GAME_COMPLETION_DATE = "completionDate"
+
+
 const val STEPS_TO_DO = "15"
+
+val GAME_TYPE_MAP = hashMapOf(
+    GAME_TYPE_TIC_TAC_TOE to "Tic Tac Toe",
+    GAME_TYPE_MENTAL_ARITHMETICS to "Kopfrechnen",
+    GAME_TYPE_STEPS_GAME to "Steps"
+)

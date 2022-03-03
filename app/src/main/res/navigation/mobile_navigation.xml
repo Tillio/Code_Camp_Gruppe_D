@@ -29,11 +29,7 @@
         android:label="@string/title_challenges"
         tools:layout="@layout/fragment_challenges" />
 
-    <fragment
-        android:id="@+id/navigation_settings"
-        android:name="com.example.group_d.ui.main.settings.SettingsFragment"
-        android:label="@string/title_settings"
-        tools:layout="@layout/fragment_settings" />
+
     <fragment
         android:id="@+id/ingame_ticTacToeFragment"
         android:name="com.example.group_d.ui.main.ingame.TicTacToeFragment"
@@ -83,4 +79,18 @@
             android:name="gameID"
             app:argType="string" />
     </fragment>
+    <fragment
+        android:id="@+id/recentGamesFragment"
+        android:name="com.example.group_d.ui.main.recentGames.RecentGamesFragment"
+        android:label="recent_games_fragment"
+        tools:layout="@layout/fragment_recent_games" >
+        <action
+            android:id="@+id/action_recentGamesFragment_to_statistiksFragment"
+            app:destination="@id/statistiksFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/statistiksFragment"
+        android:name="com.example.group_d.ui.main.recentGames.statistiks.StatisticsFragment"
+        android:label="statistiks_fragment"
+        tools:layout="@layout/fragment_statistics" />
 </navigation>
