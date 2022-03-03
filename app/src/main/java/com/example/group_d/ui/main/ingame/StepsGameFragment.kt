@@ -152,7 +152,8 @@ class StepsGameFragment : Fragment(), SensorEventListener {
                     )*/
                 }
 
-                val rxPermissions = RxPermissions(this)
+                val rxPermissions = RxPermissions(this
+                )
 
                 rxPermissions.request(Manifest.permission.ACTIVITY_RECOGNITION)
                     .subscribe { isGranted ->
@@ -161,7 +162,11 @@ class StepsGameFragment : Fragment(), SensorEventListener {
 
 
                 val pm: PackageManager = requireContext().getPackageManager()
-                if (pm.hasSystemFeature(PackageManager.FEATURE_SENSOR_STEP_COUNTER)) {
+                if (pm.hasSystemFeature(PackageManager.FEATURE_SENSOR_STEP_DETECTOR)) {
+                    print("amk")
+                }
+
+                if (pm.hasSystemFeature(PackageManager.FEATURE_CAMERA_FRONT)) {
                     print("amk")
                 }
 
