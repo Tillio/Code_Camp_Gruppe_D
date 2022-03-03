@@ -1,10 +1,12 @@
 package com.example.group_d.ui.main.games
 
+import android.opengl.Visibility
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.Button
@@ -39,11 +41,14 @@ class NewGameSetup : Fragment() {
 
     private lateinit var viewModel: NewGameSetupViewModel
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         val view = inflater.inflate(R.layout.fragment_new_game_setup, container, false)
 
-        val selectedGameText: TextView = view.findViewById(R.id.selectedGameText)
+        val spinnerGameSelect: Spinner = view.findViewById(R.id.game_select)
+        val stepGameTimeSelect: Spinner = view.findViewById(R.id.stepGameLengthSpinner)
 
         val playerItems: RecyclerView = view.findViewById(R.id.player_list)
         val adapter = PlayerAdapter()
@@ -53,13 +58,11 @@ class NewGameSetup : Fragment() {
 
         val buttonCancel: Button = view.findViewById(R.id.buttonCancel)
         val buttonStart: Button = view.findViewById(R.id.buttonStart)
-        buttonCancel.setOnClickListener { view -> view.findNavController().navigate(R.id.navigation_friends) }
+        buttonCancel.setOnClickListener { view ->
+            view.findNavController().navigate(R.id.navigation_friends)
+        }
         buttonStart.setOnClickListener {
-            if (selectedGameText.text.toString() == "TicTacToe") {
-                userDataViewModel.challengeFriend(args.userID, Challenge(User(name = Firebase.auth.currentUser!!.email.toString(), id = userDataViewModel.getOwnUserID(), online = true), GAME_TYPE_TIC_TAC_TOE))
-            } else if (selectedGameText.text.toString() == "Mental Arithmetics") {
-                userDataViewModel.challengeFriend(args.userID, Challenge(User(name = Firebase.auth.currentUser!!.email.toString(), id = userDataViewModel.getOwnUserID(), online = true), GAME_TYPE_MENTAL_ARITHMETICS))
-            } else if (selectedGameText.text.toString() == "Steps Game") {
+            if (spinnerGameSelect.selectedItem.toString() == "TicTacToe") {
                 userDataViewModel.challengeFriend(
                     args.userID,
                     Challenge(
@@ -67,14 +70,42 @@ class NewGameSetup : Fragment() {
                             name = Firebase.auth.currentUser!!.email.toString(),
                             id = userDataViewModel.getOwnUserID(),
                             online = true
-                        ), GAME_TYPE_STEPS_GAME
+                        ), GAME_TYPE_TIC_TAC_TOE
                     )
+                )
+            } else if (spinnerGameSelect.selectedItem.toString() == "Mental Arithmetics") {
+                userDataViewModel.challengeFriend(
+                    args.userID,
+                    Challenge(
+                        User(
+                            name = Firebase.auth.currentUser!!.email.toString(),
+                            id = userDataViewModel.getOwnUserID(),
+                            online = true
+                        ), GAME_TYPE_MENTAL_ARITHMETICS
+                    )
+                )
+            } else if (spinnerGameSelect.selectedItem.toString() == "Steps Game") {
+                val challenge = Challenge(
+                    User(
+                        name = Firebase.auth.currentUser!!.email.toString(),
+                        id = userDataViewModel.getOwnUserID(),
+                        online = true
+                    ), GAME_TYPE_STEPS_GAME
+                )
+                if (stepGameTimeSelect.selectedItem == "debug"){
+                    challenge.step_game_time = 15000
+                }else{
+                    challenge.step_game_time = (stepGameTimeSelect.selectedItem.toString().toLong())*60000
+                }
+                userDataViewModel.challengeFriend(
+                    args.userID,
+                    challenge
                 )
             }
             findNavController().navigate(R.id.action_global_friendList)
         }
 
-        val spinnerGameSelect: Spinner = view.findViewById(R.id.game_select)
+
         spinnerGameSelect.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
             override fun onItemSelected(
                 parent: AdapterView<*>?,
@@ -83,12 +114,16 @@ class NewGameSetup : Fragment() {
                 id: Long
             ) {
                 val strSelected: String = parent?.getItemAtPosition(position).toString()
-                selectedGameText.text = strSelected
+                if (strSelected == GAME_TYPE_STEPS_GAME){
+                    stepGameTimeSelect.visibility = VISIBLE
+                }
+
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {
             }
         }
+
 
         return view
     }
@@ -101,8 +136,8 @@ class NewGameSetup : Fragment() {
 
     fun createPlayers(): List<User> {
         val arrayList = ArrayList<User>()
-        arrayList.add(User( name = "you", id = userDataViewModel.getOwnUserID(), online = true))
-        arrayList.add(User( name = args.userName, id = args.userID, online = args.userStatus))
+        arrayList.add(User(name = "you", id = userDataViewModel.getOwnUserID(), online = true))
+        arrayList.add(User(name = args.userName, id = args.userID, online = args.userStatus))
         return arrayList
     }
 
