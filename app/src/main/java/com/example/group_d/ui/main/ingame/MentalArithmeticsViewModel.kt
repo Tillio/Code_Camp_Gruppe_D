@@ -63,8 +63,10 @@ class MentalArithmeticsViewModel : GameViewModel() {
 
             if (playerTwoSeconds < playerOneSeconds) {
                 _winner.value = playerTwoName
-            } else {
+            } else if (playerTwoSeconds > playerOneSeconds){
                 _winner.value = playerOneName
+            } else {
+                _winner.value = GAME_DRAW
             }
         }
     }

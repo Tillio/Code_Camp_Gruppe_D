@@ -62,15 +62,16 @@ abstract class GameViewModel : ViewModel() {
         docref.update(GAME_DATA, runGameRaw.gameData)
     }
 
-    fun deleteLoadedGame() {
+    fun deleteLoadedGame(winner: String) {
         if (this::gameDataSnapshotRegistration.isInitialized){
             gameDataSnapshotRegistration.remove()
 
         }
-
+        runGameRaw.winner = winner
         runGameRaw.completionDate = System.currentTimeMillis()
         val docref = db.collection(COL_GAMES).document(runGameID)
         docref.update(GAME_COMPLETION_DATE, runGameRaw.completionDate)
+        docref.update(GAME_WINNER, runGameRaw.winner)
 
         //db.collection(COL_GAMES).document(runGameID).delete()
 

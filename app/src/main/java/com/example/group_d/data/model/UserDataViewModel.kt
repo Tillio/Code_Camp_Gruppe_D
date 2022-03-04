@@ -236,7 +236,9 @@ class UserDataViewModel : ViewModel() {
         val gameData = snapshot[GAME_DATA] as ArrayList<String>
         val gameType = snapshot[GAME_TYPE] as String
         val players = snapshot[GAME_PLAYERS] as ArrayList<DocumentReference>
+        val winner = snapshot[GAME_WINNER] as String
         var newGame = Game(beginner, gameData, gameType, players)
+        newGame.winner = winner
         newGame.id = snapshot.id
         return newGame
     }

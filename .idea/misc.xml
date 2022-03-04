@@ -4,18 +4,12 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/Users/Nathanael/StudioProjects/Code_Camp_Gruppe_D/app/src/main/res/layout/activity_login.xml" value="0.20104166666666667" />
-        <entry key="..\:/Users/TillP/Documents/Code_Camp_Gruppe_D/app/src/main/res/layout-v21/recent_game_item.xml" value="0.23802083333333332" />
-        <entry key="..\:/Users/TillP/Documents/Code_Camp_Gruppe_D/app/src/main/res/layout/fragment_challenge_item.xml" value="0.2765625" />
-        <entry key="..\:/Users/TillP/Documents/Code_Camp_Gruppe_D/app/src/main/res/layout/fragment_mental_arithmetic_endstate.xml" value="0.28541666666666665" />
-        <entry key="..\:/Users/TillP/Documents/Code_Camp_Gruppe_D/app/src/main/res/layout/fragment_new_game_setup.xml" value="0.2791666666666667" />
-        <entry key="..\:/Users/TillP/Documents/Code_Camp_Gruppe_D/app/src/main/res/layout/fragment_recent_games.xml" value="0.3541666666666667" />
-        <entry key="..\:/Users/TillP/Documents/Code_Camp_Gruppe_D/app/src/main/res/layout/fragment_step_challenge_endstate.xml" value="0.25833333333333336" />
-        <entry key="..\:/Users/TillP/Documents/Code_Camp_Gruppe_D/app/src/main/res/layout/item_statistics_compas.xml" value="0.3020833333333333" />
-        <entry key="..\:/Users/TillP/Documents/Code_Camp_Gruppe_D/app/src/main/res/layout/item_statistics_mind_arithmethics.xml" value="0.3020833333333333" />
-        <entry key="..\:/Users/TillP/Documents/Code_Camp_Gruppe_D/app/src/main/res/layout/mental_arithmetics_fragment.xml" value="0.21302083333333333" />
-        <entry key="..\:/Users/TillP/Documents/Code_Camp_Gruppe_D/app/src/main/res/layout/recent_game_item.xml" value="0.25833333333333336" />
         <entry key="..\:/Users/domin/AndroidStudioProjects/Code_Camp_Gruppe_D/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.22135416666666666" />
+        <entry key="..\:/Users/domin/AndroidStudioProjects/Code_Camp_Gruppe_D/app/src/main/res/drawable/ic_baseline_close_24.xml" value="0.188" />
+        <entry key="..\:/Users/domin/AndroidStudioProjects/Code_Camp_Gruppe_D/app/src/main/res/drawable/ic_baseline_close_96.xml" value="0.188" />
         <entry key="..\:/Users/domin/AndroidStudioProjects/Code_Camp_Gruppe_D/app/src/main/res/drawable/ic_baseline_emoji_flags_24.xml" value="0.22135416666666666" />
+        <entry key="..\:/Users/domin/AndroidStudioProjects/Code_Camp_Gruppe_D/app/src/main/res/drawable/ic_baseline_panorama_fish_eye_24.xml" value="0.188" />
+        <entry key="..\:/Users/domin/AndroidStudioProjects/Code_Camp_Gruppe_D/app/src/main/res/drawable/ic_baseline_panorama_fish_eye_96.xml" value="0.188" />
         <entry key="..\:/Users/domin/AndroidStudioProjects/Code_Camp_Gruppe_D/app/src/main/res/drawable/ic_baseline_people_24.xml" value="0.22135416666666666" />
         <entry key="..\:/Users/domin/AndroidStudioProjects/Code_Camp_Gruppe_D/app/src/main/res/drawable/ic_baseline_person_24.xml" value="0.22135416666666666" />
         <entry key="..\:/Users/domin/AndroidStudioProjects/Code_Camp_Gruppe_D/app/src/main/res/drawable/ic_baseline_settings_24.xml" value="0.22135416666666666" />
@@ -26,7 +20,8 @@
         <entry key="..\:/Users/domin/AndroidStudioProjects/Code_Camp_Gruppe_D/app/src/main/res/drawable/ic_notifications_black_24dp.xml" value="0.22135416666666666" />
         <entry key="..\:/Users/domin/AndroidStudioProjects/Code_Camp_Gruppe_D/app/src/main/res/drawable/ic_outline_videogame_asset_24.xml" value="0.22135416666666666" />
         <entry key="..\:/Users/domin/AndroidStudioProjects/Code_Camp_Gruppe_D/app/src/main/res/drawable/ic_twotone_sports_esports_24.xml" value="0.22135416666666666" />
-        <entry key="..\:/Users/domin/AndroidStudioProjects/Code_Camp_Gruppe_D/app/src/main/res/layout/activity_login.xml" value="0.25" />
+        <entry key="..\:/Users/domin/AndroidStudioProjects/Code_Camp_Gruppe_D/app/src/main/res/layout-v21/recent_game_item.xml" value="0.1796875" />
+        <entry key="..\:/Users/domin/AndroidStudioProjects/Code_Camp_Gruppe_D/app/src/main/res/layout/activity_login.xml" value="0.33" />
         <entry key="..\:/Users/domin/AndroidStudioProjects/Code_Camp_Gruppe_D/app/src/main/res/layout/activity_main_screen.xml" value="0.28306159420289856" />
         <entry key="..\:/Users/domin/AndroidStudioProjects/Code_Camp_Gruppe_D/app/src/main/res/layout/fragment_challenge_item.xml" value="0.28306159420289856" />
         <entry key="..\:/Users/domin/AndroidStudioProjects/Code_Camp_Gruppe_D/app/src/main/res/layout/fragment_challenges.xml" value="0.28306159420289856" />
@@ -36,12 +31,15 @@
         <entry key="..\:/Users/domin/AndroidStudioProjects/Code_Camp_Gruppe_D/app/src/main/res/layout/fragment_game_item.xml" value="0.33" />
         <entry key="..\:/Users/domin/AndroidStudioProjects/Code_Camp_Gruppe_D/app/src/main/res/layout/fragment_games.xml" value="0.28306159420289856" />
         <entry key="..\:/Users/domin/AndroidStudioProjects/Code_Camp_Gruppe_D/app/src/main/res/layout/fragment_new_game_setup.xml" value="0.28229166666666666" />
+        <entry key="..\:/Users/domin/AndroidStudioProjects/Code_Camp_Gruppe_D/app/src/main/res/layout/fragment_recent_games.xml" value="0.23958333333333334" />
         <entry key="..\:/Users/domin/AndroidStudioProjects/Code_Camp_Gruppe_D/app/src/main/res/layout/fragment_settings.xml" value="0.28229166666666666" />
+        <entry key="..\:/Users/domin/AndroidStudioProjects/Code_Camp_Gruppe_D/app/src/main/res/layout/fragment_statistics.xml" value="0.23958333333333334" />
         <entry key="..\:/Users/domin/AndroidStudioProjects/Code_Camp_Gruppe_D/app/src/main/res/layout/fragment_steps_game.xml" value="0.26197916666666665" />
         <entry key="..\:/Users/domin/AndroidStudioProjects/Code_Camp_Gruppe_D/app/src/main/res/layout/friend_item.xml" value="0.2526041666666667" />
         <entry key="..\:/Users/domin/AndroidStudioProjects/Code_Camp_Gruppe_D/app/src/main/res/layout/friend_request_item.xml" value="0.25" />
         <entry key="..\:/Users/domin/AndroidStudioProjects/Code_Camp_Gruppe_D/app/src/main/res/layout/mental_arithmetics_fragment.xml" value="0.25" />
         <entry key="..\:/Users/domin/AndroidStudioProjects/Code_Camp_Gruppe_D/app/src/main/res/layout/player_item.xml" value="0.2833333333333333" />
+        <entry key="..\:/Users/domin/AndroidStudioProjects/Code_Camp_Gruppe_D/app/src/main/res/layout/recent_game_item.xml" value="0.23958333333333334" />
         <entry key="..\:/Users/domin/AndroidStudioProjects/Code_Camp_Gruppe_D/app/src/main/res/layout/tic_tac_toe_fragment.xml" value="0.1598731884057971" />
         <entry key="..\:/Users/domin/AndroidStudioProjects/Code_Camp_Gruppe_D/app/src/main/res/menu/bottom_nav_menu.xml" value="0.26197916666666665" />
       </map>
@@ -52,5 +50,12 @@
   </component>
   <component name="ProjectType">
     <option name="id" value="Android" />
+  </component>
+  <component name="VisualizationToolProject">
+    <option name="state">
+      <ProjectState>
+        <option name="scale" value="0.67" />
+      </ProjectState>
+    </option>
   </component>
 </project>

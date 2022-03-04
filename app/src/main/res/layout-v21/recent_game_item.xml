@@ -35,8 +35,7 @@
         app:layout_constraintEnd_toStartOf="@+id/gameDetailsButton"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toEndOf="@+id/opponent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_baseline_close_96" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/opponent"

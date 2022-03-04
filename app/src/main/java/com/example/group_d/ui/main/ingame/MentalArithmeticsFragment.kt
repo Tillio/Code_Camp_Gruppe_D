@@ -15,6 +15,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.navArgs
 import com.example.group_d.COL_GAMES
 import com.example.group_d.GAME_DATA
+import com.example.group_d.GAME_DRAW
 import com.example.group_d.R
 import com.example.group_d.data.model.GameEnding
 import com.example.group_d.data.model.Problem
@@ -65,10 +66,12 @@ class MentalArithmeticsFragment : Fragment() {
             Toast.makeText(activity, msgID, Toast.LENGTH_LONG).show()
             if(winner == Firebase.auth.currentUser!!.email) {
                 assignment.text = "WON"
+            } else if(winner == GAME_DRAW){
+                assignment.text = "DRAW"
             } else {
                 assignment.text = "LOST"
             }
-            mentalArithmeticsViewModel.deleteLoadedGame()
+            mentalArithmeticsViewModel.deleteLoadedGame(winner)
         }
 
         opponentTime = root.findViewById(R.id.opponentTime)

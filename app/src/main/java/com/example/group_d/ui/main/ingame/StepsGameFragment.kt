@@ -20,6 +20,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.navArgs
 import com.example.group_d.COL_GAMES
 import com.example.group_d.GAME_DATA
+import com.example.group_d.GAME_DRAW
 import com.example.group_d.R
 import com.example.group_d.data.model.UserDataViewModel
 import com.example.group_d.databinding.FragmentStepsGameBinding
@@ -102,10 +103,12 @@ class StepsGameFragment : Fragment() {
             Toast.makeText(activity, msgID, Toast.LENGTH_LONG).show()
             if (stepsWinner == Firebase.auth.currentUser!!.email) {
                 wonLost.text = "WON"
+            } else if (stepsWinner == GAME_DRAW){
+                wonLost.text = "DRAW"
             } else {
                 wonLost.text = "LOST"
             }
-            stepsGameViewModel.deleteLoadedGame()
+            stepsGameViewModel.deleteLoadedGame(stepsWinner)
         }
 
         stepsOpponent = root.findViewById(R.id.stepsTimeOpponent)
@@ -144,7 +147,7 @@ class StepsGameFragment : Fragment() {
                     if ((dataItem[0] == Firebase.auth.currentUser!!.email) && dataItem[1] == "finalStepsAmount") {
                         finished = true
                     }
-                    if ((dataItem[0] == Firebase.auth.currentUser!!.email) && dataItem[1] == "gameTime") {
+                    if (dataItem[1] == "gameTime") {
                         gameTime = dataItem[2].toLong()
                     }
                 }

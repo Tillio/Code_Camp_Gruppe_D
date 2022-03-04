@@ -12,6 +12,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.group_d.*
 import com.example.group_d.data.model.Game
+import com.example.group_d.data.model.GameEnding
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.DocumentSnapshot
@@ -81,8 +82,10 @@ class StepsGameViewModel : GameViewModel(), SensorEventListener {
 
             if (playerTwoSteps > playerOneSteps) {
                 _stepsWinner.value = playerTwoName
-            } else {
+            } else if (playerTwoSteps < playerOneSteps){
                 _stepsWinner.value = playerOneName
+            } else {
+                _stepsWinner.value = GAME_DRAW
             }
         }
     }

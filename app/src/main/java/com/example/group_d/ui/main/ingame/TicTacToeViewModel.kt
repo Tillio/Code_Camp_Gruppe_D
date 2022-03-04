@@ -25,6 +25,8 @@ class TicTacToeViewModel : GameViewModel() {
 
     private var turnNumber: Int = 0
 
+    var gameWinner: String = ""
+
     private val _ending = MutableLiveData<GameEnding>()
     val ending: LiveData<GameEnding> = _ending
 
@@ -64,6 +66,7 @@ class TicTacToeViewModel : GameViewModel() {
     private fun checkResult(lastSetField: TicTacToeModel.Field?) {
         if (lastSetField == null) {
             modelObj.winner = modelObj.currentPlayer.next
+            gameWinner = modelObj.winner!!.name
             _ending.value = if (isOnTurn()) GameEnding.LOSE else GameEnding.WIN
             return
         }
@@ -88,8 +91,10 @@ class TicTacToeViewModel : GameViewModel() {
 
         if (win) {
             modelObj.winner = lastPlayer
+            gameWinner = lastPlayer.name
             _ending.value = if (isOnTurn()) GameEnding.WIN else GameEnding.LOSE
         } else if (modelObj.player1.amountOfFields + modelObj.player2.amountOfFields >= TicTacToeModel.NUM_FIELDS) {
+            gameWinner = GAME_DRAW
             _ending.value = GameEnding.DRAW
         }
     }
@@ -157,7 +162,6 @@ class TicTacToeViewModel : GameViewModel() {
                     for (fieldNum in gameDataLong) {
                         move(fieldNum.toInt())
                     }
-
                     runGame.value = localGame
                 }
             }

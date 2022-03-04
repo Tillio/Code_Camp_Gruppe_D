@@ -8,12 +8,15 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
+import com.example.group_d.GAME_DRAW
 import com.example.group_d.GAME_TYPE_MAP
 
 import com.example.group_d.R
 import com.example.group_d.USER_NAME
 import com.example.group_d.data.model.Game
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 
 
 class RecentGamesAdapter(private val recentGames: ArrayList<Game>, private val gameStarter: GameStarter) :
@@ -46,7 +49,7 @@ class RecentGamesAdapter(private val recentGames: ArrayList<Game>, private val g
         loadOpponent(holder, game)
 
         holder.gameTypeText.text = GAME_TYPE_MAP[game.gameType]
-        holder.defeatImageview.isVisible = false
+        //holder.defeatImageview.isVisible = false
         holder.gameDetailButton.setOnClickListener {
             gameStarter.startGame(recentGames[position])
         }
@@ -64,6 +67,13 @@ class RecentGamesAdapter(private val recentGames: ArrayList<Game>, private val g
                     holder.opponentName.text = name
                 }
             }
+        }
+        if(game.winner == Firebase.auth.currentUser!!.email) {
+            holder.defeatImageview.setImageResource(R.drawable.ic_baseline_panorama_fish_eye_96)
+        } else if (game.winner == GAME_DRAW) {
+
+        } else {
+            holder.defeatImageview.setImageResource(R.drawable.ic_baseline_close_96)
         }
     }
 
