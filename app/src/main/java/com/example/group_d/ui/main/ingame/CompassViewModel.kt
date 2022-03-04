@@ -67,8 +67,8 @@ class CompassViewModel : GameViewModel() {
                     }
                     _currentLocation.value = locations[requestedLocationIndices.removeFirst()]
                     runGame.value = Game(beginnerIndex, gameData, GAME_TYPE_TIC_TAC_TOE, playerRefs)
-                    onGameDataChanged(gameData)
                     addGameDataChangedListener(docref)
+                    onGameDataChanged(gameData)
                 }
             }
         }
