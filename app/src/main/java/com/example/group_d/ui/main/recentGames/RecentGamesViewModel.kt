@@ -23,7 +23,7 @@ class RecentGamesViewModel : ViewModel() {
     private var pastGamesQuerry: Query? = null
 
 
-    //.whereNotEqualTo(GAME_COMPLETION_DATE, 0)
+
     fun startListeningToRecentGames() {
         if (doc == null) {
             db.collection(COL_USER).document(FirebaseAuth.getInstance().uid.toString()).get()
