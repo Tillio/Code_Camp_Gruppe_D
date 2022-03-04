@@ -10,6 +10,7 @@ import android.hardware.SensorManager
 import android.location.Location
 import android.os.Bundle
 import android.os.SystemClock
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,7 +20,11 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.navArgs
+import com.example.group_d.LOCATIONS_GET_QUERY
 import com.example.group_d.R
+import com.example.group_d.data.json.CompassLocationListDeserializer
+import com.example.group_d.data.json.RetrofitInstanceBuilder
+import com.example.group_d.data.model.CompassLocation
 import com.example.group_d.data.model.Game
 import com.example.group_d.data.model.GameEnding
 import com.example.group_d.databinding.CompassFragmentBinding
@@ -27,9 +32,27 @@ import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.tasks.CancellationTokenSource
+import com.google.gson.reflect.TypeToken
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.http.GET
 import java.util.*
 
-class CompassFragment : Fragment(), GiveUpReceiver, SensorEventListener {
+
+class CompassFragment : Fragment(), Callback<MutableList<CompassLocation>>, GiveUpReceiver, SensorEventListener {
+    val retrofit: Retrofit = RetrofitInstanceBuilder.getRetrofitInstance(
+        object : TypeToken<MutableList<CompassLocation>>() {}.type,
+        CompassLocationListDeserializer()
+    )
+    val restCall = retrofit.create(GeojsonRestService::class.java).loadGeoJson()
+
+    interface GeojsonRestService {
+        @GET(LOCATIONS_GET_QUERY)
+        fun loadGeoJson(): Call<MutableList<CompassLocation>>
+    }
+
     private lateinit var compassViewModel: CompassViewModel
     private var _binding: CompassFragmentBinding? = null
     private val args: CompassFragmentArgs by navArgs()
@@ -93,20 +116,34 @@ class CompassFragment : Fragment(), GiveUpReceiver, SensorEventListener {
             onGameOver(ending)
         }
 
-        compassView.setOnClickListener(this::onLocationConfirmed)
-
         buttonGiveUp.setOnClickListener {
             GiveUpDialogFragment(this).show(parentFragmentManager, "give_up")
         }
 
         sensorManager = activity?.getSystemService(Context.SENSOR_SERVICE) as SensorManager?
         rotVecSensor = sensorManager?.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR)
-        compassViewModel.loadLocations(String(resources.openRawResource(R.raw.compass_data).readBytes()))
-        compassViewModel.runGame.observe(viewLifecycleOwner, this::onGameLoaded)
 
         requireLocationPermission()
 
         return root
+    }
+
+    // Retrofit callbacks
+    override fun onResponse(
+        call: Call<MutableList<CompassLocation>>,
+        response: Response<MutableList<CompassLocation>>
+    ) {
+        compassView.setOnClickListener(this::onLocationConfirmed)
+        compassViewModel.locations = response.body()?:ArrayList()
+        compassViewModel.runGame.observe(viewLifecycleOwner, this::onGameLoaded)
+        textPlayerAction.text = ""
+        waitSymbol.visibility = View.INVISIBLE
+
+        compassViewModel.loadRunningGame(args.gameID)
+    }
+
+    override fun onFailure(call: Call<MutableList<CompassLocation>>, t: Throwable) {
+        Log.d("CompassFragment", "Error while loading locations", t)
     }
 
     private fun requireLocationPermission() {
@@ -114,7 +151,7 @@ class CompassFragment : Fragment(), GiveUpReceiver, SensorEventListener {
             ActivityResultContracts.RequestMultiplePermissions()
         ) {
             if (it[Manifest.permission.ACCESS_FINE_LOCATION] == true) {
-                compassViewModel.loadRunningGame(args.gameID)
+                locationPermissionGranted()
             }
         }
         when {
@@ -122,7 +159,7 @@ class CompassFragment : Fragment(), GiveUpReceiver, SensorEventListener {
                 requireContext(),
                 Manifest.permission.ACCESS_FINE_LOCATION
             ) == PackageManager.PERMISSION_GRANTED -> {
-                compassViewModel.loadRunningGame(args.gameID)
+                locationPermissionGranted()
             }
             else -> {
                 requestPermissionLauncher.launch(
@@ -132,6 +169,12 @@ class CompassFragment : Fragment(), GiveUpReceiver, SensorEventListener {
             }
         }
 
+    }
+
+    private fun locationPermissionGranted() {
+        waitSymbol.visibility = View.VISIBLE
+        textPlayerAction.setText(R.string.compass_loading_locations)
+        restCall.enqueue(this)
     }
 
     private fun onGameLoaded(game: Game?) {
@@ -213,7 +256,6 @@ class CompassFragment : Fragment(), GiveUpReceiver, SensorEventListener {
             GameEnding.WIN -> R.string.ending_win
             GameEnding.LOSE -> R.string.ending_lose
             GameEnding.DRAW -> R.string.ending_draw
-            else -> 0
         }
         waitSymbol.visibility = View.INVISIBLE
         Toast.makeText(activity, msgID, Toast.LENGTH_SHORT).show()

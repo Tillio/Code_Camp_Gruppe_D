@@ -12,7 +12,6 @@ import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.ktx.Firebase
 import com.google.gson.Gson
-import com.google.gson.JsonObject
 import kotlin.math.abs
 import kotlin.math.acos
 import kotlin.math.sqrt
@@ -20,7 +19,7 @@ import kotlin.random.Random
 
 class CompassViewModel : GameViewModel() {
     val gson: Gson = Gson()
-    private val locations: MutableList<CompassLocation> = ArrayList()
+    lateinit var locations: MutableList<CompassLocation>
 
     private lateinit var random: Random
     private val _opponentName = MutableLiveData<String>()
@@ -100,24 +99,6 @@ class CompassViewModel : GameViewModel() {
                 else -> GameEnding.DRAW
             }
         }
-    }
-
-    fun loadLocations(json: String) {
-        val locationArray = gson.fromJson(json, JsonObject::class.java).get("features").asJsonArray
-        for (element in locationArray) {
-            if (!element.isJsonObject) {
-                continue
-            }
-            val jsonObj = element.asJsonObject
-            val coordinates = jsonObj.get("geometry").asJsonObject.get("coordinates").asJsonArray.run {
-                DoubleArray(2) { get(it).asDouble }
-            }
-            val jsonProps = jsonObj.get("properties").asJsonObject
-            val name = jsonProps.get("Objekt").asString
-            val addr = jsonProps.get("Adresse").asString
-            locations.add(CompassLocation(name, coordinates, addr))
-        }
-        println()
     }
 
     fun nextLocation() {
