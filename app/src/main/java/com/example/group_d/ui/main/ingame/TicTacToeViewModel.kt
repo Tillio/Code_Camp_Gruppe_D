@@ -6,10 +6,13 @@ import com.example.group_d.*
 import com.example.group_d.data.model.Game
 import com.example.group_d.data.model.GameEnding
 import com.example.group_d.data.model.TicTacToeModel
+import com.example.group_d.ui.main.recentGames.RecentGamesViewModel
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.DocumentSnapshot
 
 class TicTacToeViewModel : GameViewModel() {
+
+    lateinit var recentGamesViewModel: RecentGamesViewModel
 
     private val _gameModel = MutableLiveData<TicTacToeModel>()
     val gameModel: LiveData<TicTacToeModel> = _gameModel
@@ -61,32 +64,32 @@ class TicTacToeViewModel : GameViewModel() {
     private fun checkResult(lastSetField: TicTacToeModel.Field?) {
         if (lastSetField == null) {
             modelObj.winner = modelObj.currentPlayer.next
-            _ending.value = if(isOnTurn()) GameEnding.LOSE else GameEnding.WIN
+            _ending.value = if (isOnTurn()) GameEnding.LOSE else GameEnding.WIN
             return
         }
         val lastPlayer = lastSetField.player!!
 
-        val win = lastSetField.west?.player == lastPlayer && lastSetField.west?.west?.player == lastPlayer
-                || lastSetField.west?.player == lastPlayer && lastSetField.east?.player == lastPlayer
-                || lastSetField.east?.player == lastPlayer && lastSetField.east?.east?.player == lastPlayer
+        val win =
+            lastSetField.west?.player == lastPlayer && lastSetField.west?.west?.player == lastPlayer
+                    || lastSetField.west?.player == lastPlayer && lastSetField.east?.player == lastPlayer
+                    || lastSetField.east?.player == lastPlayer && lastSetField.east?.east?.player == lastPlayer
 
-                || lastSetField.north?.player == lastPlayer && lastSetField.north?.north?.player == lastPlayer
-                || lastSetField.north?.player == lastPlayer && lastSetField.south?.player == lastPlayer
-                || lastSetField.south?.player == lastPlayer && lastSetField.south?.south?.player == lastPlayer
+                    || lastSetField.north?.player == lastPlayer && lastSetField.north?.north?.player == lastPlayer
+                    || lastSetField.north?.player == lastPlayer && lastSetField.south?.player == lastPlayer
+                    || lastSetField.south?.player == lastPlayer && lastSetField.south?.south?.player == lastPlayer
 
-                || lastSetField.northWest?.player == lastPlayer && lastSetField.northWest?.northWest?.player == lastPlayer
-                || lastSetField.northWest?.player == lastPlayer && lastSetField.southEast?.player == lastPlayer
-                || lastSetField.southEast?.player == lastPlayer && lastSetField.southEast?.southEast?.player == lastPlayer
+                    || lastSetField.northWest?.player == lastPlayer && lastSetField.northWest?.northWest?.player == lastPlayer
+                    || lastSetField.northWest?.player == lastPlayer && lastSetField.southEast?.player == lastPlayer
+                    || lastSetField.southEast?.player == lastPlayer && lastSetField.southEast?.southEast?.player == lastPlayer
 
-                || lastSetField.southWest?.player == lastPlayer && lastSetField.southWest?.southWest?.player == lastPlayer
-                || lastSetField.southWest?.player == lastPlayer && lastSetField.northEast?.player == lastPlayer
-                || lastSetField.northEast?.player == lastPlayer && lastSetField.northEast?.northEast?.player == lastPlayer
+                    || lastSetField.southWest?.player == lastPlayer && lastSetField.southWest?.southWest?.player == lastPlayer
+                    || lastSetField.southWest?.player == lastPlayer && lastSetField.northEast?.player == lastPlayer
+                    || lastSetField.northEast?.player == lastPlayer && lastSetField.northEast?.northEast?.player == lastPlayer
 
         if (win) {
             modelObj.winner = lastPlayer
-            _ending.value = if(isOnTurn()) GameEnding.WIN else GameEnding.LOSE
-        }
-        else if (modelObj.player1.amountOfFields + modelObj.player2.amountOfFields >= TicTacToeModel.NUM_FIELDS) {
+            _ending.value = if (isOnTurn()) GameEnding.WIN else GameEnding.LOSE
+        } else if (modelObj.player1.amountOfFields + modelObj.player2.amountOfFields >= TicTacToeModel.NUM_FIELDS) {
             _ending.value = GameEnding.DRAW
         }
     }
@@ -101,14 +104,14 @@ class TicTacToeViewModel : GameViewModel() {
 
     override fun initGame(snap: DocumentSnapshot, docref: DocumentReference) {
         val playerRefs = snap[GAME_PLAYERS] as List<DocumentReference>
-        val beginnerIndex = snap.getString(GAME_BEGINNER)?:"0"
+        val beginnerIndex = snap.getString(GAME_BEGINNER) ?: "0"
         val isBeginner = playerRefs[beginnerIndex.toInt()].id == getOwnUserID()
         for (playerRef in playerRefs) {
             if (playerRef.id != getOwnUserID()) {
                 playerRef.get().addOnSuccessListener { playerSnap ->
                     val opponentName = playerSnap.getString(USER_NAME)
                     _gameModel.apply {
-                        value = TicTacToeModel.buildGame("You", opponentName?:"")
+                        value = TicTacToeModel.buildGame("You", opponentName ?: "")
                         value!!.currentPlayer = if (isBeginner) value!!.player1 else value!!.player2
                     }
                     val gameData = snap[GAME_DATA] as MutableList<String>
@@ -121,8 +124,41 @@ class TicTacToeViewModel : GameViewModel() {
                         move(fieldNum.toInt())
                     }
                     _showOnTurn.value = isOnTurn()
-                    runGame.value = Game(beginnerIndex, gameDataLong, GAME_TYPE_TIC_TAC_TOE, playerRefs)
+                    runGame.value =
+                        Game(beginnerIndex, gameDataLong, GAME_TYPE_TIC_TAC_TOE, playerRefs)
                     addGameDataChangedListener(docref)
+                }
+            }
+        }
+    }
+
+    override fun showEndstate(gameID: String) {
+        var localGame: Game? = null
+        for (game in recentGamesViewModel.recentGames!!) {
+            if (gameID == game.id) {
+                localGame = game
+                break
+            }
+        }
+
+        val isBeginner = localGame!!.beginner == getOwnUserID()
+        for (player in localGame!!.players) {
+            if (player.id != getOwnUserID()) {
+                player.get().addOnSuccessListener { playerSnap ->
+                    val opponentName = playerSnap.getString(USER_NAME)
+                    _gameModel.apply {
+                        value = TicTacToeModel.buildGame("You", opponentName ?: "")
+                        value!!.currentPlayer = if (isBeginner) value!!.player1 else value!!.player2
+
+                    }
+                    val gameData = localGame.gameData
+                    val gameDataLong: MutableList<String> = gameData
+
+                    for (fieldNum in gameDataLong) {
+                        move(fieldNum.toInt())
+                    }
+
+                    runGame.value = localGame
                 }
             }
         }

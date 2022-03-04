@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.example.group_d.GAME_TYPE_MAP
 import com.example.group_d.R
 import com.example.group_d.data.model.Challenge
 
@@ -16,6 +17,7 @@ class ChallengeAdapter(private val challenges: List<Challenge>, private val frag
         private val playerName: TextView = view.findViewById(R.id.text_player_name)
         private val buttonAccept: Button = view.findViewById(R.id.button_challenge_acc)
         private val buttonDecline: Button = view.findViewById(R.id.button_challenge_decl)
+        private val inviteMessage: TextView = view.findViewById(R.id.invite_msg)
         private lateinit var challenge: Challenge
 
         init {
@@ -36,6 +38,7 @@ class ChallengeAdapter(private val challenges: List<Challenge>, private val frag
         fun bind(challenge: Challenge) {
             this.challenge = challenge
             playerName.text = challenge.user.name
+            inviteMessage.text = GAME_TYPE_MAP[challenge.gameType]
         }
     }
 

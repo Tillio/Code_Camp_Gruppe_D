@@ -3,9 +3,11 @@ import org.gradle.api.initialization.resolve.RepositoriesMode
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.PREFER_SETTINGS)
     repositories {
+        maven { url 'https://jitpack.io' }
         google()
         mavenCentral()
         jcenter() // Warning: this repository is going to shut down soon
+        maven { url 'https://jitpack.io' }
     }
 }
 rootProject.name = "Group_D"

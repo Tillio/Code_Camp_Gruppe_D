@@ -11,16 +11,23 @@ import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.NavDirections
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.group_d.GAME_TYPE_COMPASS
+import com.example.group_d.GAME_TYPE_TIC_TAC_TOE
+import com.example.group_d.GAME_TYPE_MENTAL_ARITHMETICS
+import com.example.group_d.GAME_TYPE_STEPS_GAME
 import com.example.group_d.GAME_TYPE_TIC_TAC_TOE
 import com.example.group_d.R
 import com.example.group_d.data.model.Challenge
 import com.example.group_d.data.model.UserDataViewModel
 import com.example.group_d.databinding.FragmentChallengesBinding
 import com.example.group_d.ui.main.ingame.CompassFragmentDirections
+import com.example.group_d.ui.main.games.GamesFragmentDirections
+import com.example.group_d.ui.main.ingame.MentalArithmeticsFragmentDirections
+import com.example.group_d.ui.main.ingame.StepsGameFragmentDirections
 import com.example.group_d.ui.main.ingame.TicTacToeFragmentDirections
 
 class ChallengesFragment : Fragment() {
@@ -64,6 +71,8 @@ class ChallengesFragment : Fragment() {
             val action = when (challenge.gameType) {
                 GAME_TYPE_TIC_TAC_TOE -> TicTacToeFragmentDirections.actionGlobalIngameTicTacToeFragment(docref.id)
                 GAME_TYPE_COMPASS -> CompassFragmentDirections.actionGlobalCompassFragment(docref.id)
+                GAME_TYPE_MENTAL_ARITHMETICS -> MentalArithmeticsFragmentDirections.actionGlobalMentalArithmeticsFragment(docref.id)
+                GAME_TYPE_STEPS_GAME -> StepsGameFragmentDirections.actionGlobalStepsGameFragment(docref.id)
                 else -> null
             }!!
             findNavController().navigate(action)

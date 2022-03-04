@@ -1,10 +1,12 @@
 package com.example.group_d.ui.main.ingame
 
 import android.util.Log
+import android.widget.Chronometer
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.group_d.*
 import com.example.group_d.data.model.Game
+import com.example.group_d.data.model.GameEnding
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.*
 import com.google.firebase.firestore.ktx.firestore
@@ -22,6 +24,8 @@ abstract class GameViewModel : ViewModel() {
     private lateinit var gameDataSnapshotRegistration: ListenerRegistration
 
     abstract fun initGame(snap: DocumentSnapshot, docref: DocumentReference)
+
+    abstract fun showEndstate(gameID: String)
 
     abstract fun onGameDataChanged(gameData: List<String>)
 
@@ -45,6 +49,10 @@ abstract class GameViewModel : ViewModel() {
         }
     }
 
+    fun prepareEndstate(){
+        showEndstate(runGameID)
+    }
+
     fun addGameDataChangedListener(docref: DocumentReference) {
         gameDataSnapshotRegistration = docref.addSnapshotListener(this::onServerGameDataChanged)
     }
@@ -65,14 +73,25 @@ abstract class GameViewModel : ViewModel() {
     }
 
     fun deleteLoadedGame() {
-        gameDataSnapshotRegistration.remove()
-        db.collection(COL_GAMES).document(runGameID).delete()
+        if (this::gameDataSnapshotRegistration.isInitialized){
+            gameDataSnapshotRegistration.remove()
+
+        }
+
+        runGameRaw.completionDate = System.currentTimeMillis()
+        val docref = db.collection(COL_GAMES).document(runGameID)
+        docref.update(GAME_COMPLETION_DATE, runGameRaw.completionDate)
+
+        //db.collection(COL_GAMES).document(runGameID).delete()
+
         for (playerRef in runGameRaw.players) {
             db.collection(COL_USER)
                 .document(playerRef.id).collection(USER_DATA)
                 .document(USER_GAMES).update(USER_GAMES, FieldValue.arrayRemove(runGameID))
         }
     }
+
+
 
     fun getOwnUserID(): String {
         return Firebase.auth.currentUser!!.uid
