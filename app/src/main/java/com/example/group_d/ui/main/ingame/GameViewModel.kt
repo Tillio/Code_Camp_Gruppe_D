@@ -25,6 +25,8 @@ abstract class GameViewModel : ViewModel() {
 
     abstract fun initGame(snap: DocumentSnapshot, docref: DocumentReference)
 
+    abstract fun showEndstate(gameID: String)
+
     abstract fun onGameDataChanged(gameData: List<String>)
 
     open fun onServerGameDataChanged(snap: DocumentSnapshot?, error: FirebaseFirestoreException?) {
@@ -45,6 +47,10 @@ abstract class GameViewModel : ViewModel() {
         docref.get().addOnSuccessListener {
             initGame(it, docref)
         }
+    }
+
+    fun prepareEndstate(){
+        showEndstate(runGameID)
     }
 
     fun addGameDataChangedListener(docref: DocumentReference) {
@@ -69,6 +75,8 @@ abstract class GameViewModel : ViewModel() {
                 .document(USER_GAMES).update(USER_GAMES, FieldValue.arrayRemove(runGameID))
         }
     }
+
+
 
     fun getOwnUserID(): String {
         return Firebase.auth.currentUser!!.uid

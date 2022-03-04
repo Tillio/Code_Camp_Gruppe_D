@@ -15,7 +15,7 @@ import com.google.firebase.ktx.Firebase
 
 class RecentGamesViewModel : ViewModel() {
     var userDataViewModel: UserDataViewModel? = null
-    private var recentGames: ArrayList<Game> = ArrayList()
+    var recentGames: ArrayList<Game> = ArrayList()
     var recentGamesLive: MutableLiveData<ArrayList<Game>> = MutableLiveData(ArrayList())
     private lateinit var listener: ListenerRegistration
     private val db = Firebase.firestore

@@ -69,6 +69,10 @@ class MentalArithmeticsViewModel : GameViewModel() {
         }
     }
 
+    override fun showEndstate(gameID: String) {
+
+    }
+
 
 
 }

@@ -105,16 +105,23 @@ class MentalArithmeticsFragment : Fragment() {
             assignment = root.findViewById(R.id.assignment)
 
             var currentProblem = Problem(0, 0, "?")
+            val problemText: String
 
             if(started) {
                 submitSolution.text = "Submit"
-                for(i in 0 until problemNumber) {
-                    currentProblem = problems.removeFirst()
+                if(problemNumber < problems.size){
+                    for(i in 0 until problemNumber) {
+                        currentProblem = problems.removeFirst()
+                    }
+                    problemText = currentProblem.left.toString() + currentProblem.operator + currentProblem.right.toString()
+                    timer.base = timerBase
+                    timer.start()
+
+                }else{
+                    problemText=""
                 }
-                val problemText = currentProblem.left.toString() + currentProblem.operator + currentProblem.right.toString()
                 assignment.text = problemText
-                timer.base = timerBase
-                timer.start()
+
             }
 
             submitSolution.setOnClickListener {
