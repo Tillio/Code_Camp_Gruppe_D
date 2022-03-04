@@ -13,10 +13,7 @@ import android.os.SystemClock
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Chronometer
-import android.widget.ImageView
-import android.widget.ProgressBar
-import android.widget.TextView
+import android.widget.*
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -24,6 +21,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.navArgs
 import com.example.group_d.R
 import com.example.group_d.data.model.Game
+import com.example.group_d.data.model.GameEnding
 import com.example.group_d.databinding.CompassFragmentBinding
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationRequest
@@ -31,7 +29,7 @@ import com.google.android.gms.location.LocationServices
 import com.google.android.gms.tasks.CancellationTokenSource
 import java.util.*
 
-class CompassFragment : Fragment(), SensorEventListener {
+class CompassFragment : Fragment(), GiveUpReceiver, SensorEventListener {
     private lateinit var compassViewModel: CompassViewModel
     private var _binding: CompassFragmentBinding? = null
     private val args: CompassFragmentArgs by navArgs()
@@ -40,7 +38,9 @@ class CompassFragment : Fragment(), SensorEventListener {
     private lateinit var textPlayerAction: TextView
     private lateinit var waitSymbol: ProgressBar
     private lateinit var timeCount: Chronometer
+    private lateinit var compassView: View
     private lateinit var compassNeedle: ImageView
+    private lateinit var buttonGiveUp: Button
 
     private var sensorManager: SensorManager? = null
     private var rotVecSensor: Sensor? = null
@@ -72,8 +72,8 @@ class CompassFragment : Fragment(), SensorEventListener {
         waitSymbol = binding.wait
         timeCount = binding.compassTimer
         compassNeedle = binding.compassNeedle
-        val compassView = binding.compassView
-        val buttonGiveUp = binding.buttonGiveUp
+        compassView = binding.compassView
+        buttonGiveUp = binding.buttonGiveUp
 
         compassViewModel.opponentName.observe(viewLifecycleOwner) { opName ->
             textOpName.text = opName
@@ -89,10 +89,14 @@ class CompassFragment : Fragment(), SensorEventListener {
             }
         }
 
+        compassViewModel.ending.observe(viewLifecycleOwner) { ending ->
+            onGameOver(ending)
+        }
+
         compassView.setOnClickListener(this::onLocationConfirmed)
 
         buttonGiveUp.setOnClickListener {
-            compassViewModel.deleteLoadedGame()
+            GiveUpDialogFragment(this).show(parentFragmentManager, "give_up")
         }
 
         sensorManager = activity?.getSystemService(Context.SENSOR_SERVICE) as SensorManager?
@@ -100,12 +104,12 @@ class CompassFragment : Fragment(), SensorEventListener {
         compassViewModel.loadLocations(String(resources.openRawResource(R.raw.compass_data).readBytes()))
         compassViewModel.runGame.observe(viewLifecycleOwner, this::onGameLoaded)
 
-        requireLocation()
+        requireLocationPermission()
 
         return root
     }
 
-    private fun requireLocation() {
+    private fun requireLocationPermission() {
         val requestPermissionLauncher = registerForActivityResult(
             ActivityResultContracts.RequestMultiplePermissions()
         ) {
@@ -188,11 +192,28 @@ class CompassFragment : Fragment(), SensorEventListener {
             result
         }
         compassViewModel.saveNeededTime(neededTime)
+        buttonGiveUp.visibility = View.INVISIBLE
+        compassView.isClickable = false
         textPlayerAction.text =
             getString(R.string.compass_waiting_for_opponent, compassViewModel.opponentName.value?:"?")
     }
 
+    override fun onGiveUp() {
+        compassViewModel.giveUp()
+    }
 
+    private fun onGameOver(ending: GameEnding) {
+        val msgID = when (ending) {
+            GameEnding.WIN -> R.string.ending_win
+            GameEnding.LOSE -> R.string.ending_lose
+            GameEnding.DRAW -> R.string.ending_draw
+            else -> 0
+        }
+        waitSymbol.visibility = View.INVISIBLE
+        Toast.makeText(activity, msgID, Toast.LENGTH_SHORT).show()
+        textPlayerAction.setText(msgID)
+        compassViewModel.deleteLoadedGame()
+    }
 
     override fun onPause() {
         super.onPause()

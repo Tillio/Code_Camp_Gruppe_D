@@ -1,7 +1,5 @@
 package com.example.group_d.ui.main.ingame
 
-import android.app.AlertDialog
-import android.app.Dialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,18 +8,17 @@ import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
-import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.navArgs
 import com.example.group_d.R
 import com.example.group_d.data.model.GameEnding
-import com.example.group_d.data.model.UserDataViewModel
 import com.example.group_d.data.model.TicTacToeModel
+import com.example.group_d.data.model.UserDataViewModel
 import com.example.group_d.databinding.TicTacToeFragmentBinding
 
-class TicTacToeFragment : Fragment() {
+class TicTacToeFragment : Fragment(), GiveUpReceiver {
 
     private lateinit var ticTacToeViewModel: TicTacToeViewModel
     private val userDataViewModel: UserDataViewModel by activityViewModels()
@@ -133,7 +130,7 @@ class TicTacToeFragment : Fragment() {
         _binding = null
     }
 
-    fun onGiveUp() {
+    override fun onGiveUp() {
         ticTacToeViewModel.giveUp()
     }
 
@@ -141,24 +138,5 @@ class TicTacToeFragment : Fragment() {
         ticTacToeViewModel.nextField.removeObservers(viewLifecycleOwner)
         ticTacToeViewModel.runGame.removeObservers(viewLifecycleOwner)
         ticTacToeViewModel.showOnTurn.removeObservers(viewLifecycleOwner)
-    }
-}
-
-class GiveUpDialogFragment(
-    private val fragment: TicTacToeFragment
-) : DialogFragment() {
-
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        return activity.let {
-            val builder = AlertDialog.Builder(it)
-            builder.setTitle(R.string.dialog_give_up_msg)
-                .setPositiveButton(R.string.dialog_yes) {_, _ ->
-                    fragment.onGiveUp()
-                }
-                .setNegativeButton(R.string.dialog_no) {dialog, _ ->
-                    dialog.cancel()
-                }
-            builder.create()
-        }
     }
 }

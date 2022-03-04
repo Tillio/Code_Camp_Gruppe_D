@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import com.example.group_d.*
 import com.example.group_d.data.model.CompassLocation
 import com.example.group_d.data.model.Game
+import com.example.group_d.data.model.GameEnding
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.DocumentSnapshot
@@ -32,10 +33,11 @@ class CompassViewModel : GameViewModel() {
     private val _foundAllLocations = MutableLiveData<Boolean>()
     val foundAllLocations: LiveData<Boolean> = _foundAllLocations
 
-    private val _gameIsOver = MutableLiveData<Boolean>()
-    val gameIsOver: LiveData<Boolean> = _gameIsOver
+    private val _ending = MutableLiveData<GameEnding>()
+    val ending: LiveData<GameEnding> = _ending
 
-    private var neededTimeSaved: Boolean = false
+    private var neededTime: Int = 0
+    private var opNeededTime: Int = 0
 
     override fun initGame(snap: DocumentSnapshot, docref: DocumentReference) {
         val playerRefs = snap[GAME_PLAYERS] as List<DocumentReference>
@@ -77,13 +79,24 @@ class CompassViewModel : GameViewModel() {
             if (str.startsWith("nT_")) {
                 readyPlayers += 1
                 if (str.startsWith("nT_${Firebase.auth.currentUser!!.email}=")) {
-                    neededTimeSaved = true
+                    neededTime = str.split("=")[1].toInt()
                     _foundAllLocations.value = true
+                } else {
+                    opNeededTime = str.split("=")[1].toInt()
                 }
             }
         }
         if (readyPlayers == 2) {
-            _gameIsOver.value = true
+            val timeDiff = opNeededTime - neededTime
+            _ending.value = when {
+                // user gave up
+                neededTime < 0 -> GameEnding.LOSE
+                // opponent gave up
+                opNeededTime < 0 -> GameEnding.WIN
+                timeDiff > 0 -> GameEnding.WIN
+                timeDiff < 0 -> GameEnding.LOSE
+                else -> GameEnding.DRAW
+            }
         }
     }
 
@@ -134,12 +147,12 @@ class CompassViewModel : GameViewModel() {
         val magneticNorthDir = magneticNorthEnu.map { it / magneticNorthEnuNorm }
         val diff = locationDir.mapIndexed { i, d -> d - magneticNorthDir[i] }
         val dotProd = locationDir.mapIndexed { i, d -> d * magneticNorthDir[i] }.sum()
-        var rightOrientation = acos(dotProd)
+        var rightOrientation = Math.toDegrees(acos(dotProd))
         if (diff[0] < 0) {
             rightOrientation = -rightOrientation
         }
         // tolerance of 10 degrees
-        return abs(Math.toDegrees(rightOrientation) - orientation) <= 10
+        return abs(rightOrientation - orientation) <= 10
     }
 
     fun loadTimerBase(): Long {
@@ -157,11 +170,15 @@ class CompassViewModel : GameViewModel() {
     }
 
     fun saveNeededTime(neededTime: Int) {
-        if (neededTimeSaved) {
+        if (this.neededTime != 0) {
             return
         }
         val gameDataVal = "nT_${Firebase.auth.currentUser!!.email}=$neededTime"
         updateGameData(gameDataVal)
-        neededTimeSaved = true
+        this.neededTime = neededTime
+    }
+
+    fun giveUp() {
+        saveNeededTime(-1)
     }
 }
