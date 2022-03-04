@@ -34,6 +34,7 @@ class StepsGameViewModel : GameViewModel(), SensorEventListener {
 
     private val _opponentSteps = MutableLiveData<String>()
     val opponentSteps: LiveData<String> = _opponentSteps
+
     lateinit var gameID: String
 
     lateinit var sensorManager: SensorManager
