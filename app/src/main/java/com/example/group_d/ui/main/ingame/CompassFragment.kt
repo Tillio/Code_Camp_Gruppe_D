@@ -136,7 +136,10 @@ class CompassFragment : Fragment(), GiveUpReceiver, SensorEventListener {
 
     private fun onGameLoaded(game: Game?) {
         var timerBase = compassViewModel.loadTimerBase()
-        timerBase = if (timerBase != 0L) timerBase else SystemClock.elapsedRealtime()
+        timerBase = if (timerBase != 0L)
+            timerBase
+        else
+            SystemClock.elapsedRealtime()
         timeCount.base = timerBase
         timeCount.start()
         compassViewModel.saveTimerBase(timerBase)
@@ -183,15 +186,18 @@ class CompassFragment : Fragment(), GiveUpReceiver, SensorEventListener {
 
     private fun onAllLocationsFound() {
         timeCount.stop()
-        val neededTime = timeCount.text.split(":").run {
-            var result = 0
-            forEach {
-                result *= 60
-                result += it.toInt()
+        if (compassViewModel.neededTime == 0) {
+            val neededTime = timeCount.text.split(":").run {
+                var result = 0
+                forEach {
+                    result *= 60
+                    result += it.toInt()
+                }
+                result
             }
-            result
+            compassViewModel.saveNeededTime(neededTime)
         }
-        compassViewModel.saveNeededTime(neededTime)
+        timeCount.base = SystemClock.elapsedRealtime() - 1000 * compassViewModel.neededTime
         buttonGiveUp.visibility = View.INVISIBLE
         compassView.isClickable = false
         textPlayerAction.text =

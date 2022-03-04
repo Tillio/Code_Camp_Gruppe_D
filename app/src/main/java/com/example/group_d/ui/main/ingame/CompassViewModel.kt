@@ -36,7 +36,9 @@ class CompassViewModel : GameViewModel() {
     private val _ending = MutableLiveData<GameEnding>()
     val ending: LiveData<GameEnding> = _ending
 
-    private var neededTime: Int = 0
+    private var _neededTime: Int = 0
+    val neededTime get() = _neededTime
+
     private var opNeededTime: Int = 0
 
     override fun initGame(snap: DocumentSnapshot, docref: DocumentReference) {
@@ -79,7 +81,7 @@ class CompassViewModel : GameViewModel() {
             if (str.startsWith("nT_")) {
                 readyPlayers += 1
                 if (str.startsWith("nT_${Firebase.auth.currentUser!!.email}=")) {
-                    neededTime = str.split("=")[1].toInt()
+                    _neededTime = str.split("=")[1].toInt()
                     _foundAllLocations.value = true
                 } else {
                     opNeededTime = str.split("=")[1].toInt()
@@ -87,10 +89,10 @@ class CompassViewModel : GameViewModel() {
             }
         }
         if (readyPlayers == 2) {
-            val timeDiff = opNeededTime - neededTime
+            val timeDiff = opNeededTime - _neededTime
             _ending.value = when {
                 // user gave up
-                neededTime < 0 -> GameEnding.LOSE
+                _neededTime < 0 -> GameEnding.LOSE
                 // opponent gave up
                 opNeededTime < 0 -> GameEnding.WIN
                 timeDiff > 0 -> GameEnding.WIN
@@ -170,12 +172,9 @@ class CompassViewModel : GameViewModel() {
     }
 
     fun saveNeededTime(neededTime: Int) {
-        if (this.neededTime != 0) {
-            return
-        }
         val gameDataVal = "nT_${Firebase.auth.currentUser!!.email}=$neededTime"
         updateGameData(gameDataVal)
-        this.neededTime = neededTime
+        this._neededTime = neededTime
     }
 
     fun giveUp() {
