@@ -94,8 +94,9 @@ class TicTacToeFragment : Fragment() {
             removeLiveDataObservers()
             Toast.makeText(activity, msgID, Toast.LENGTH_SHORT).show()
             textPlayerAction.setText(msgID)
-
-            //ticTacToeViewModel.deleteLoadedGame()
+            if (!args.showEndstate){
+                ticTacToeViewModel.deleteLoadedGame()
+            }
         }
         if (!args.showEndstate) {
             for ((clickedField, fieldButton) in fieldButtons.withIndex()) {
