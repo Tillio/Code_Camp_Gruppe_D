@@ -1,12 +1,10 @@
 package com.example.group_d.ui.main.ingame
 
 import android.util.Log
-import android.widget.Chronometer
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.group_d.*
 import com.example.group_d.data.model.Game
-import com.example.group_d.data.model.GameEnding
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.*
 import com.google.firebase.firestore.ktx.firestore
@@ -25,7 +23,9 @@ abstract class GameViewModel : ViewModel() {
 
     abstract fun initGame(snap: DocumentSnapshot, docref: DocumentReference)
 
-    abstract fun showEndstate(gameID: String)
+    open fun showEndstate(gameID: String) {
+        // do nothing
+    }
 
     abstract fun onGameDataChanged(gameData: List<String>)
 

@@ -50,7 +50,7 @@ class ChallengesViewModel : ViewModel() {
         }
         val game = Game(
             Random.nextLong(players.size.toLong()).toString(),
-            ArrayList(),
+            gameData,
             challenge.gameType,
             players
         )
