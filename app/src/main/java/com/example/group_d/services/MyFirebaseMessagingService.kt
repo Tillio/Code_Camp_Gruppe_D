@@ -7,15 +7,23 @@ import android.content.Intent
 import android.os.IBinder
 import android.util.Log
 import androidx.core.content.ContextCompat
+import com.example.group_d.COL_USER
 import com.example.group_d.data.handler.sendNotification
 import com.example.group_d.ui.main.MainScreenActivity
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 
 class MyFirebaseMessagingService : FirebaseMessagingService() {
+    val db = Firebase.firestore
+
     override fun onMessageReceived(p0: RemoteMessage) {
         p0?.data?.let {
             Log.d(TAG, "Message data payload: " + p0.data)
+            //val msgStr: String = p0.data["message"].toString()
+            sendNotification(p0.data["message"].toString())
         }
 
         p0?.notification?.let {
@@ -29,6 +37,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
     }
 
     private fun sendRegistrationToServer(token: String?) {
+        db.collection(COL_USER).document(FirebaseAuth.getInstance().uid.toString()).update("token", token)
         Log.d(TAG, "sendRegistrationTokenToServer($token)")
     }
 

@@ -1,4 +1,4 @@
-package com.example.group_d.ui.main.ingame
+   package com.example.group_d.ui.main.ingame
 
 import android.app.AlertDialog
 import android.app.Dialog

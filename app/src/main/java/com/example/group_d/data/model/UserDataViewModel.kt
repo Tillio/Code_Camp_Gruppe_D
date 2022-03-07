@@ -1,9 +1,20 @@
 package com.example.group_d.data.model
 
+import android.content.ContentValues
+import android.content.Context
 import android.util.Log
+import android.widget.Toast
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.android.volley.RequestQueue
+import com.android.volley.Response
+import com.android.volley.toolbox.JsonObjectRequest
+import com.android.volley.toolbox.Volley
 import com.example.group_d.*
+import com.example.group_d.data.NotificationData
+import com.example.group_d.data.PushNotification
+import com.example.group_d.data.RetrofitInstance
 import com.example.group_d.data.handler.NotificationHandler
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
@@ -15,10 +26,17 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.messaging.RemoteMessage
+import com.google.gson.Gson
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import org.json.JSONException
+import org.json.JSONObject
 
 
 class UserDataViewModel : ViewModel() {
 
+    lateinit var applicationContext: Context
     var auth: FirebaseAuth = FirebaseAuth.getInstance()
     val TAG = "UserDataViewModel"
     val db = Firebase.firestore
@@ -56,7 +74,7 @@ class UserDataViewModel : ViewModel() {
                 for (document in documents) {
                     Log.d(TAG, "uid: ${document.id} of user: ${document["name"]} found")
                     sendFriendRequestToID(document.id)
-                    sendMessageToTopic(document.id, "New Friend request!")
+                    //sendMessageToTopic(document.id, "New Friend request!")
                 }
             }
             .addOnFailureListener { exception ->
@@ -72,6 +90,8 @@ class UserDataViewModel : ViewModel() {
             db.collection(COL_USER).document(userID).collection(USER_DATA)
                 .document(USER_FRIEND_REQUESTS)
                 .update(USER_FRIEND_REQUESTS, FieldValue.arrayUnion(getOwnUserID()))
+            //send notification
+            prepNotification("New Friend", "you have a new friendrequest", userID)
         }
     }
 
@@ -91,6 +111,8 @@ class UserDataViewModel : ViewModel() {
         //adding me to my new friends friendlist
         db.collection("user").document(newFriendUid).collection("userData").document("friends")
             .update("friends", FieldValue.arrayUnion(ownUid))
+        //send notification
+        prepNotification("Accepted Friend", "a friendrequest was accepted", newFriendUid)
     }
 
     fun testAcceptFriendRequest() {
@@ -114,7 +136,9 @@ class UserDataViewModel : ViewModel() {
         // adding me to challanges of other user
         db.collection(COL_USER).document(userid).collection(USER_DATA).document(USER_CHALLENGES)
             .update(USER_CHALLENGES, FieldValue.arrayUnion(challange))
-        sendMessageToTopic(userid, "New Challenge!")
+        // send notification
+        prepNotification("new challenge", "you have been challenged!", userid)
+        //sendMessageToTopic(userid, "New Challenge!")
     }
 
     fun getOwnUserID(): String {
@@ -181,12 +205,18 @@ class UserDataViewModel : ViewModel() {
      */
     private fun gamesListener(snapshot: DocumentSnapshot) {
         val actualGames = snapshot.data?.get(USER_GAMES) as ArrayList<String>
+        var yourTurn = 0
         //attach listener if game is unknown
         for (game in actualGames) {
             val localGameData = gameIdIsLocal(game)
             if (localGameData == null) {
                 attachGameListener(game)
+                yourTurn++
             }
+        }
+        if (yourTurn != 0){
+            var textStr = "It is your Turn in " + yourTurn + " games!"
+            //notificationHandler.sendNotification(textStr)
         }
         //delete old games
         for (game in games.value!!) {
@@ -251,6 +281,7 @@ class UserDataViewModel : ViewModel() {
             currentChallenges.add(it)
         }
 
+        var yourChallenge = 0
         for (chall in snapshot.data?.get(USER_CHALLENGES) as ArrayList<HashMap<*, *>>) {
             val type = chall["gameType"]
             val userMap = chall["user"] as HashMap<*, *>
@@ -269,6 +300,13 @@ class UserDataViewModel : ViewModel() {
             }
             var newChallenge = Challenge(user = userObj, gameType = type as String)
             actualChallenges.add(newChallenge)
+            if (newChallenge !in currentChallenges){
+                yourChallenge++
+            }
+        }
+        if (yourChallenge != 0){
+            var textStr = "You have " + yourChallenge + " Challenges!"
+            //notificationHandler.sendNotification(textStr)
         }
         //add new challenges
         challenges.value = actualChallenges
@@ -374,15 +412,21 @@ class UserDataViewModel : ViewModel() {
         friendRequests.value!!.forEach {
             currentFriendRequests.add(it.friendID)
         }
+        var yourFriends = 0
         for (request in actualFriendRequests) {
             if (request !in currentFriendRequests) {
                 addFriendRequests.add(request as String)
+                yourFriends++
             }
         }
         for (request in currentFriendRequests) {
             if (request !in actualFriendRequests) {
                 removeFriendRequests.add(request)
             }
+        }
+        if (yourFriends != 0){
+            var textStr = "You have " + yourFriends + " Friendrequests!"
+            //notificationHandler.sendNotification(textStr)
         }
         removeFriendRequests(removeFriendRequests)
         addFriendRequests(addFriendRequests)
@@ -427,15 +471,33 @@ class UserDataViewModel : ViewModel() {
 
     fun deleteFriend(friend: User) {
         if (userIsFriend(friend.id)){
-            db.collection(COL_USER).document(auth.uid.toString()).collection(USER_DATA).document(
+            db.collection(COL_USER).document(FirebaseAuth.getInstance().uid.toString()).collection(USER_DATA).document(
                 USER_FRIENDS).update(USER_FRIENDS, FieldValue.arrayRemove(friend.id))
             db.collection(COL_USER).document(friend.id).collection(USER_DATA).document(
                 USER_FRIENDS).update(USER_FRIENDS, FieldValue.arrayRemove(auth.uid.toString()))
         }
     }
 
-    fun sendMessageToTopic(topic: String, msgType: String){
-        val message: RemoteMessage = RemoteMessage.Builder(topic).addData("type", msgType).build()
-        FirebaseMessaging.getInstance().send(message)
+    private fun prepNotification(title: String, msg: String, topic: String){
+        if(title.isNotEmpty() && msg.isNotEmpty()){
+            val topicStr: String = "/topics/" + topic
+            PushNotification(NotificationData(title, msg), topicStr).also {
+                sendNotification(it)
+            }
+        }
+    }
+
+    private fun sendNotification(notification: PushNotification) = CoroutineScope(Dispatchers.IO).launch {
+        try {
+            val response = RetrofitInstance.api.postNotification(notification)
+            if (response.isSuccessful){
+                //Log.d(ContentValues.TAG, "Response: ${Gson().toJson(response)}")
+            }
+            else {
+                Log.e(ContentValues.TAG, response.errorBody().toString())
+            }
+        } catch (e: Exception){
+            Log.e(ContentValues.TAG, e.toString())
+        }
     }
 }
