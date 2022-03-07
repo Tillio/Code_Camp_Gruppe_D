@@ -74,6 +74,7 @@ class MainScreenActivity : AppCompatActivity() {
             Firebase.firestore.collection(COL_USER).document(FirebaseAuth.getInstance().uid.toString()).update("token", token)
         })
         val topic: String = userDataViewModel.getOwnUserID()
+        // I am not sure if this is still needed, so i will keep it for now
         val topicStr: String = "/topics/" + topic
         FirebaseMessaging.getInstance().subscribeToTopic(topic)
 

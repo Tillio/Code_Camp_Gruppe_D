@@ -491,6 +491,11 @@ class UserDataViewModel : ViewModel() {
         try {
             val response = RetrofitInstance.api.postNotification(notification)
             if (response.isSuccessful){
+                /*
+                 for some reason this line crashes the app
+                 and since it is only used for debugging I just put it in a Comment
+                 now everything should work fine
+                */
                 //Log.d(ContentValues.TAG, "Response: ${Gson().toJson(response)}")
             }
             else {
