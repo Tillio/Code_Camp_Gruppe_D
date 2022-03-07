@@ -397,6 +397,7 @@ class UserDataViewModel : ViewModel() {
             if (friend.id == friendId) {
                 friends.value!!.remove(friend)
                 friends.value = friends.value
+                prepNotification("No Friend", "you were removed from a friendlist!", friendId)
                 return true
             }
         }
