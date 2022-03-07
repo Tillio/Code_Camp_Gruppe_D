@@ -22,17 +22,6 @@ class NotificationHandler {
             manager.createNotificationChannel(channel)
         }
     }
-
-    public fun sendNotification(text: String){
-        val notification = NotificationCompat.Builder(mainActivity, str_channelID)
-            .setContentTitle("Prototype_D")
-            .setContentText(text)
-            .setSmallIcon(R.drawable.ic_notifications_black_24dp)
-            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-            .build()
-        val notificationManager = NotificationManagerCompat.from(mainActivity)
-        notificationManager.notify(0, notification)
-    }
 }
 fun NotificationManager.sendNotification(messageBody: String, applicationContext: Context) {
     val builder = NotificationCompat.Builder(
