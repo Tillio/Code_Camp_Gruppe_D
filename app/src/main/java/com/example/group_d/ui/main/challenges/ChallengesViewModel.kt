@@ -41,11 +41,10 @@ class ChallengesViewModel : ViewModel() {
             }
             GAME_TYPE_MENTAL_ARITHMETICS -> {
                 val seed = Random.nextInt(1000000, 10000000)
-                val gameData = arrayListOf<String>(seed.toString())
+                gameData.add(seed.toString())
             }
             GAME_TYPE_STEPS_GAME -> {
-                val gameData =
-                    arrayListOf<String>(Firebase.auth.currentUser!!.email + "=" + "gameTime" + "=" + challenge.step_game_time.toString())
+                gameData.add(Firebase.auth.currentUser!!.email + "=" + "gameTime" + "=" + challenge.step_game_time.toString())
             }
         }
         val game = Game(
