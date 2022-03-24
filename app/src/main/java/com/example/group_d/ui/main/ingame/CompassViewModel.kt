@@ -81,22 +81,32 @@ class CompassViewModel : GameViewModel() {
                 readyPlayers += 1
                 if (str.startsWith("nT_${Firebase.auth.currentUser!!.email}=")) {
                     _neededTime = str.split("=")[1].toInt()
+                    if (_neededTime < 0) {
+                        // user gave up
+                        readyPlayers = 2
+                        break
+                    }
                     _foundAllLocations.value = true
                 } else {
                     opNeededTime = str.split("=")[1].toInt()
+                    if (opNeededTime < 0) {
+                        // opponent gave up
+                        readyPlayers = 2
+                        break
+                    }
                 }
             }
         }
         if (readyPlayers == 2) {
             val timeDiff = opNeededTime - _neededTime
             _ending.value = when {
+                timeDiff == 0 -> GameEnding.DRAW
                 // user gave up
                 _neededTime < 0 -> GameEnding.LOSE
                 // opponent gave up
                 opNeededTime < 0 -> GameEnding.WIN
                 timeDiff > 0 -> GameEnding.WIN
-                timeDiff < 0 -> GameEnding.LOSE
-                else -> GameEnding.DRAW
+                else -> GameEnding.LOSE
             }
         }
     }
