@@ -126,4 +126,8 @@ class StepsGameViewModel : GameViewModel(), SensorEventListener {
 
     }
 
+    override fun showEndstate(gameID: String) {
+
+    }
+
 }

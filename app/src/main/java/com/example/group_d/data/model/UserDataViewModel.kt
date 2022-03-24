@@ -213,14 +213,17 @@ class UserDataViewModel : ViewModel() {
                     return@addSnapshotListener
                 }
                 if (snapshot != null && snapshot.exists()) {
-                    val localGame = gameIdIsLocal(snapshot.id)
-                    if (localGame == null) {
-                        val newGame = gameDocToGameObj(snapshot)
-                        addGame(newGame)
-                    } else {
-                        localGame.gameData = snapshot[GAME_DATA] as ArrayList<String>
-                    }
+                    val any = snapshot["completionDate"]
+                    if (any == 0L) {
+                        val localGame = gameIdIsLocal(snapshot.id)
+                        if (localGame == null) {
+                            val newGame = gameDocToGameObj(snapshot)
+                            addGame(newGame)
+                        } else {
+                            localGame.gameData = snapshot[GAME_DATA] as ArrayList<String>
+                        }
 
+                    }
                 } else {
                     print("pass")
                 }
@@ -264,7 +267,7 @@ class UserDataViewModel : ViewModel() {
                 }
             }
             var newChallenge = Challenge(user = userObj, gameType = type as String)
-            newChallenge.step_game_time=step_game_time
+            newChallenge.step_game_time = step_game_time
             actualChallenges.add(newChallenge)
         }
         //add new challenges

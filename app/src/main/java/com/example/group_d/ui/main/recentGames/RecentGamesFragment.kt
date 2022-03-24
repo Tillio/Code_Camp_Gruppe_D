@@ -12,15 +12,15 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.group_d.COL_GAMES
-import com.example.group_d.GAME_COMPLETION_DATE
-import com.example.group_d.GAME_PLAYERS
-import com.example.group_d.R
+import com.example.group_d.*
 import com.example.group_d.data.model.Game
 import com.example.group_d.data.model.UserDataViewModel
 import com.example.group_d.databinding.FragmentRecentGamesBinding
 import com.example.group_d.ui.main.games.GamesAdapter
 import com.example.group_d.ui.main.games.GamesViewModel
+import com.example.group_d.ui.main.ingame.MentalArithmeticsFragmentDirections
+import com.example.group_d.ui.main.ingame.StepsGameFragmentDirections
+import com.example.group_d.ui.main.ingame.TicTacToeFragmentDirections
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
@@ -28,8 +28,8 @@ import com.google.firebase.ktx.Firebase
 
 class RecentGamesFragment : Fragment(), RecentGamesAdapter.GameStarter {
 
-    private lateinit var viewModel: RecentGamesViewModel
     private var _binding: FragmentRecentGamesBinding? = null
+    private val viewModel: RecentGamesViewModel by activityViewModels()
     private val userDataViewModel: UserDataViewModel by activityViewModels()
 
     private val binding get() = _binding!!
@@ -41,7 +41,6 @@ class RecentGamesFragment : Fragment(), RecentGamesAdapter.GameStarter {
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentRecentGamesBinding.inflate(inflater, container, false)
-        viewModel = ViewModelProvider(this).get(RecentGamesViewModel::class.java)
 
         viewModel.addUserDataViewModel(userDataViewModel)
         viewModel.startListeningToRecentGames()
@@ -72,12 +71,22 @@ class RecentGamesFragment : Fragment(), RecentGamesAdapter.GameStarter {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProvider(this).get(RecentGamesViewModel::class.java)
         // TODO: Use the ViewModel
     }
 
     override fun startGame(game: Game) {
-        TODO("Not yet implemented")
+        when (game.gameType) {
+            GAME_TYPE_TIC_TAC_TOE -> findNavController().navigate(
+                TicTacToeFragmentDirections.actionGlobalIngameTicTacToeFragment(game.id, true)
+            )
+            GAME_TYPE_MENTAL_ARITHMETICS -> findNavController().navigate(
+                MentalArithmeticsFragmentDirections.actionGlobalMentalArithmeticsFragment(game.id)
+            )
+            GAME_TYPE_STEPS_GAME -> findNavController().navigate(
+                StepsGameFragmentDirections.actionGlobalStepsGameFragment(game.id)
+            )
+        }
+
     }
 
     override fun onDestroy() {

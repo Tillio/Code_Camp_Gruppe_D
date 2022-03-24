@@ -3,7 +3,6 @@ package com.example.group_d.ui.main.games
 import android.opengl.Visibility
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.VISIBLE
@@ -12,6 +11,7 @@ import android.widget.AdapterView
 import android.widget.Button
 import android.widget.Spinner
 import android.widget.TextView
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.group_d.GAME_TYPE_MENTAL_ARITHMETICS
 import com.example.group_d.GAME_TYPE_STEPS_GAME
+import com.example.group_d.GAME_TYPE_COMPASS
 import com.example.group_d.GAME_TYPE_TIC_TAC_TOE
 import com.example.group_d.R
 import com.example.group_d.data.model.Challenge
@@ -73,7 +74,19 @@ class NewGameSetup : Fragment() {
                         ), GAME_TYPE_TIC_TAC_TOE
                     )
                 )
-            } else if (spinnerGameSelect.selectedItem.toString() == "Mental Arithmetics") {
+            } else if (spinnerGameSelect.selectedItem.toString() == "Compass") {
+                userDataViewModel.challengeFriend(
+                    args.userID,
+                    Challenge(
+                        User(
+                            name = Firebase.auth.currentUser!!.email.toString(),
+                            id = userDataViewModel.getOwnUserID(),
+                            online = true
+                        ), GAME_TYPE_COMPASS
+                    )
+                )
+            }
+            else if (spinnerGameSelect.selectedItem.toString() == "Mental Arithmetics") {
                 userDataViewModel.challengeFriend(
                     args.userID,
                     Challenge(
@@ -105,7 +118,6 @@ class NewGameSetup : Fragment() {
             findNavController().navigate(R.id.action_global_friendList)
         }
 
-
         spinnerGameSelect.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
             override fun onItemSelected(
                 parent: AdapterView<*>?,
@@ -123,7 +135,6 @@ class NewGameSetup : Fragment() {
             override fun onNothingSelected(parent: AdapterView<*>?) {
             }
         }
-
 
         return view
     }

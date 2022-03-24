@@ -47,6 +47,9 @@ class RecentGamesAdapter(private val recentGames: ArrayList<Game>, private val g
 
         holder.gameTypeText.text = GAME_TYPE_MAP[game.gameType]
         holder.defeatImageview.isVisible = false
+        holder.gameDetailButton.setOnClickListener {
+            gameStarter.startGame(recentGames[position])
+        }
 
     }
 

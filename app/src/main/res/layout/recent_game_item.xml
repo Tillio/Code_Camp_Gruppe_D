@@ -21,9 +21,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="?android:attr/actionModeFindDrawable"
-        tools:layout_editor_absoluteY="35dp" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="?android:attr/actionModeFindDrawable" />
 
     <ImageView
         android:id="@+id/defeatIcon"

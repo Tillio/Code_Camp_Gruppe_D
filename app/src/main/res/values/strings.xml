@@ -52,6 +52,10 @@
     <string name="game_is_over">The game is over</string>
     <string name="dialog_give_up_msg">Are you sure you want to give up this game?</string>
 
+    <!--compass-->
+    <string name="compass_loading_locations">Loading locations…</string>
+    <string name="compass_waiting_for_opponent">You\'ve all locations found. Now wait for %1$s to complete</string>
+
     <string name="ending_win">Congrats! You win</string>
     <string name="ending_lose">Booh! You lose</string>
     <string name="ending_draw">It\'s a draw</string>
@@ -59,6 +63,7 @@
     <!--NewGameScreen-->
     <string-array name="new_game_gametypes">
         <item>TicTacToe</item>
+        <item>Compass</item>
         <item>Mental Arithmetics</item>
         <item>Steps Game</item>
     </string-array>

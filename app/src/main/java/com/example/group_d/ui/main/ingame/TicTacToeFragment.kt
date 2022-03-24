@@ -1,7 +1,5 @@
 package com.example.group_d.ui.main.ingame
 
-import android.app.AlertDialog
-import android.app.Dialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,7 +8,6 @@ import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
-import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
@@ -20,11 +17,13 @@ import com.example.group_d.data.model.GameEnding
 import com.example.group_d.data.model.UserDataViewModel
 import com.example.group_d.data.model.TicTacToeModel
 import com.example.group_d.databinding.TicTacToeFragmentBinding
+import com.example.group_d.ui.main.recentGames.RecentGamesViewModel
 
-class TicTacToeFragment : Fragment() {
+class TicTacToeFragment : Fragment(), GiveUpReceiver {
 
     private lateinit var ticTacToeViewModel: TicTacToeViewModel
     private val userDataViewModel: UserDataViewModel by activityViewModels()
+    private val recentGamesViewModel: RecentGamesViewModel by activityViewModels()
     private var _binding: TicTacToeFragmentBinding? = null
     private val args: TicTacToeFragmentArgs by navArgs()
     private lateinit var waitSymbol: ProgressBar
@@ -80,7 +79,7 @@ class TicTacToeFragment : Fragment() {
             }
         }
 
-        ticTacToeViewModel.ending.observe(viewLifecycleOwner) {ending ->
+        ticTacToeViewModel.ending.observe(viewLifecycleOwner) { ending ->
             val msgID = when (ending) {
                 GameEnding.WIN -> R.string.ending_win
                 GameEnding.LOSE -> R.string.ending_lose
@@ -92,30 +91,37 @@ class TicTacToeFragment : Fragment() {
             removeLiveDataObservers()
             Toast.makeText(activity, msgID, Toast.LENGTH_SHORT).show()
             textPlayerAction.setText(msgID)
-            ticTacToeViewModel.deleteLoadedGame()
-        }
-
-        for ((clickedField, fieldButton) in fieldButtons.withIndex()) {
-            fieldButton.setImageDrawable(null)
-            fieldButton.setOnClickListener {
-                if (ticTacToeViewModel.ending.value != null) {
-                    Toast.makeText(activity, R.string.game_is_over, Toast.LENGTH_SHORT).show()
-                    return@setOnClickListener
-                }
-                if (!ticTacToeViewModel.isOnTurn()) {
-                    Toast.makeText(activity, R.string.not_your_turn, Toast.LENGTH_SHORT).show()
-                    return@setOnClickListener
-                }
-                if (!ticTacToeViewModel.fieldIsEmpty(clickedField)) {
-                    Toast.makeText(activity, R.string.field_not_empty, Toast.LENGTH_SHORT).show()
-                    return@setOnClickListener
-                }
-                ticTacToeViewModel.playerMove(clickedField)
+            if (!args.showEndstate){
+                ticTacToeViewModel.deleteLoadedGame()
             }
         }
+        if (!args.showEndstate) {
+            for ((clickedField, fieldButton) in fieldButtons.withIndex()) {
+                fieldButton.setImageDrawable(null)
+                fieldButton.setOnClickListener {
+                    if (ticTacToeViewModel.ending.value != null) {
+                        Toast.makeText(activity, R.string.game_is_over, Toast.LENGTH_SHORT).show()
+                        return@setOnClickListener
+                    }
+                    if (!ticTacToeViewModel.isOnTurn()) {
+                        Toast.makeText(activity, R.string.not_your_turn, Toast.LENGTH_SHORT).show()
+                        return@setOnClickListener
+                    }
+                    if (!ticTacToeViewModel.fieldIsEmpty(clickedField)) {
+                        Toast.makeText(activity, R.string.field_not_empty, Toast.LENGTH_SHORT)
+                            .show()
+                        return@setOnClickListener
+                    }
+                    ticTacToeViewModel.playerMove(clickedField)
+                }
+            }
 
-        giveUp.setOnClickListener {
-            GiveUpDialogFragment(this).show(parentFragmentManager, "give_up")
+        }
+        if (!args.showEndstate){
+            giveUp.setOnClickListener {
+                GiveUpDialogFragment(this).show(parentFragmentManager, "give_up")
+            }
+
         }
 
         ticTacToeViewModel.runGame.observe(viewLifecycleOwner) { game ->
@@ -123,7 +129,12 @@ class TicTacToeFragment : Fragment() {
             // TODO Show profile pictures
         }
 
-        ticTacToeViewModel.loadRunningGame(args.gameID)
+        if (!args.showEndstate){
+            ticTacToeViewModel.loadRunningGame(args.gameID)
+        }else{
+            ticTacToeViewModel.recentGamesViewModel = recentGamesViewModel
+            ticTacToeViewModel.showEndstate(args.gameID)
+        }
 
         return root
     }
@@ -133,7 +144,7 @@ class TicTacToeFragment : Fragment() {
         _binding = null
     }
 
-    fun onGiveUp() {
+    override fun onGiveUp() {
         ticTacToeViewModel.giveUp()
     }
 
@@ -141,24 +152,5 @@ class TicTacToeFragment : Fragment() {
         ticTacToeViewModel.nextField.removeObservers(viewLifecycleOwner)
         ticTacToeViewModel.runGame.removeObservers(viewLifecycleOwner)
         ticTacToeViewModel.showOnTurn.removeObservers(viewLifecycleOwner)
-    }
-}
-
-class GiveUpDialogFragment(
-    private val fragment: TicTacToeFragment
-) : DialogFragment() {
-
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        return activity.let {
-            val builder = AlertDialog.Builder(it)
-            builder.setTitle(R.string.dialog_give_up_msg)
-                .setPositiveButton(R.string.dialog_yes) {_, _ ->
-                    fragment.onGiveUp()
-                }
-                .setNegativeButton(R.string.dialog_no) {dialog, _ ->
-                    dialog.cancel()
-                }
-            builder.create()
-        }
     }
 }

@@ -34,22 +34,25 @@ class ChallengesViewModel : ViewModel() {
             db.collection(COL_USER).document(Firebase.auth.currentUser!!.uid),
             db.collection(COL_USER).document(challenge.user.id)
         )
+        val gameData = ArrayList<String>()
+        when (challenge.gameType) {
+            GAME_TYPE_COMPASS -> {
+                gameData.add(Random.nextLong().toString())
+            }
+            GAME_TYPE_MENTAL_ARITHMETICS -> {
+                val seed = Random.nextInt(1000000, 10000000)
+                gameData.add(seed.toString())
+            }
+            GAME_TYPE_STEPS_GAME -> {
+                gameData.add(Firebase.auth.currentUser!!.email + "=" + "gameTime" + "=" + challenge.step_game_time.toString())
+            }
+        }
         val game = Game(
             Random.nextLong(players.size.toLong()).toString(),
-            ArrayList(),
+            gameData,
             challenge.gameType,
             players
         )
-        if (challenge.gameType == GAME_TYPE_MENTAL_ARITHMETICS) {
-            val seed = Random.nextInt(1000000, 10000000)
-            val gameData = arrayListOf<String>(seed.toString())
-            game.gameData = gameData
-        } else if (challenge.gameType == GAME_TYPE_STEPS_GAME) {
-
-            val gameData =
-                arrayListOf<String>(Firebase.auth.currentUser!!.email + "=" + "gameTime" + "=" + challenge.step_game_time.toString())
-            game.gameData = gameData
-        }
         return db.collection(COL_GAMES).add(game).addOnSuccessListener { gameRef ->
             db.collection(COL_USER)
                 .document(Firebase.auth.currentUser!!.uid).collection(USER_DATA)
