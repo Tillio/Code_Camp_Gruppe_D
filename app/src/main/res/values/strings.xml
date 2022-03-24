@@ -53,6 +53,7 @@
     <string name="dialog_give_up_msg">Are you sure you want to give up this game?</string>
 
     <!--compass-->
+    <string name="title_compass">Compass</string>
     <string name="compass_loading_locations">Loading locations…</string>
     <string name="compass_waiting_for_opponent">You\'ve all locations found. Now wait for %1$s to complete</string>
 
