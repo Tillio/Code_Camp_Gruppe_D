@@ -56,6 +56,9 @@
     <string name="title_compass">Compass</string>
     <string name="compass_loading_locations">Loading locations…</string>
     <string name="compass_waiting_for_opponent">You\'ve all locations found. Now wait for %1$s to complete</string>
+    <string name="compass_hint">Wrong direction. Rotate your device %1$s</string>
+    <string name="compass_hint_clockwise">clockwise</string>
+    <string name="compass_hint_counterclockwise">counterclockwise</string>
 
     <string name="ending_win">Congrats! You win</string>
     <string name="ending_lose">Booh! You lose</string>

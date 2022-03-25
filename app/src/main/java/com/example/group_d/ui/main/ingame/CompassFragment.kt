@@ -39,6 +39,7 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.http.GET
 import java.util.*
+import kotlin.math.abs
 
 
 class CompassFragment : Fragment(), Callback<MutableList<CompassLocation>>, GiveUpReceiver, SensorEventListener {
@@ -221,8 +222,27 @@ class CompassFragment : Fragment(), Callback<MutableList<CompassLocation>>, Give
     }
 
     private fun waitTimerFinished() {
-        if (compassViewModel.checkRightDirection(lastUserPosition!!, lastOrientation)) {
+        val rightOrientation = compassViewModel.getRightDirection(lastUserPosition!!)
+        var error = rightOrientation - lastOrientation
+        if (error > 180.0) {
+            error -= 360
+        } else if (error < 180.0) {
+            error += 360
+        }
+        // tolerance of 10 degrees
+        if (abs(error) <= 10.0) {
             compassViewModel.nextLocation()
+        } else {
+            val hint = getString(
+                if (error < 0.0) {
+                    R.string.compass_hint_counterclockwise
+                } else {
+                    R.string.compass_hint_clockwise
+                }
+            )
+            activity?.runOnUiThread {
+                Toast.makeText(requireContext(), getString(R.string.compass_hint, hint), Toast.LENGTH_SHORT).show()
+            }
         }
         waitSymbol.visibility = View.INVISIBLE
     }

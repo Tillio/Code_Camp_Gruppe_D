@@ -12,7 +12,6 @@ import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.ktx.Firebase
 import com.google.gson.Gson
-import kotlin.math.abs
 import kotlin.math.acos
 import kotlin.math.sqrt
 import kotlin.random.Random
@@ -125,7 +124,7 @@ class CompassViewModel : GameViewModel() {
         updateGameData(gameDataVal)
     }
 
-    fun checkRightDirection(userPos: Location, orientation: Float): Boolean {
+    fun getRightDirection(userPos: Location): Double {
         // set altitudes to 0 because the geoportal doesn't provide them
         val userPosEcef =
             CompassLocation.geodeticToEcef(userPos.latitude, userPos.longitude, 0.0)
@@ -144,8 +143,7 @@ class CompassViewModel : GameViewModel() {
         if (diff[0] < 0) {
             rightOrientation = -rightOrientation
         }
-        // tolerance of 10 degrees
-        return abs(rightOrientation - orientation) <= 10
+        return rightOrientation
     }
 
     fun loadTimerBase(): Long {
