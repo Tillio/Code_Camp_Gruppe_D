@@ -26,5 +26,6 @@
 
     <style name="AlertDialogTheme" parent="ThemeOverlay.MaterialComponents.Dialog.Alert">
         <item name="android:textColor">@color/black</item>
+        <item name="android:textColorPrimary">@color/black</item>
     </style>
 </resources>

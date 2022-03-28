@@ -11,6 +11,7 @@
     <string name="login_failed">"Login failed"</string>
     <string name="dialog_yes">Yes</string>
     <string name="dialog_no">No</string>
+    <string name="dialog_got_it">Got it</string>
 
     <string name="title_activity_main_screen">MainScreenActivity</string>
 
@@ -54,6 +55,10 @@
 
     <!--compass-->
     <string name="title_compass">Compass</string>
+    <string name="compass_location_request_dialog_title">Location permission needed</string>
+    <string name="compass_location_request_dialog_msg">This game requires your location to determine if your device is oriented correctly.</string>
+    <string name="compass_location_denied_dialog_title">Location permission denied</string>
+    <string name="compass_location_denied_dialog_msg">The location permission has been denied. Go in your app settings to allow it.</string>
     <string name="compass_loading_locations">Loading locations…</string>
     <string name="compass_waiting_for_opponent">You\'ve all locations found. Now wait for %1$s to complete</string>
     <string name="compass_hint">Wrong direction. Rotate your device %1$s</string>

@@ -153,20 +153,20 @@ class CompassFragment : Fragment(), Callback<MutableList<CompassLocation>>, Give
         ) {
             if (it[Manifest.permission.ACCESS_FINE_LOCATION] == true) {
                 locationPermissionGranted()
+            } else {
+                locationPermissionDenied()
             }
         }
-        when {
+        when (PackageManager.PERMISSION_GRANTED) {
             ContextCompat.checkSelfPermission(
                 requireContext(),
                 Manifest.permission.ACCESS_FINE_LOCATION
-            ) == PackageManager.PERMISSION_GRANTED -> {
+            ) -> {
                 locationPermissionGranted()
             }
             else -> {
-                requestPermissionLauncher.launch(
-                    arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION,
-                        Manifest.permission.ACCESS_FINE_LOCATION)
-                )
+                LocationRequestDialogFragment(requestPermissionLauncher)
+                    .show(parentFragmentManager, "location_request")
             }
         }
 
@@ -176,6 +176,10 @@ class CompassFragment : Fragment(), Callback<MutableList<CompassLocation>>, Give
         waitSymbol.visibility = View.VISIBLE
         textPlayerAction.setText(R.string.compass_loading_locations)
         restCall.enqueue(this)
+    }
+
+    private fun locationPermissionDenied() {
+        LocationDeniedDialogFragment().show(parentFragmentManager, "location_deniedshow")
     }
 
     private fun onGameLoaded(game: Game?) {
@@ -211,7 +215,7 @@ class CompassFragment : Fragment(), Callback<MutableList<CompassLocation>>, Give
                 Manifest.permission.ACCESS_COARSE_LOCATION
             ) != PackageManager.PERMISSION_GRANTED
         ) {
-            return
+            locationPermissionDenied()
         }
         val cancelToken = CancellationTokenSource().token
         fusedLocationClient.getCurrentLocation(
