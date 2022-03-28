@@ -276,6 +276,8 @@ class CompassFragment : Fragment(), Callback<MutableList<CompassLocation>>, Give
     }
 
     private fun onGameOver(ending: GameEnding) {
+        // stop the time count because in case the user gave up it hasn't been called so far
+        timeCount.stop()
         val msgID = when (ending) {
             GameEnding.WIN -> R.string.ending_win
             GameEnding.LOSE -> R.string.ending_lose
