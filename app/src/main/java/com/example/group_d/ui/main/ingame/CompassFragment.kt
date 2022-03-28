@@ -10,7 +10,6 @@ import android.hardware.SensorManager
 import android.location.Location
 import android.os.Bundle
 import android.os.SystemClock
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -144,7 +143,9 @@ class CompassFragment : Fragment(), Callback<MutableList<CompassLocation>>, Give
     }
 
     override fun onFailure(call: Call<MutableList<CompassLocation>>, t: Throwable) {
-        Log.d("CompassFragment", "Error while loading locations", t)
+        ErrorDialogFragment(
+            R.string.compass_no_internet_dialog_title, R.string.compass_no_internet_dialog_msg
+        ).show(parentFragmentManager, "no_internet")
     }
 
     private fun requireLocationPermission() {
@@ -179,7 +180,10 @@ class CompassFragment : Fragment(), Callback<MutableList<CompassLocation>>, Give
     }
 
     private fun locationPermissionDenied() {
-        LocationDeniedDialogFragment().show(parentFragmentManager, "location_deniedshow")
+        ErrorDialogFragment(
+            R.string.compass_location_denied_dialog_title,
+            R.string.compass_location_denied_dialog_msg
+        ).show(parentFragmentManager, "location_deniedshow")
     }
 
     private fun onGameLoaded(game: Game?) {
