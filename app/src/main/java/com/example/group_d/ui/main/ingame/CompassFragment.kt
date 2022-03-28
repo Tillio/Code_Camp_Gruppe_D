@@ -226,7 +226,7 @@ class CompassFragment : Fragment(), Callback<MutableList<CompassLocation>>, Give
         var error = rightOrientation - lastOrientation
         if (error > 180.0) {
             error -= 360
-        } else if (error < 180.0) {
+        } else if (error < -180.0) {
             error += 360
         }
         // tolerance of 10 degrees
