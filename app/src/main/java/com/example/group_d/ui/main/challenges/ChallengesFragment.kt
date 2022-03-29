@@ -57,6 +57,7 @@ class ChallengesFragment : Fragment() {
 
     fun onAccept(challenge: Challenge) {
         Log.d(null, "Start new game with ${challenge.user.name}")
+        userDataViewModel.prepNotification("Game started", "a new game has started", challenge.user.id)
         challengesViewModel.createGame(challenge).addOnSuccessListener { docref ->
             val action =
                 TicTacToeFragmentDirections.actionGlobalIngameTicTacToeFragment(docref.id)

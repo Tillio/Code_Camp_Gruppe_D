@@ -31,8 +31,7 @@ class TicTacToeFragment : Fragment() {
     private lateinit var textPlayerAction: TextView
     private lateinit var fieldButtons: Array<ImageView>
 
-    // This property is only valid between onCreateView and
-    // onDestroyView.
+    // This property is only valid between onCreateView and onDestroyView.
     private val binding get() = _binding!!
 
     override fun onCreateView(

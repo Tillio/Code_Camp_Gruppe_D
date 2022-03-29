@@ -58,7 +58,6 @@ class UserDataViewModel : ViewModel() {
         val gameCopy = games.value
         gameCopy?.add(game)
         games.value = gameCopy!!
-
     }
 
     fun sendFriendRequest(username: String): Boolean {
@@ -196,7 +195,6 @@ class UserDataViewModel : ViewModel() {
                 print("pass")
             }
         }
-        //listen to games
     }
 
     /**
@@ -205,18 +203,12 @@ class UserDataViewModel : ViewModel() {
      */
     private fun gamesListener(snapshot: DocumentSnapshot) {
         val actualGames = snapshot.data?.get(USER_GAMES) as ArrayList<String>
-        var yourTurn = 0
         //attach listener if game is unknown
         for (game in actualGames) {
             val localGameData = gameIdIsLocal(game)
             if (localGameData == null) {
                 attachGameListener(game)
-                yourTurn++
             }
-        }
-        if (yourTurn != 0){
-            var textStr = "It is your Turn in " + yourTurn + " games!"
-            //notificationHandler.sendNotification(textStr)
         }
         //delete old games
         for (game in games.value!!) {
@@ -281,7 +273,6 @@ class UserDataViewModel : ViewModel() {
             currentChallenges.add(it)
         }
 
-        var yourChallenge = 0
         for (chall in snapshot.data?.get(USER_CHALLENGES) as ArrayList<HashMap<*, *>>) {
             val type = chall["gameType"]
             val userMap = chall["user"] as HashMap<*, *>
@@ -300,13 +291,6 @@ class UserDataViewModel : ViewModel() {
             }
             var newChallenge = Challenge(user = userObj, gameType = type as String)
             actualChallenges.add(newChallenge)
-            if (newChallenge !in currentChallenges){
-                yourChallenge++
-            }
-        }
-        if (yourChallenge != 0){
-            var textStr = "You have " + yourChallenge + " Challenges!"
-            //notificationHandler.sendNotification(textStr)
         }
         //add new challenges
         challenges.value = actualChallenges
@@ -413,21 +397,15 @@ class UserDataViewModel : ViewModel() {
         friendRequests.value!!.forEach {
             currentFriendRequests.add(it.friendID)
         }
-        var yourFriends = 0
         for (request in actualFriendRequests) {
             if (request !in currentFriendRequests) {
                 addFriendRequests.add(request as String)
-                yourFriends++
             }
         }
         for (request in currentFriendRequests) {
             if (request !in actualFriendRequests) {
                 removeFriendRequests.add(request)
             }
-        }
-        if (yourFriends != 0){
-            var textStr = "You have " + yourFriends + " Friendrequests!"
-            //notificationHandler.sendNotification(textStr)
         }
         removeFriendRequests(removeFriendRequests)
         addFriendRequests(addFriendRequests)
@@ -479,7 +457,7 @@ class UserDataViewModel : ViewModel() {
         }
     }
 
-    private fun prepNotification(title: String, msg: String, topic: String){
+    public fun prepNotification(title: String, msg: String, topic: String){
         if(title.isNotEmpty() && msg.isNotEmpty()){
             val topicStr: String = "/topics/" + topic
             PushNotification(NotificationData(title, msg), topicStr).also {
@@ -491,17 +469,6 @@ class UserDataViewModel : ViewModel() {
     private fun sendNotification(notification: PushNotification) = CoroutineScope(Dispatchers.IO).launch {
         try {
             val response = RetrofitInstance.api.postNotification(notification)
-            if (response.isSuccessful){
-                /*
-                 for some reason this line crashes the app
-                 and since it is only used for debugging I just put it in a Comment
-                 now everything should work fine
-                */
-                //Log.d(ContentValues.TAG, "Response: ${Gson().toJson(response)}")
-            }
-            else {
-                Log.e(ContentValues.TAG, response.errorBody().toString())
-            }
         } catch (e: Exception){
             Log.e(ContentValues.TAG, e.toString())
         }
