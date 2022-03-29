@@ -1,6 +1,7 @@
 package com.example.group_d.ui.main.ingame
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.PackageManager
 import android.hardware.Sensor
@@ -42,11 +43,11 @@ import kotlin.math.abs
 
 
 class CompassFragment : Fragment(), Callback<MutableList<CompassLocation>>, GiveUpReceiver, SensorEventListener {
-    val retrofit: Retrofit = RetrofitInstanceBuilder.getRetrofitInstance(
+    private val retrofit: Retrofit = RetrofitInstanceBuilder.getRetrofitInstance(
         object : TypeToken<MutableList<CompassLocation>>() {}.type,
         CompassLocationListDeserializer()
     )
-    val restCall = retrofit.create(GeojsonRestService::class.java).loadGeoJson()
+    private val restCall = retrofit.create(GeojsonRestService::class.java).loadGeoJson()
 
     interface GeojsonRestService {
         @GET(LOCATIONS_GET_QUERY)
@@ -99,10 +100,12 @@ class CompassFragment : Fragment(), Callback<MutableList<CompassLocation>>, Give
         buttonGiveUp = binding.buttonGiveUp
 
         compassViewModel.opponentName.observe(viewLifecycleOwner) { opName ->
+            // Show the opponent's name in the text field
             textOpName.text = opName
         }
 
         compassViewModel.currentLocation.observe(viewLifecycleOwner) { curLocation ->
+            // Show the current location
             textPlayerAction.text = "${curLocation.name}, ${curLocation.addr}"
         }
 
@@ -123,25 +126,34 @@ class CompassFragment : Fragment(), Callback<MutableList<CompassLocation>>, Give
         sensorManager = activity?.getSystemService(Context.SENSOR_SERVICE) as SensorManager?
         rotVecSensor = sensorManager?.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR)
 
+        // Make sure the location permission is granted
         requireLocationPermission()
 
         return root
     }
 
     // Retrofit callbacks
+    /*
+        Called when the rest call was successful
+     */
     override fun onResponse(
         call: Call<MutableList<CompassLocation>>,
         response: Response<MutableList<CompassLocation>>
     ) {
+        // Register callback for touching the compass (location confirm)
         compassView.setOnClickListener(this::onLocationConfirmed)
         compassViewModel.locations = response.body()?:ArrayList()
         compassViewModel.runGame.observe(viewLifecycleOwner, this::onGameLoaded)
         textPlayerAction.text = ""
         waitSymbol.visibility = View.INVISIBLE
 
+        // Start loading game from database
         compassViewModel.loadRunningGame(args.gameID)
     }
 
+    /*
+        Called when the rest call failed
+     */
     override fun onFailure(call: Call<MutableList<CompassLocation>>, t: Throwable) {
         ErrorDialogFragment(
             R.string.compass_no_internet_dialog_title, R.string.compass_no_internet_dialog_msg
@@ -159,6 +171,7 @@ class CompassFragment : Fragment(), Callback<MutableList<CompassLocation>>, Give
             }
         }
         when (PackageManager.PERMISSION_GRANTED) {
+            // Check if location permission is already granted
             ContextCompat.checkSelfPermission(
                 requireContext(),
                 Manifest.permission.ACCESS_FINE_LOCATION
@@ -166,6 +179,7 @@ class CompassFragment : Fragment(), Callback<MutableList<CompassLocation>>, Give
                 locationPermissionGranted()
             }
             else -> {
+                // If not inform the user
                 LocationRequestDialogFragment(requestPermissionLauncher)
                     .show(parentFragmentManager, "location_request")
             }
@@ -174,8 +188,10 @@ class CompassFragment : Fragment(), Callback<MutableList<CompassLocation>>, Give
     }
 
     private fun locationPermissionGranted() {
+        // Show the user there is a loading process
         waitSymbol.visibility = View.VISIBLE
         textPlayerAction.setText(R.string.compass_loading_locations)
+        // Start the call to the API with this fragment object as callback
         restCall.enqueue(this)
     }
 
@@ -187,16 +203,25 @@ class CompassFragment : Fragment(), Callback<MutableList<CompassLocation>>, Give
     }
 
     private fun onGameLoaded(game: Game?) {
+        // Load timer base from data base
         var timerBase = compassViewModel.loadTimerBase()
         timerBase = if (timerBase != 0L)
             timerBase
         else
+            // timerBase == 0 -> There isn't a timer base saved -> create new timer base
             SystemClock.elapsedRealtime()
         timeCount.base = timerBase
         timeCount.start()
+        // Save timer base to data base
         compassViewModel.saveTimerBase(timerBase)
     }
 
+    /*
+        We have already ensured in requireLocationPermission that the location permission is granted
+        so it should be fine to ignore the warning
+        (a permission change at runtime forces a restart of the app)
+     */
+    @SuppressLint("MissingPermission")
     private fun onLocationConfirmed(view: View) {
         if (waitSymbol.visibility == View.VISIBLE) {
             // cancel confirmation if the user is waiting
@@ -204,24 +229,17 @@ class CompassFragment : Fragment(), Callback<MutableList<CompassLocation>>, Give
             waitSymbol.visibility = View.INVISIBLE
             return
         }
+        // Show loading symbol
         waitSymbol.visibility = View.VISIBLE
+        // Wait 5 seconds so the user can't "spam" locations without time loss
         waitTimer = Timer()
         waitTimer.schedule(object : TimerTask() {
             override fun run() {
                 waitTimerFinished()
             }
         }, 5000)
-        if (ContextCompat.checkSelfPermission(
-                requireContext(),
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(
-                requireContext(),
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            locationPermissionDenied()
-        }
         val cancelToken = CancellationTokenSource().token
+        // Get current user location with Google Play services
         fusedLocationClient.getCurrentLocation(
             LocationRequest.PRIORITY_HIGH_ACCURACY, cancelToken
         ).addOnSuccessListener { location ->
