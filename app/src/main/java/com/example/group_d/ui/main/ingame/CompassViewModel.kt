@@ -47,9 +47,15 @@ class CompassViewModel : GameViewModel() {
                 playerRef.get().addOnSuccessListener { playerSnap ->
                     _opponentName.value = playerSnap.getString(USER_NAME)
                     val gameData = snap[GAME_DATA] as MutableList<String>
+                    // Initialize random generator with the saved seed
                     random = Random(gameData[0].toLong())
+                    /*
+                        Generate the indices for the locations which will be asked:
+                        since both players have the same seed they will get the same locations
+                     */
                     for (i in 1..10) {
                         var nextLocationIndex = random.nextInt(locations.size)
+                        // Don't ask twice for the same location in one game
                         while (nextLocationIndex in requestedLocationIndices) {
                             nextLocationIndex = random.nextInt(locations.size)
                         }
@@ -57,6 +63,10 @@ class CompassViewModel : GameViewModel() {
                     }
                     for (str in gameData) {
                         if (str.startsWith("fL_${Firebase.auth.currentUser!!.email}=")) {
+                            /*
+                                Get the number of locations the user already found and remove the
+                                corresponding indices from the list
+                             */
                             val foundLocations = str.split("=")[1].toInt()
                             for (i in 1..foundLocations) {
                                 requestedLocationIndices.removeFirst()
@@ -64,9 +74,12 @@ class CompassViewModel : GameViewModel() {
                             break
                         }
                     }
+                    // Show the next location
                     _currentLocation.value = locations[requestedLocationIndices.removeFirst()]
+                    // Notify the fragment that the game is loaded
                     runGame.value = Game(beginnerIndex, gameData, GAME_TYPE_TIC_TAC_TOE, playerRefs)
                     addGameDataChangedListener(docref)
+                    // Fire onGameDataChanged in case a player is ready
                     onGameDataChanged(gameData)
                 }
             }
@@ -74,11 +87,13 @@ class CompassViewModel : GameViewModel() {
     }
 
     override fun onGameDataChanged(gameData: List<String>) {
+        // Count ready players
         var readyPlayers = 0
         for (str in gameData) {
             if (str.startsWith("nT_")) {
                 readyPlayers += 1
                 if (str.startsWith("nT_${Firebase.auth.currentUser!!.email}=")) {
+                    // User has finished, extract time
                     _neededTime = str.split("=")[1].toInt()
                     if (_neededTime < 0) {
                         // user gave up
@@ -87,6 +102,7 @@ class CompassViewModel : GameViewModel() {
                     }
                     _foundAllLocations.value = true
                 } else {
+                    // Opponent has finished, extract time
                     opNeededTime = str.split("=")[1].toInt()
                     if (opNeededTime < 0) {
                         // opponent gave up
@@ -110,21 +126,24 @@ class CompassViewModel : GameViewModel() {
         }
     }
 
+    // Called when the user found a location
     fun nextLocation() {
         if (!requestedLocationIndices.isEmpty()) {
-            // use postValue instead of setValue because this method is called from another thread
+            // use postValue instead of setValue because this method is called from the timer thread
             _currentLocation.postValue(locations[requestedLocationIndices.removeFirst()])
         } else {
             _foundAllLocations.postValue(true)
         }
+        // Delete old number of found locations
         val oldGameDataVal =
             "fL_${Firebase.auth.currentUser!!.email}=${10 - requestedLocationIndices.size - 2}"
         deleteFromGameData(oldGameDataVal)
+        // Save new number of found locations
         val gameDataVal = "fL_${Firebase.auth.currentUser!!.email}=${10 - requestedLocationIndices.size - 1}"
         updateGameData(gameDataVal)
     }
 
-    fun getRightDirection(userPos: Location): Double {
+    private fun getRightDirection(userPos: Location): Double {
         // set altitudes to 0 because the geoportal doesn't provide them
         val userPosEcef =
             CompassLocation.geodeticToEcef(userPos.latitude, userPos.longitude, 0.0)
@@ -146,6 +165,23 @@ class CompassViewModel : GameViewModel() {
         return rightOrientation
     }
 
+    fun getDirectionError(lastUserPosition: Location, lastOrientation: Float): Double {
+        val rightOrientation = getRightDirection(lastUserPosition)
+        var error = lastOrientation - rightOrientation
+        if (error > 180.0) {
+            /*
+                if e.g. lastOrientation == 179 and rightOrientation == -179,
+                error would be 358 although the real difference is only 2 degrees
+                -> subtract 360 to correct this
+             */
+            error -= 360
+        } else if (error < -180.0) {
+            // similarly add 360 if error < -180
+            error += 360
+        }
+        return error
+    }
+
     fun loadTimerBase(): Long {
         for (str in runGameRaw.gameData) {
             if (str.startsWith("tB_${Firebase.auth.currentUser!!.email}=")) {
@@ -164,6 +200,18 @@ class CompassViewModel : GameViewModel() {
         val gameDataVal = "nT_${Firebase.auth.currentUser!!.email}=$neededTime"
         updateGameData(gameDataVal)
         this._neededTime = neededTime
+    }
+
+    fun saveNeededTime(neededTime: CharSequence) {
+        val neededTimeInt = neededTime.split(":").run {
+            var result = 0
+            forEach {
+                result *= 60
+                result += it.toInt()
+            }
+            result
+        }
+        saveNeededTime(neededTimeInt)
     }
 
     fun giveUp() {

@@ -248,24 +248,30 @@ class CompassFragment : Fragment(), Callback<MutableList<CompassLocation>>, Give
     }
 
     private fun waitTimerFinished() {
-        val rightOrientation = compassViewModel.getRightDirection(lastUserPosition!!)
-        var error = rightOrientation - lastOrientation
-        if (error > 180.0) {
-            error -= 360
-        } else if (error < -180.0) {
-            error += 360
-        }
+        val error = compassViewModel.getDirectionError(lastUserPosition!!, lastOrientation)
         // tolerance of 10 degrees
         if (abs(error) <= 10.0) {
             compassViewModel.nextLocation()
         } else {
             val hint = getString(
-                if (error < 0.0) {
+                if (error > 0.0) {
+                    /*
+                        error > 0 -> user turned device too much in clockwise direction so he should
+                        turn the device counterclockwise
+                     */
                     R.string.compass_hint_counterclockwise
                 } else {
+                    /*
+                        error > 0 -> user turned device too much in counterclockwise direction so he should
+                        turn the device clockwise
+                     */
                     R.string.compass_hint_clockwise
                 }
             )
+            /*
+                This method is called in the timer thread
+                but the toast can only be shown on the UI thread
+             */
             activity?.runOnUiThread {
                 Toast.makeText(requireContext(), getString(R.string.compass_hint, hint), Toast.LENGTH_SHORT).show()
             }
@@ -276,14 +282,8 @@ class CompassFragment : Fragment(), Callback<MutableList<CompassLocation>>, Give
     private fun onAllLocationsFound() {
         timeCount.stop()
         if (compassViewModel.neededTime == 0) {
-            val neededTime = timeCount.text.split(":").run {
-                var result = 0
-                forEach {
-                    result *= 60
-                    result += it.toInt()
-                }
-                result
-            }
+            // neededTime has not been saved yet
+            val neededTime = timeCount.text
             compassViewModel.saveNeededTime(neededTime)
         }
         timeCount.base = SystemClock.elapsedRealtime() - 1000 * compassViewModel.neededTime
@@ -328,10 +328,17 @@ class CompassFragment : Fragment(), Callback<MutableList<CompassLocation>>, Give
 
     override fun onSensorChanged(event: SensorEvent) {
         val rotMat = FloatArray(9)
-        SensorManager.getRotationMatrixFromVector(rotMat, event.values.filterIndexed { index, fl -> index < 3 }.toFloatArray())
+        // Calculate the rotation matrix with the values from the event
+        SensorManager.getRotationMatrixFromVector(rotMat, event.values)
         val orientation = FloatArray(3)
+        // Calculate the orientations with the rotation matrix
         SensorManager.getOrientation(rotMat, orientation)
+        /*
+            We only care about the angle between the device's x-Axis and the magnetic north pole
+            which is the first element of the vector
+         */
         val degrees = Math.toDegrees(orientation[0].toDouble()).toFloat()
+        // Update UI so the needle points north
         compassNeedle.rotation = 360 - degrees
         if (waitSymbol.visibility != View.VISIBLE) {
             // only update last location if the user isn't waiting
