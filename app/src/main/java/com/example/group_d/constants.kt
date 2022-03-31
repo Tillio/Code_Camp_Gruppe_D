@@ -37,3 +37,10 @@ val GAME_TYPE_MAP = hashMapOf(
 //compass constants
 const val LOCATIONS_BASE_URL = "https://geoportal.kassel.de/arcgis/rest/services/Service_Daten/Freizeit_Kultur/MapServer/0/"
 const val LOCATIONS_GET_QUERY = "query?where=1%3D1&text=&objectIds=&time=&geometry=&geometryType=esriGeometryEnvelope&inSR=&spatialRel=esriSpatialRelIntersects&distance=&units=esriSRUnit_Foot&relationParam=&outFields=*&returnGeometry=true&returnTrueCurves=false&maxAllowableOffset=&geometryPrecision=&outSR=&havingClause=&returnIdsOnly=false&returnCountOnly=false&orderByFields=&groupByFieldsForStatistics=&outStatistics=&returnZ=false&returnM=false&gdbVersion=&historicMoment=&returnDistinctValues=false&resultOffset=&resultRecordCount=&returnExtentOnly=false&datumTransformation=&parameterValues=&rangeValues=&quantizationParameters=&featureEncoding=esriDefault&f=geojson"
+//json member names
+const val JSON_FEATURES = "features"
+const val JSON_GEOMETRY = "geometry"
+const val JSON_GEOMETRY_COORDINATES = "coordinates"
+const val JSON_PROPS = "properties"
+const val JSON_PROPS_NAME = "Objekt"
+const val JSON_PROPS_ADDRESS = "Adresse"

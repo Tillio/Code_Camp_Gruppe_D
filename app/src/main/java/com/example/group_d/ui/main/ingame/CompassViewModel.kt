@@ -144,14 +144,14 @@ class CompassViewModel : GameViewModel() {
     }
 
     private fun getRightDirection(userPos: Location): Double {
-        // set altitudes to 0 because the geoportal doesn't provide them
+        // Set altitudes to 0 because the geoportal doesn't provide them
         val userPosEcef =
             CompassLocation.geodeticToEcef(userPos.latitude, userPos.longitude, 0.0)
         val currentLocationEcef = _currentLocation.value!!.run {
-            CompassLocation.geodeticToEcef(coordinates[1], coordinates[0], 0.0)
+            CompassLocation.geodeticToEcef(latitude, longitude, 0.0)
         }
-        val locationEnu = CompassLocation.EcefToEnu(userPosEcef, currentLocationEcef)
-        val magneticNorthEnu = CompassLocation.EcefToEnu(userPosEcef, CompassLocation.magneticNorthEcef)
+        val locationEnu = CompassLocation.ecefToEnu(userPosEcef, currentLocationEcef)
+        val magneticNorthEnu = CompassLocation.ecefToEnu(userPosEcef, CompassLocation.magneticNorthEcef)
         val locationEnuNorm = sqrt(locationEnu.map { it * it }.sum())
         val magneticNorthEnuNorm = sqrt(magneticNorthEnu.map { it * it }.sum())
         val locationDir = locationEnu.map { it / locationEnuNorm }
@@ -188,6 +188,7 @@ class CompassViewModel : GameViewModel() {
                 return str.split("=")[1].toLong()
             }
         }
+        // Timer base not saved yet -> return 0
         return 0L
     }
 
