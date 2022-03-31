@@ -2,7 +2,10 @@ package com.example.group_d.ui.main.ingame
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
+import android.content.Intent
+import android.content.IntentSender
 import android.content.pm.PackageManager
 import android.hardware.Sensor
 import android.hardware.SensorEvent
@@ -22,15 +25,18 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.navArgs
 import com.example.group_d.LOCATIONS_GET_QUERY
 import com.example.group_d.R
+import com.example.group_d.REQUEST_UPDATE_LOCATION_SETTINGS
 import com.example.group_d.data.json.CompassLocationListDeserializer
 import com.example.group_d.data.json.RetrofitInstanceBuilder
 import com.example.group_d.data.model.CompassLocation
 import com.example.group_d.data.model.Game
 import com.example.group_d.data.model.GameEnding
 import com.example.group_d.databinding.CompassFragmentBinding
+import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.LocationSettingsRequest
 import com.google.android.gms.tasks.CancellationTokenSource
 import com.google.gson.reflect.TypeToken
 import retrofit2.Call
@@ -77,6 +83,12 @@ class CompassFragment : Fragment(), Callback<MutableList<CompassLocation>>, Give
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private var lastUserPosition: Location? = null
     private var lastOrientation: Float = 0.0F
+    /*
+        With this flag we ensure that the user doesn't get stuck in a loop of requests
+        for location settings change because onResume is also called
+        when the user denies the settings change and the error dialog is shown
+     */
+    private var showLocationSettingsRequest: Boolean = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -165,9 +177,9 @@ class CompassFragment : Fragment(), Callback<MutableList<CompassLocation>>, Give
             ActivityResultContracts.RequestMultiplePermissions()
         ) {
             if (it[Manifest.permission.ACCESS_FINE_LOCATION] == true) {
-                locationPermissionGranted()
+                requireLocationSettings()
             } else {
-                locationPermissionDenied()
+                locationNotAvailable()
             }
         }
         when (PackageManager.PERMISSION_GRANTED) {
@@ -176,7 +188,7 @@ class CompassFragment : Fragment(), Callback<MutableList<CompassLocation>>, Give
                 requireContext(),
                 Manifest.permission.ACCESS_FINE_LOCATION
             ) -> {
-                locationPermissionGranted()
+                requireLocationSettings()
             }
             else -> {
                 // If not inform the user
@@ -187,15 +199,57 @@ class CompassFragment : Fragment(), Callback<MutableList<CompassLocation>>, Give
 
     }
 
-    private fun locationPermissionGranted() {
-        // Show the user there is a loading process
-        waitSymbol.visibility = View.VISIBLE
-        textPlayerAction.setText(R.string.compass_loading_locations)
-        // Start the call to the API with this fragment object as callback
-        restCall.enqueue(this)
+    private fun requireLocationSettings() {
+        if (!showLocationSettingsRequest) {
+            return
+        }
+        showLocationSettingsRequest = false
+        // Only needed to form the LocationSettingsRequest to prompt the user
+        val locationRequest = LocationRequest.create().apply {
+            interval = 10000
+            fastestInterval = 5000
+            priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+        }
+        val builder = LocationSettingsRequest.Builder()
+            .addLocationRequest(locationRequest)
+            .setAlwaysShow(true)
+        LocationServices.getSettingsClient(requireActivity()).checkLocationSettings(builder.build())
+            .addOnSuccessListener {
+                locationAvailable()
+            }
+            .addOnFailureListener { e ->
+                if (e is ResolvableApiException) {
+                    try {
+                        e.startResolutionForResult(this, REQUEST_UPDATE_LOCATION_SETTINGS)
+                    } catch (sendIntEx: IntentSender.SendIntentException) {
+                        // Ignore the exception
+                    }
+                }
+            }
     }
 
-    private fun locationPermissionDenied() {
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (requestCode == REQUEST_UPDATE_LOCATION_SETTINGS) {
+            if (resultCode == Activity.RESULT_OK) {
+                locationAvailable()
+            } else {
+                locationNotAvailable()
+            }
+        }
+    }
+
+    private fun locationAvailable() {
+        showLocationSettingsRequest = true
+        if (!restCall.isExecuted) {
+            // Show the user there is a loading process
+            waitSymbol.visibility = View.VISIBLE
+            textPlayerAction.setText(R.string.compass_loading_locations)
+            // Start the call to the API with this fragment object as callback
+            restCall.enqueue(this)
+        }
+    }
+
+    private fun locationNotAvailable() {
         ErrorDialogFragment(
             R.string.compass_location_denied_dialog_title,
             R.string.compass_location_denied_dialog_msg
@@ -216,19 +270,7 @@ class CompassFragment : Fragment(), Callback<MutableList<CompassLocation>>, Give
         compassViewModel.saveTimerBase(timerBase)
     }
 
-    /*
-        We have already ensured in requireLocationPermission that the location permission is granted
-        so it should be fine to ignore the warning
-        (a permission change at runtime forces a restart of the app)
-     */
-    @SuppressLint("MissingPermission")
-    private fun onLocationConfirmed(view: View) {
-        if (waitSymbol.visibility == View.VISIBLE) {
-            // cancel confirmation if the user is waiting
-            waitTimer.cancel()
-            waitSymbol.visibility = View.INVISIBLE
-            return
-        }
+    private fun startWaiting() {
         // Show loading symbol
         waitSymbol.visibility = View.VISIBLE
         // Wait 5 seconds so the user can't "spam" locations without time loss
@@ -238,6 +280,26 @@ class CompassFragment : Fragment(), Callback<MutableList<CompassLocation>>, Give
                 waitTimerFinished()
             }
         }, 5000)
+    }
+
+    private fun abortWaiting() {
+        waitTimer.cancel()
+        waitSymbol.visibility = View.INVISIBLE
+    }
+
+    /*
+        We have already ensured in requireLocationPermission that the location permission is granted
+        so it should be fine to ignore the warning
+        (a permission change at runtime forces a restart of the app)
+     */
+    @SuppressLint("MissingPermission")
+    private fun onLocationConfirmed(view: View) {
+        if (waitSymbol.visibility == View.VISIBLE) {
+            // cancel confirmation if the user is waiting
+            abortWaiting()
+            return
+        }
+        startWaiting()
         val cancelToken = CancellationTokenSource().token
         // Get current user location with Google Play services
         fusedLocationClient.getCurrentLocation(
@@ -318,6 +380,8 @@ class CompassFragment : Fragment(), Callback<MutableList<CompassLocation>>, Give
 
     override fun onResume() {
         super.onResume()
+        // While the fragment was paused the user could have disabled device location in settings
+        requireLocationSettings()
         sensorManager?.registerListener(this, rotVecSensor, SensorManager.SENSOR_DELAY_UI)
     }
 
@@ -348,5 +412,21 @@ class CompassFragment : Fragment(), Callback<MutableList<CompassLocation>>, Give
 
     override fun onAccuracyChanged(sensor: Sensor, accuracy: Int) {
         // Do nothing
+    }
+}
+
+/*
+    Since the method startResolutionForResult from the class ResolvableApiException works only for
+    an activity as parameter (onActivityResult will be only called in the activity),
+    we write a equivalent extension function which takes a fragment as parameter
+ */
+@Suppress("DEPRECATION")
+fun ResolvableApiException.startResolutionForResult(fragment: Fragment, requestCode: Int) {
+    val pendingIntent = status.resolution
+    if (pendingIntent != null) {
+        fragment.startIntentSenderForResult(
+            pendingIntent.intentSender,
+            requestCode, null, 0, 0, 0, null
+        )
     }
 }

@@ -57,10 +57,12 @@
     <string name="title_compass">Compass</string>
     <string name="compass_location_request_dialog_title">Location permission needed</string>
     <string name="compass_location_request_dialog_msg">This game requires your location to determine if your device is oriented correctly.</string>
-    <string name="compass_location_denied_dialog_title">Location permission denied</string>
-    <string name="compass_location_denied_dialog_msg">The location permission has been denied. Go in your app settings to allow it.</string>
+    <string name="compass_location_denied_dialog_title">Location services not available</string>
+    <string name="compass_location_denied_dialog_msg">The location services are not available. Go in your device settings and make sure you have enabled the location permission for this app and the location services are enabled.</string>
     <string name="compass_no_internet_dialog_title">Loading locations failed</string>
     <string name="compass_no_internet_dialog_msg">Ensure you Wi-Fi or mobile data is enabled.</string>
+    <string name="compass_location_null_dialog_title">Could not determine your location</string>
+    <string name="compass_location_null_dialog_msg">Make sure you have the location services in your device settings enabled</string>
     <string name="compass_loading_locations">Loading locations…</string>
     <string name="compass_waiting_for_opponent">You\'ve all locations found. Now wait for %1$s to complete</string>
     <string name="compass_hint">Wrong direction. Rotate your device %1$s</string>
