@@ -88,7 +88,7 @@ class CompassFragment : Fragment(), Callback<MutableList<CompassLocation>>, Give
         for location settings change because onResume is also called
         when the user denies the settings change and the error dialog is shown
      */
-    private var showLocationSettingsRequest: Boolean = true
+    private var showLocationSettingsRequest: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -135,9 +135,6 @@ class CompassFragment : Fragment(), Callback<MutableList<CompassLocation>>, Give
             GiveUpDialogFragment(this).show(parentFragmentManager, "give_up")
         }
 
-        sensorManager = activity?.getSystemService(Context.SENSOR_SERVICE) as SensorManager?
-        rotVecSensor = sensorManager?.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR)
-
         // Make sure the location permission is granted
         requireLocationPermission()
 
@@ -177,26 +174,46 @@ class CompassFragment : Fragment(), Callback<MutableList<CompassLocation>>, Give
             ActivityResultContracts.RequestMultiplePermissions()
         ) {
             if (it[Manifest.permission.ACCESS_FINE_LOCATION] == true) {
-                requireLocationSettings()
+                requireSensor()
             } else {
                 locationNotAvailable()
             }
         }
-        when (PackageManager.PERMISSION_GRANTED) {
-            // Check if location permission is already granted
-            ContextCompat.checkSelfPermission(
+        // Check if location permission is already granted
+        if (ContextCompat.checkSelfPermission(
                 requireContext(),
                 Manifest.permission.ACCESS_FINE_LOCATION
-            ) -> {
-                requireLocationSettings()
-            }
-            else -> {
-                // If not inform the user
-                LocationRequestDialogFragment(requestPermissionLauncher)
-                    .show(parentFragmentManager, "location_request")
-            }
+            ) == PackageManager.PERMISSION_GRANTED) {
+            // Then require the sensor
+            requireSensor()
+        } else {
+            // If not inform the user
+            LocationRequestDialogFragment(requestPermissionLauncher)
+                .show(parentFragmentManager, "location_request")
+            return
         }
+    }
+    
+    private fun requireSensor() {
+        sensorManager = activity?.getSystemService(Context.SENSOR_SERVICE) as SensorManager?
+        if (sensorManager == null) {
+            sensorNotAvailable()
+            return
+        }
+        rotVecSensor = sensorManager?.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR)
+        if (rotVecSensor == null) {
+            sensorNotAvailable()
+            return
+        }
+        showLocationSettingsRequest = true
+        requireLocationSettings()
+    }
 
+    private fun sensorNotAvailable() {
+        ErrorDialogFragment(
+            R.string.compass_no_sensor_dialog_title,
+            R.string.compass_no_sensor_dialog_msg
+        ).show(parentFragmentManager, "no_sensor")
     }
 
     private fun requireLocationSettings() {
