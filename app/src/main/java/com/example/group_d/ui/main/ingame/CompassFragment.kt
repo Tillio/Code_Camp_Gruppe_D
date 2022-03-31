@@ -245,11 +245,17 @@ class CompassFragment : Fragment(), Callback<MutableList<CompassLocation>>, Give
             }
     }
 
+    /*
+        In this game this method is only called when there is a result from the request for change
+        of location settings
+     */
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == REQUEST_UPDATE_LOCATION_SETTINGS) {
             if (resultCode == Activity.RESULT_OK) {
+                // User activated location
                 locationAvailable()
             } else {
+                // User didn't activate location
                 locationNotAvailable()
             }
         }
