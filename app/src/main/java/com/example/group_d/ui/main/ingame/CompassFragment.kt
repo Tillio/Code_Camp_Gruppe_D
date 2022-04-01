@@ -135,6 +135,8 @@ class CompassFragment : Fragment(), Callback<MutableList<CompassLocation>>, Give
             GiveUpDialogFragment(this).show(parentFragmentManager, "give_up")
         }
 
+        waitTimer = Timer()
+
         // Make sure the location permission is granted
         requireLocationPermission()
 
@@ -297,7 +299,6 @@ class CompassFragment : Fragment(), Callback<MutableList<CompassLocation>>, Give
         // Show loading symbol
         waitSymbol.visibility = View.VISIBLE
         // Wait 5 seconds so the user can't "spam" locations without time loss
-        waitTimer = Timer()
         waitTimer.schedule(object : TimerTask() {
             override fun run() {
                 waitTimerFinished()
@@ -307,6 +308,8 @@ class CompassFragment : Fragment(), Callback<MutableList<CompassLocation>>, Give
 
     private fun abortWaiting() {
         waitTimer.cancel()
+        // Reinitialize because a canceled timer cannot schedule any tasks
+        waitTimer = Timer()
         waitSymbol.visibility = View.INVISIBLE
     }
 
@@ -411,6 +414,10 @@ class CompassFragment : Fragment(), Callback<MutableList<CompassLocation>>, Give
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+        // Prevent resource leak
+        timeCount.stop()
+        // Cancel timer to prevent executing timer task when the fragment view is destroyed
+        waitTimer.cancel()
     }
 
     override fun onSensorChanged(event: SensorEvent) {
