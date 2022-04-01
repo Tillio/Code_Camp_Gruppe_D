@@ -14,8 +14,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.navArgs
 import com.example.group_d.R
 import com.example.group_d.data.model.GameEnding
-import com.example.group_d.data.model.UserDataViewModel
 import com.example.group_d.data.model.TicTacToeModel
+import com.example.group_d.data.model.UserDataViewModel
 import com.example.group_d.databinding.TicTacToeFragmentBinding
 import com.example.group_d.ui.main.recentGames.RecentGamesViewModel
 
@@ -95,16 +95,18 @@ class TicTacToeFragment : Fragment(), GiveUpReceiver {
                 ticTacToeViewModel.deleteLoadedGame()
             }
         }
-        if (!args.showEndstate) {
-            for ((clickedField, fieldButton) in fieldButtons.withIndex()) {
-                fieldButton.setImageDrawable(null)
+        for ((clickedField, fieldButton) in fieldButtons.withIndex()) {
+            fieldButton.setImageDrawable(null)
+            if (!args.showEndstate) {
                 fieldButton.setOnClickListener {
                     if (ticTacToeViewModel.ending.value != null) {
-                        Toast.makeText(activity, R.string.game_is_over, Toast.LENGTH_SHORT).show()
+                        Toast.makeText(activity, R.string.game_is_over, Toast.LENGTH_SHORT)
+                            .show()
                         return@setOnClickListener
                     }
                     if (!ticTacToeViewModel.isOnTurn()) {
-                        Toast.makeText(activity, R.string.not_your_turn, Toast.LENGTH_SHORT).show()
+                        Toast.makeText(activity, R.string.not_your_turn, Toast.LENGTH_SHORT)
+                            .show()
                         return@setOnClickListener
                     }
                     if (!ticTacToeViewModel.fieldIsEmpty(clickedField)) {
@@ -115,8 +117,8 @@ class TicTacToeFragment : Fragment(), GiveUpReceiver {
                     ticTacToeViewModel.playerMove(clickedField)
                 }
             }
-
         }
+
         if (!args.showEndstate){
             giveUp.setOnClickListener {
                 GiveUpDialogFragment(this).show(parentFragmentManager, "give_up")

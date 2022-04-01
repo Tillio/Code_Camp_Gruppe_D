@@ -134,15 +134,15 @@ class TicTacToeViewModel : GameViewModel() {
 
     override fun showEndstate(gameID: String) {
         var localGame: Game? = null
-        for (game in recentGamesViewModel.recentGames!!) {
+        for (game in recentGamesViewModel.recentGames) {
             if (gameID == game.id) {
                 localGame = game
                 break
             }
         }
 
-        val isBeginner = localGame!!.beginner == getOwnUserID()
-        for (player in localGame!!.players) {
+        val isBeginner = localGame!!.players[localGame.beginner.toInt()].id == getOwnUserID()
+        for (player in localGame.players) {
             if (player.id != getOwnUserID()) {
                 player.get().addOnSuccessListener { playerSnap ->
                     val opponentName = playerSnap.getString(USER_NAME)
@@ -154,11 +154,12 @@ class TicTacToeViewModel : GameViewModel() {
                     val gameData = localGame.gameData
                     val gameDataLong: MutableList<String> = gameData
 
+                    // Set the value before the game is finished and life data observers are removed
+                    runGame.value = localGame
+
                     for (fieldNum in gameDataLong) {
                         move(fieldNum.toInt())
                     }
-
-                    runGame.value = localGame
                 }
             }
         }
