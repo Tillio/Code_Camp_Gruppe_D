@@ -375,8 +375,7 @@ class CompassFragment : Fragment(), Callback<MutableList<CompassLocation>>, Give
         timeCount.stop()
         if (compassViewModel.neededTime == 0L) {
             // neededTime has not been saved yet
-            val neededTime = timeCount.text
-            compassViewModel.saveNeededTime(neededTime)
+            compassViewModel.saveNeededTime(timeCount.text)
         }
         timeCount.base = SystemClock.elapsedRealtime() - 1000 * compassViewModel.neededTime
         buttonGiveUp.visibility = View.INVISIBLE

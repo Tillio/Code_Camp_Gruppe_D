@@ -32,6 +32,7 @@ class CompassViewModel : GameViewModel() {
     private val _ending = MutableLiveData<GameEnding>()
     val ending: LiveData<GameEnding> = _ending
 
+    // Quicker access to user's and opponent's needed time without searching in game data
     private var _neededTime: Long = 0
     val neededTime get() = _neededTime
 
@@ -126,7 +127,7 @@ class CompassViewModel : GameViewModel() {
 
     // Called when the user found a location
     fun nextLocation() {
-        if (!requestedLocationIndices.isEmpty()) {
+        if (requestedLocationIndices.isNotEmpty()) {
             // use postValue instead of setValue because this method is called from the timer thread
             _currentLocation.postValue(locations[requestedLocationIndices.removeFirst()])
         } else {
@@ -150,8 +151,8 @@ class CompassViewModel : GameViewModel() {
         }
         val locationEnu = CompassLocation.ecefToEnu(userPosEcef, currentLocationEcef)
         val magneticNorthEnu = CompassLocation.ecefToEnu(userPosEcef, CompassLocation.magneticNorthEcef)
-        val locationEnuNorm = sqrt(locationEnu.map { it * it }.sum())
-        val magneticNorthEnuNorm = sqrt(magneticNorthEnu.map { it * it }.sum())
+        val locationEnuNorm = sqrt(locationEnu.sumOf { it * it })
+        val magneticNorthEnuNorm = sqrt(magneticNorthEnu.sumOf { it * it })
         val locationDir = locationEnu.map { it / locationEnuNorm }
         val magneticNorthDir = magneticNorthEnu.map { it / magneticNorthEnuNorm }
         val diff = locationDir.mapIndexed { i, d -> d - magneticNorthDir[i] }
