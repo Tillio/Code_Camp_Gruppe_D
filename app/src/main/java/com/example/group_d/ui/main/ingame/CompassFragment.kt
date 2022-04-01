@@ -282,17 +282,21 @@ class CompassFragment : Fragment(), Callback<MutableList<CompassLocation>>, Give
     }
 
     private fun onGameLoaded(game: Game?) {
-        // Load timer base from data base
-        var timerBase = compassViewModel.loadTimerBase()
-        timerBase = if (timerBase != 0L)
-            timerBase
-        else
-            // timerBase == 0 -> There isn't a timer base saved -> create new timer base
-            SystemClock.elapsedRealtime()
-        timeCount.base = timerBase
+        val currentTime = System.currentTimeMillis()
+        // Load start time from game data
+        var startTime = compassViewModel.loadStartTime()
+        if (startTime == 0L) {
+            // startTime == 0 -> There isn't a start time saved
+            startTime = currentTime
+            compassViewModel.saveStartTime(startTime)
+        }
+        /*
+            As the chronometer shows the difference between the elapsed time since boot and its
+            base, we have to set the base as the difference between the elapsed time since boot
+            and the elapsed time since the user first started this game
+         */
+        timeCount.base = SystemClock.elapsedRealtime() - (currentTime - startTime)
         timeCount.start()
-        // Save timer base to data base
-        compassViewModel.saveTimerBase(timerBase)
     }
 
     private fun startWaiting() {
@@ -369,7 +373,7 @@ class CompassFragment : Fragment(), Callback<MutableList<CompassLocation>>, Give
 
     private fun onAllLocationsFound() {
         timeCount.stop()
-        if (compassViewModel.neededTime == 0) {
+        if (compassViewModel.neededTime == 0L) {
             // neededTime has not been saved yet
             val neededTime = timeCount.text
             compassViewModel.saveNeededTime(neededTime)

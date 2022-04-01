@@ -11,13 +11,11 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.ktx.Firebase
-import com.google.gson.Gson
 import kotlin.math.acos
 import kotlin.math.sqrt
 import kotlin.random.Random
 
 class CompassViewModel : GameViewModel() {
-    val gson: Gson = Gson()
     lateinit var locations: MutableList<CompassLocation>
 
     private lateinit var random: Random
@@ -34,10 +32,10 @@ class CompassViewModel : GameViewModel() {
     private val _ending = MutableLiveData<GameEnding>()
     val ending: LiveData<GameEnding> = _ending
 
-    private var _neededTime: Int = 0
+    private var _neededTime: Long = 0
     val neededTime get() = _neededTime
 
-    private var opNeededTime: Int = 0
+    private var opNeededTime: Long = 0
 
     override fun initGame(snap: DocumentSnapshot, docref: DocumentReference) {
         val playerRefs = snap[GAME_PLAYERS] as List<DocumentReference>
@@ -94,7 +92,7 @@ class CompassViewModel : GameViewModel() {
                 readyPlayers += 1
                 if (str.startsWith("nT_${Firebase.auth.currentUser!!.email}=")) {
                     // User has finished, extract time
-                    _neededTime = str.split("=")[1].toInt()
+                    _neededTime = str.split("=")[1].toLong()
                     if (_neededTime < 0) {
                         // user gave up
                         readyPlayers = 2
@@ -103,7 +101,7 @@ class CompassViewModel : GameViewModel() {
                     _foundAllLocations.value = true
                 } else {
                     // Opponent has finished, extract time
-                    opNeededTime = str.split("=")[1].toInt()
+                    opNeededTime = str.split("=")[1].toLong()
                     if (opNeededTime < 0) {
                         // opponent gave up
                         readyPlayers = 2
@@ -115,12 +113,12 @@ class CompassViewModel : GameViewModel() {
         if (readyPlayers == 2) {
             val timeDiff = opNeededTime - _neededTime
             _ending.value = when {
-                timeDiff == 0 -> GameEnding.DRAW
+                timeDiff == 0L -> GameEnding.DRAW
                 // user gave up
-                _neededTime < 0 -> GameEnding.LOSE
+                _neededTime < 0L -> GameEnding.LOSE
                 // opponent gave up
-                opNeededTime < 0 -> GameEnding.WIN
-                timeDiff > 0 -> GameEnding.WIN
+                opNeededTime < 0L -> GameEnding.WIN
+                timeDiff > 0L -> GameEnding.WIN
                 else -> GameEnding.LOSE
             }
         }
@@ -182,37 +180,41 @@ class CompassViewModel : GameViewModel() {
         return error
     }
 
-    fun loadTimerBase(): Long {
+    private fun timeCharSequenceToLong(timeCS: CharSequence): Long {
+        return timeCS.split(":").run {
+            var result = 0L
+            forEach {
+                result *= 60
+                result += it.toLong()
+            }
+            result
+        }
+    }
+
+    fun loadStartTime(): Long {
         for (str in runGameRaw.gameData) {
-            if (str.startsWith("tB_${Firebase.auth.currentUser!!.email}=")) {
+            if (str.startsWith("sT_${Firebase.auth.currentUser!!.email}=")) {
                 return str.split("=")[1].toLong()
             }
         }
-        // Timer base not saved yet -> return 0
+        // Start time not saved yet -> return 0
         return 0L
     }
 
-    fun saveTimerBase(timerBase: Long) {
-        val gameDataVal = "tB_${Firebase.auth.currentUser!!.email}=$timerBase"
+    fun saveStartTime(startTime: Long) {
+        val gameDataVal = "sT_${Firebase.auth.currentUser!!.email}=$startTime"
         updateGameData(gameDataVal)
     }
 
-    fun saveNeededTime(neededTime: Int) {
+    fun saveNeededTime(neededTime: Long) {
         val gameDataVal = "nT_${Firebase.auth.currentUser!!.email}=$neededTime"
         updateGameData(gameDataVal)
         this._neededTime = neededTime
     }
 
-    fun saveNeededTime(neededTime: CharSequence) {
-        val neededTimeInt = neededTime.split(":").run {
-            var result = 0
-            forEach {
-                result *= 60
-                result += it.toInt()
-            }
-            result
-        }
-        saveNeededTime(neededTimeInt)
+    fun saveNeededTime(neededTimeCS: CharSequence) {
+        val neededTime = timeCharSequenceToLong(neededTimeCS)
+        saveNeededTime(neededTime)
     }
 
     fun giveUp() {
