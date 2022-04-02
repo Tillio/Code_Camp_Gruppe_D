@@ -1,28 +1,35 @@
 package com.example.group_d.data.model
 
-class TicTacToeModel() {
+class TicTacToeModel {
 
     companion object {
         const val NUM_COLUMNS = 3
         const val NUM_ROWS = 3
         const val NUM_FIELDS = NUM_COLUMNS * NUM_ROWS
 
+        // Factory function for TicTacToeModel
         fun buildGame(player1Name: String, player2Name: String): TicTacToeModel {
             return TicTacToeModel().apply {
+                // Generate player objects
                 player1 = Player(player1Name)
                 player2 = Player(player2Name)
                 player2.previous = player1
                 player2.next = player1
                 for ((i, field) in fields.withIndex()) {
+                    // Connect field with its neighbor fields
                     if (i < NUM_FIELDS - NUM_COLUMNS) {
+                        // We aren't in the last row -> connect with the south field
                         field.south = fields[i + NUM_COLUMNS]
                     }
                     if (i % NUM_COLUMNS != 0) {
+                        // We aren't in the first column -> connect with the west field
                         field.west = fields[i - 1]
                         if (i >= NUM_COLUMNS) {
+                            // We aren't in the first row -> connect with the northwest field
                             field.northWest = fields[i - NUM_COLUMNS - 1]
                         }
                         if (i < NUM_FIELDS - NUM_COLUMNS) {
+                            // We aren't in the last row -> connect with the southwest field
                             field.southWest = fields[i + NUM_COLUMNS - 1]
                         }
                     }
@@ -31,6 +38,7 @@ class TicTacToeModel() {
         }
     }
 
+    // Model classes with referential integrity
     class Player(val name: String) {
 
         private val fields: MutableList<Field> = ArrayList()
@@ -56,10 +64,6 @@ class TicTacToeModel() {
                 value?.previous = this
             }
 
-        fun getField(index: Int): Field {
-            return fields[index]
-        }
-
         fun withFields(field: Field): Player {
             if (field !in fields) {
                 fields.add(field)
@@ -76,7 +80,7 @@ class TicTacToeModel() {
         }
     }
 
-    class Field(val num: Int) {
+    class Field {
 
         var player: Player? = null
             set(value) {
@@ -169,7 +173,7 @@ class TicTacToeModel() {
             }
     }
 
-    val fields: Array<Field> = Array(NUM_FIELDS) { i -> Field(i) }
+    val fields: Array<Field> = Array(NUM_FIELDS) { Field() }
     lateinit var player1: Player
     lateinit var player2: Player
     lateinit var currentPlayer: Player

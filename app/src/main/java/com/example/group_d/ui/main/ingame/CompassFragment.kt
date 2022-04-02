@@ -71,7 +71,7 @@ class CompassFragment : Fragment(), Callback<MutableList<CompassLocation>>, Give
     private lateinit var timeCount: Chronometer
     private lateinit var compassView: View
     private lateinit var compassNeedle: ImageView
-    private lateinit var buttonGiveUp: Button
+    private lateinit var giveUpButton: Button
 
     private var sensorManager: SensorManager? = null
     private var rotVecSensor: Sensor? = null
@@ -100,7 +100,7 @@ class CompassFragment : Fragment(), Callback<MutableList<CompassLocation>>, Give
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        compassViewModel = ViewModelProvider(this).get(CompassViewModel::class.java)
+        compassViewModel = ViewModelProvider(this)[CompassViewModel::class.java]
         showEndstate = args.showEndstate
 
         _binding = CompassFragmentBinding.inflate(inflater, container, false)
@@ -111,7 +111,7 @@ class CompassFragment : Fragment(), Callback<MutableList<CompassLocation>>, Give
         timeCount = binding.compassTimer
         compassNeedle = binding.compassNeedle
         compassView = binding.compassView
-        buttonGiveUp = binding.buttonGiveUp
+        giveUpButton = binding.buttonGiveUp
 
         compassViewModel.opponentName.observe(viewLifecycleOwner) { opName ->
             // Show the opponent's name in the text field
@@ -133,14 +133,14 @@ class CompassFragment : Fragment(), Callback<MutableList<CompassLocation>>, Give
             onGameOver(ending)
         }
 
-        buttonGiveUp.setOnClickListener {
+        giveUpButton.setOnClickListener {
             GiveUpDialogFragment(this).show(parentFragmentManager, "give_up")
         }
 
         waitTimer = Timer()
 
-        // Make sure the location permission is granted
         if (!showEndstate) {
+            // Make sure the location permission is granted if we don't show the endstate
             requireLocationPermission()
         } else {
             locationAvailable()
@@ -384,7 +384,7 @@ class CompassFragment : Fragment(), Callback<MutableList<CompassLocation>>, Give
             compassViewModel.saveNeededTime(timeCount.text)
         }
         timeCount.base = SystemClock.elapsedRealtime() - 1000 * compassViewModel.neededTime
-        buttonGiveUp.visibility = View.INVISIBLE
+        giveUpButton.visibility = View.INVISIBLE
         compassView.isClickable = false
         textPlayerAction.text =
             getString(R.string.compass_waiting_for_opponent, compassViewModel.opponentName.value?:"?")
@@ -405,7 +405,9 @@ class CompassFragment : Fragment(), Callback<MutableList<CompassLocation>>, Give
         waitSymbol.visibility = View.INVISIBLE
         Toast.makeText(activity, msgID, Toast.LENGTH_SHORT).show()
         textPlayerAction.setText(msgID)
-        compassViewModel.deleteLoadedGame()
+        if (!showEndstate) {
+            compassViewModel.deleteLoadedGame()
+        }
     }
 
     override fun onPause() {

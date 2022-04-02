@@ -46,8 +46,7 @@
     <string name="player_you">You</string>
     <string name="button_give_up_text">Give up</string>
     <string name="action_your_turn">Your turn</string>
-    <string name="action_wait_text1">Waiting for&#160;</string>
-    <string name="action_wait_text2">…</string>
+    <string name="action_wait_text">Waiting for %1$s…</string>
     <string name="field_not_empty">This field is not empty</string>
     <string name="not_your_turn">It\'s not your turn</string>
     <string name="game_is_over">The game is over</string>

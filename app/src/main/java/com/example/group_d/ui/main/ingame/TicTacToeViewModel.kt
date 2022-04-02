@@ -36,20 +36,26 @@ class TicTacToeViewModel : GameViewModel() {
         return modelObj.fields[fieldNum].player == null
     }
 
+    // Let the user move
     fun playerMove(fieldNum: Int) {
+        // Add the field id to database
         runGameRaw.gameData.add(fieldNum.toString())
         updateGameData()
         move(fieldNum)
+        // User moved, now the user is on turn
         _showOnTurn.value = false
     }
 
-    fun move(fieldNum: Int) {
+    private fun move(fieldNum: Int) {
+        // Ensure field exists and is empty
         val field = if (fieldNum >= 0) modelObj.fields[fieldNum] else null
         if (field?.player != null) {
             return
         }
         if (field != null) {
+            // Set player in game model
             field.player = modelObj.currentPlayer
+            // Notify the UI
             _nextField.value = fieldNum
         }
         checkResult(field)
@@ -61,23 +67,29 @@ class TicTacToeViewModel : GameViewModel() {
         turnNumber++
     }
 
+    // Checks if the game is over
     private fun checkResult(lastSetField: TicTacToeModel.Field?) {
         if (lastSetField == null) {
+            // lastSetField == null -> field ID is negative -> current player gave up and should lose
             modelObj.winner = modelObj.currentPlayer.next
             _ending.value = if (isOnTurn()) GameEnding.LOSE else GameEnding.WIN
             return
         }
         val lastPlayer = lastSetField.player!!
 
+        // Check in the game model if there is a win (three pieces in a row)
         val win =
+            // Check horizontal win
             lastSetField.west?.player == lastPlayer && lastSetField.west?.west?.player == lastPlayer
                     || lastSetField.west?.player == lastPlayer && lastSetField.east?.player == lastPlayer
                     || lastSetField.east?.player == lastPlayer && lastSetField.east?.east?.player == lastPlayer
 
+                    // Check vertical win
                     || lastSetField.north?.player == lastPlayer && lastSetField.north?.north?.player == lastPlayer
                     || lastSetField.north?.player == lastPlayer && lastSetField.south?.player == lastPlayer
                     || lastSetField.south?.player == lastPlayer && lastSetField.south?.south?.player == lastPlayer
 
+                    // Check diagonal wins
                     || lastSetField.northWest?.player == lastPlayer && lastSetField.northWest?.northWest?.player == lastPlayer
                     || lastSetField.northWest?.player == lastPlayer && lastSetField.southEast?.player == lastPlayer
                     || lastSetField.southEast?.player == lastPlayer && lastSetField.southEast?.southEast?.player == lastPlayer
@@ -87,14 +99,17 @@ class TicTacToeViewModel : GameViewModel() {
                     || lastSetField.northEast?.player == lastPlayer && lastSetField.northEast?.northEast?.player == lastPlayer
 
         if (win) {
+            // The winner is the last player
             modelObj.winner = lastPlayer
             _ending.value = if (isOnTurn()) GameEnding.WIN else GameEnding.LOSE
         } else if (modelObj.player1.amountOfFields + modelObj.player2.amountOfFields >= TicTacToeModel.NUM_FIELDS) {
+            // All fields are occupied but no win -> draw
             _ending.value = GameEnding.DRAW
         }
     }
 
     fun giveUp() {
+        // Send a negative field id to signalize a give up
         playerMove(-1)
     }
 
@@ -110,22 +125,22 @@ class TicTacToeViewModel : GameViewModel() {
             if (playerRef.id != getOwnUserID()) {
                 playerRef.get().addOnSuccessListener { playerSnap ->
                     val opponentName = playerSnap.getString(USER_NAME)
+                    // Build game model
                     _gameModel.apply {
                         value = TicTacToeModel.buildGame("You", opponentName ?: "")
                         value!!.currentPlayer = if (isBeginner) value!!.player1 else value!!.player2
                     }
-                    val gameData = snap[GAME_DATA] as MutableList<String>
-                    val gameDataLong: MutableList<String> = gameData
-                    /*for (data in gameData){
-                        gameDataLong.add(data.toLong())
-                    }*/
 
-                    for (fieldNum in gameDataLong) {
+                    val gameData = snap[GAME_DATA] as MutableList<String>
+                    for (fieldNum in gameData) {
+                        // Restore all moves
                         move(fieldNum.toInt())
                     }
+
                     _showOnTurn.value = isOnTurn()
+                    // Notify the fragment that the game is loaded
                     runGame.value =
-                        Game(beginnerIndex, gameDataLong, GAME_TYPE_TIC_TAC_TOE, playerRefs)
+                        Game(beginnerIndex, gameData, GAME_TYPE_TIC_TAC_TOE, playerRefs)
                     addGameDataChangedListener(docref)
                 }
             }
@@ -152,12 +167,11 @@ class TicTacToeViewModel : GameViewModel() {
 
                     }
                     val gameData = localGame.gameData
-                    val gameDataLong: MutableList<String> = gameData
 
                     // Set the value before the game is finished and life data observers are removed
                     runGame.value = localGame
 
-                    for (fieldNum in gameDataLong) {
+                    for (fieldNum in gameData) {
                         move(fieldNum.toInt())
                     }
                 }
@@ -167,6 +181,7 @@ class TicTacToeViewModel : GameViewModel() {
 
     override fun onGameDataChanged(gameData: List<String>) {
         if (isOnTurn()) {
+            // User is on turn -> the game data change is a user move
             return
         }
         if (turnNumber >= gameData.size) {
@@ -174,6 +189,7 @@ class TicTacToeViewModel : GameViewModel() {
         }
         val movedFieldNum = gameData[turnNumber].toInt()
         move(movedFieldNum)
+        // Opponent moved, now the user is on turn
         _showOnTurn.value = true
     }
 }
