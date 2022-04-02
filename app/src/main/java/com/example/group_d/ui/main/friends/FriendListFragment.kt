@@ -19,10 +19,8 @@ import com.example.group_d.data.model.User
 import com.example.group_d.data.model.UserDataViewModel
 
 import com.example.group_d.databinding.FragmentFriendsListBinding
-import com.example.group_d.handler.FirebaseMessagingHandler
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import kotlinx.coroutines.MainScope
 
 
 class FriendsListFragment : Fragment(), FriendAdapter.FriendDeleter {
