@@ -63,6 +63,7 @@ class CompassFragment : Fragment(), Callback<MutableList<CompassLocation>>, Give
     private lateinit var compassViewModel: CompassViewModel
     private var _binding: CompassFragmentBinding? = null
     private val args: CompassFragmentArgs by navArgs()
+    private var showEndstate: Boolean = false
 
     private lateinit var textOpName: TextView
     private lateinit var textPlayerAction: TextView
@@ -100,6 +101,7 @@ class CompassFragment : Fragment(), Callback<MutableList<CompassLocation>>, Give
         savedInstanceState: Bundle?
     ): View? {
         compassViewModel = ViewModelProvider(this).get(CompassViewModel::class.java)
+        showEndstate = args.showEndstate
 
         _binding = CompassFragmentBinding.inflate(inflater, container, false)
         val root = binding.root
@@ -138,7 +140,11 @@ class CompassFragment : Fragment(), Callback<MutableList<CompassLocation>>, Give
         waitTimer = Timer()
 
         // Make sure the location permission is granted
-        requireLocationPermission()
+        if (!showEndstate) {
+            requireLocationPermission()
+        } else {
+            locationAvailable()
+        }
 
         return root
     }
@@ -409,8 +415,10 @@ class CompassFragment : Fragment(), Callback<MutableList<CompassLocation>>, Give
 
     override fun onResume() {
         super.onResume()
-        // While the fragment was paused the user could have disabled device location in settings
-        requireLocationSettings()
+        if (!showEndstate) {
+            // While the fragment was paused the user could have disabled device location in settings
+            requireLocationSettings()
+        }
         sensorManager?.registerListener(this, rotVecSensor, SensorManager.SENSOR_DELAY_UI)
     }
 
