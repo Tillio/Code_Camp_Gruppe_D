@@ -73,7 +73,6 @@ class UserDataViewModel : ViewModel() {
                 for (document in documents) {
                     Log.d(TAG, "uid: ${document.id} of user: ${document["name"]} found")
                     sendFriendRequestToID(document.id)
-                    //sendMessageToTopic(document.id, "New Friend request!")
                 }
             }
             .addOnFailureListener { exception ->
@@ -137,7 +136,6 @@ class UserDataViewModel : ViewModel() {
             .update(USER_CHALLENGES, FieldValue.arrayUnion(challange))
         // send notification
         prepNotification("new challenge", "you have been challenged!", userid)
-        //sendMessageToTopic(userid, "New Challenge!")
     }
 
     fun getOwnUserID(): String {
@@ -457,16 +455,22 @@ class UserDataViewModel : ViewModel() {
         }
     }
 
+    // prepare a notification
     public fun prepNotification(title: String, msg: String, topic: String){
+        // if a title and message exist
         if(title.isNotEmpty() && msg.isNotEmpty()){
+            // build the topic from the id
             val topicStr: String = "/topics/" + topic
+            // send notification to topic
             PushNotification(NotificationData(title, msg), topicStr).also {
                 sendNotification(it)
             }
         }
     }
 
+    // send notification
     private fun sendNotification(notification: PushNotification) = CoroutineScope(Dispatchers.IO).launch {
+        // try to upload the notification / send message to firebase
         try {
             val response = RetrofitInstance.api.postNotification(notification)
         } catch (e: Exception){

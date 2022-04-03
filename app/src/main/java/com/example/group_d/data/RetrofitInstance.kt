@@ -9,6 +9,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
+// used to send messages to firebase
 class RetrofitInstance {
     companion object {
          private val retrofit by lazy {

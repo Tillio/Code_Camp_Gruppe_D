@@ -57,6 +57,7 @@ class ChallengesFragment : Fragment() {
 
     fun onAccept(challenge: Challenge) {
         Log.d(null, "Start new game with ${challenge.user.name}")
+        // send a message to firebase to trigger the notification
         userDataViewModel.prepNotification("Game started", "a new game has started", challenge.user.id)
         challengesViewModel.createGame(challenge).addOnSuccessListener { docref ->
             val action =
