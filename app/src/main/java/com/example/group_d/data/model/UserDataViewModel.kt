@@ -1,9 +1,21 @@
 package com.example.group_d.data.model
 
+import android.content.ContentValues
+import android.content.Context
 import android.util.Log
+import android.widget.Toast
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.android.volley.RequestQueue
+import com.android.volley.Response
+import com.android.volley.toolbox.JsonObjectRequest
+import com.android.volley.toolbox.Volley
 import com.example.group_d.*
+import com.example.group_d.data.NotificationData
+import com.example.group_d.data.PushNotification
+import com.example.group_d.data.RetrofitInstance
+import com.example.group_d.data.handler.NotificationHandler
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.DocumentReference
@@ -12,12 +24,23 @@ import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.messaging.FirebaseMessaging
+import com.google.firebase.messaging.RemoteMessage
+import com.google.gson.Gson
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import org.json.JSONException
+import org.json.JSONObject
+
 
 class UserDataViewModel : ViewModel() {
 
+    lateinit var applicationContext: Context
     var auth: FirebaseAuth = FirebaseAuth.getInstance()
     val TAG = "UserDataViewModel"
     val db = Firebase.firestore
+    var notificationHandler: NotificationHandler = NotificationHandler()
 
     var friends = MutableLiveData<ArrayList<User>>().apply {
         value = ArrayList()
@@ -35,7 +58,6 @@ class UserDataViewModel : ViewModel() {
         val gameCopy = games.value
         gameCopy?.add(game)
         games.value = gameCopy!!
-
     }
 
     fun sendFriendRequest(username: String): Boolean {
@@ -56,6 +78,8 @@ class UserDataViewModel : ViewModel() {
             .addOnFailureListener { exception ->
                 Log.w(TAG, "Error getting documents: ", exception)
             }
+
+
         return true
     }
 
@@ -64,6 +88,8 @@ class UserDataViewModel : ViewModel() {
             db.collection(COL_USER).document(userID).collection(USER_DATA)
                 .document(USER_FRIEND_REQUESTS)
                 .update(USER_FRIEND_REQUESTS, FieldValue.arrayUnion(getOwnUserID()))
+            //send notification
+            prepNotification("New Friend", "you have a new friendrequest", userID)
         }
     }
 
@@ -83,6 +109,8 @@ class UserDataViewModel : ViewModel() {
         //adding me to my new friends friendlist
         db.collection("user").document(newFriendUid).collection("userData").document("friends")
             .update("friends", FieldValue.arrayUnion(ownUid))
+        //send notification
+        prepNotification("Accepted Friend", "a friendrequest was accepted", newFriendUid)
     }
 
     fun testAcceptFriendRequest() {
@@ -105,7 +133,9 @@ class UserDataViewModel : ViewModel() {
         Log.d(TAG, "creating challange request")
         // adding me to challanges of other user
         db.collection(COL_USER).document(userid).collection(USER_DATA).document(USER_CHALLENGES)
-            .update(USER_CHALLENGES, FieldValue.arrayUnion(challenge))
+            .update(USER_CHALLENGES, FieldValue.arrayUnion(challange))
+        // send notification
+        prepNotification("new challenge", "you have been challenged!", userid)
     }
 
     fun getOwnUserID(): String {
@@ -163,7 +193,6 @@ class UserDataViewModel : ViewModel() {
                 print("pass")
             }
         }
-        //listen to games
     }
 
     /**
@@ -359,6 +388,7 @@ class UserDataViewModel : ViewModel() {
             if (friend.id == friendId) {
                 friends.value!!.remove(friend)
                 friends.value = friends.value
+                prepNotification("No Friend", "you were removed from a friendlist!", friendId)
                 return true
             }
         }
@@ -433,6 +463,29 @@ class UserDataViewModel : ViewModel() {
             db.collection(COL_USER).document(friend.id).collection(USER_DATA).document(
                 USER_FRIENDS
             ).update(USER_FRIENDS, FieldValue.arrayRemove(auth.uid.toString()))
+        }
+    }
+
+    // prepare a notification
+    public fun prepNotification(title: String, msg: String, topic: String){
+        // if a title and message exist
+        if(title.isNotEmpty() && msg.isNotEmpty()){
+            // build the topic from the id
+            val topicStr: String = "/topics/" + topic
+            // send notification to topic
+            PushNotification(NotificationData(title, msg), topicStr).also {
+                sendNotification(it)
+            }
+        }
+    }
+
+    // send notification
+    private fun sendNotification(notification: PushNotification) = CoroutineScope(Dispatchers.IO).launch {
+        // try to upload the notification / send message to firebase
+        try {
+            val response = RetrofitInstance.api.postNotification(notification)
+        } catch (e: Exception){
+            Log.e(ContentValues.TAG, e.toString())
         }
     }
 }

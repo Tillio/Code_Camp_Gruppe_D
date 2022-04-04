@@ -16,6 +16,9 @@
     <string name="title_activity_main_screen">MainScreenActivity</string>
 
     <string name="default_notification_channel_id">CC_GD_C</string>
+    <string name="default_message_thing">You have a new Messange: %1$s</string>
+    <string name="msg_subscribed">You have subscibed to Messenges</string>
+    <string name="msg_subscribe_failed">You have failed to subscibe to Messenges</string>
 
     <!--navbar-->
     <string name="title_games">Games</string>

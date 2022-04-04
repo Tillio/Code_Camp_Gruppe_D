@@ -31,8 +31,6 @@ import com.google.firebase.ktx.Firebase
 
 class NewGameSetup : Fragment() {
 
-    //private var layoutManager: RecyclerView.LayoutManager? = null
-    //private var adapter: RecyclerView.Adapter<PlayerAdapter.ViewHolder>? = null
     private val args: NewGameSetupArgs by navArgs()
     private val userDataViewModel: UserDataViewModel by activityViewModels()
 
@@ -42,27 +40,32 @@ class NewGameSetup : Fragment() {
 
     private lateinit var viewModel: NewGameSetupViewModel
 
+    // when the NewGameSetupFragment is opened
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_new_game_setup, container, false)
-
+        // get Spinners and RecyclerView
         val spinnerGameSelect: Spinner = view.findViewById(R.id.game_select)
         val stepGameTimeSelect: Spinner = view.findViewById(R.id.stepGameLengthSpinner)
-
         val playerItems: RecyclerView = view.findViewById(R.id.player_list)
+        // get the playeradapter
         val adapter = PlayerAdapter()
         adapter.playerItems = ArrayList(createPlayers())
         playerItems.adapter = adapter
         playerItems.layoutManager = LinearLayoutManager(context)
 
+        // get buttons
         val buttonCancel: Button = view.findViewById(R.id.buttonCancel)
         val buttonStart: Button = view.findViewById(R.id.buttonStart)
+        // when cancel-button is pressed, close the NewGamesFragment
         buttonCancel.setOnClickListener { view ->
             view.findNavController().navigate(R.id.navigation_friends)
         }
+        // when the StartButton is pressed
         buttonStart.setOnClickListener {
+            // check the selected game and send the corresponding challenge
             if (spinnerGameSelect.selectedItem.toString() == "TicTacToe") {
                 userDataViewModel.challengeFriend(
                     args.userID,
@@ -115,9 +118,13 @@ class NewGameSetup : Fragment() {
                     challenge
                 )
             }
+            // then close the NewGamesFragment
             findNavController().navigate(R.id.action_global_friendList)
         }
 
+        // get the spinner
+        val spinnerGameSelect: Spinner = view.findViewById(R.id.game_select)
+        // set up spinner
         spinnerGameSelect.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
             override fun onItemSelected(
                 parent: AdapterView<*>?,
@@ -125,6 +132,7 @@ class NewGameSetup : Fragment() {
                 position: Int,
                 id: Long
             ) {
+                // if an option is selected, the corresponding gametype is displayed
                 val strSelected: String = parent?.getItemAtPosition(position).toString()
                 if (strSelected == GAME_TYPE_STEPS_GAME){
                     stepGameTimeSelect.visibility = VISIBLE
@@ -145,6 +153,7 @@ class NewGameSetup : Fragment() {
         // TODO: Use the ViewModel
     }
 
+    // create the PlayerList (you and the player you challenge)
     fun createPlayers(): List<User> {
         val arrayList = ArrayList<User>()
         arrayList.add(User(name = "you", id = userDataViewModel.getOwnUserID(), online = true))

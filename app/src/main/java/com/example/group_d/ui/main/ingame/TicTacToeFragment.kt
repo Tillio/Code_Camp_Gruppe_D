@@ -1,4 +1,4 @@
-package com.example.group_d.ui.main.ingame
+   package com.example.group_d.ui.main.ingame
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -26,8 +26,7 @@ class TicTacToeFragment : Fragment(), GiveUpReceiver {
     private lateinit var fieldButtons: Array<ImageView>
     private lateinit var giveUpButton: Button
 
-    // This property is only valid between onCreateView and
-    // onDestroyView.
+    // This property is only valid between onCreateView and onDestroyView.
     private val binding get() = _binding!!
 
     override fun onCreateView(
