@@ -29,11 +29,7 @@
         android:label="@string/title_challenges"
         tools:layout="@layout/fragment_challenges" />
 
-    <fragment
-        android:id="@+id/navigation_settings"
-        android:name="com.example.group_d.ui.main.settings.SettingsFragment"
-        android:label="@string/title_settings"
-        tools:layout="@layout/fragment_settings" />
+
     <fragment
         android:id="@+id/ingame_ticTacToeFragment"
         android:name="com.example.group_d.ui.main.ingame.TicTacToeFragment"
@@ -42,8 +38,18 @@
         <argument
             android:name="gameID"
             app:argType="string" />
+        <argument
+            android:name="showEndstate"
+            app:argType="boolean"
+            android:defaultValue="false" />
     </fragment><action android:id="@+id/action_global_ingame_ticTacToeFragment" app:destination="@id/ingame_ticTacToeFragment"/>
 
+    <action
+        android:id="@+id/action_global_steps_game_fragment"
+        app:destination="@id/stepsGameFragment" />
+    <action
+        android:id="@+id/action_global_mental_arithmetics_fragment"
+        app:destination="@id/mentalArithmeticsFragment" />
     <fragment
         android:id="@+id/newGameSetup"
         android:name="com.example.group_d.ui.main.games.NewGameSetup"
@@ -59,4 +65,50 @@
             android:name="userStatus"
             app:argType="boolean"/>
     </fragment><action android:id="@+id/action_global_newGameSetup" app:destination="@id/newGameSetup"/>
+    <fragment
+        android:id="@+id/compassFragment"
+        android:name="com.example.group_d.ui.main.ingame.CompassFragment"
+        android:label="@string/title_compass"
+        tools:layout="@layout/compass_fragment">
+        <argument
+            android:name="gameID"
+            app:argType="string" />
+        <argument
+            android:name="showEndstate"
+            app:argType="boolean"
+            android:defaultValue="false" />
+    </fragment>
+    <action android:id="@+id/action_global_compassFragment" app:destination="@id/compassFragment" />
+    <fragment
+        android:id="@+id/mentalArithmeticsFragment"
+        android:name="com.example.group_d.ui.main.ingame.MentalArithmeticsFragment"
+        android:label="Mental Arithmetics"
+        tools:layout="@layout/mental_arithmetics_fragment" >
+        <argument
+            android:name="gameID"
+            app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/stepsGameFragment"
+        android:name="com.example.group_d.ui.main.ingame.StepsGameFragment"
+        android:label="Steps Game"
+        tools:layout="@layout/fragment_steps_game" >
+        <argument
+            android:name="gameID"
+            app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/recentGamesFragment"
+        android:name="com.example.group_d.ui.main.recentGames.RecentGamesFragment"
+        android:label="recent_games_fragment"
+        tools:layout="@layout/fragment_recent_games" >
+        <action
+            android:id="@+id/action_recentGamesFragment_to_statistiksFragment"
+            app:destination="@id/statistiksFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/statistiksFragment"
+        android:name="com.example.group_d.ui.main.recentGames.statistiks.StatisticsFragment"
+        android:label="statistiks_fragment"
+        tools:layout="@layout/fragment_statistics" />
 </navigation>

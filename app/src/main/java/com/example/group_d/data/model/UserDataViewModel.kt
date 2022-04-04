@@ -129,7 +129,7 @@ class UserDataViewModel : ViewModel() {
             }
     }
 
-    fun challengeFriend(userid: String, challange: Challenge) {
+    fun challengeFriend(userid: String, challenge: Challenge) {
         Log.d(TAG, "creating challange request")
         // adding me to challanges of other user
         db.collection(COL_USER).document(userid).collection(USER_DATA).document(USER_CHALLENGES)
@@ -223,7 +223,7 @@ class UserDataViewModel : ViewModel() {
     /**
      * takes a games id and returns game with the same id or null if the id is unknown
      */
-    private fun gameIdIsLocal(gameId: String): Game? {
+    fun gameIdIsLocal(gameId: String): Game? {
         for (game in games.value!!) {
             if (gameId == game.id) {
                 return game
@@ -242,25 +242,32 @@ class UserDataViewModel : ViewModel() {
                     return@addSnapshotListener
                 }
                 if (snapshot != null && snapshot.exists()) {
-                    val localGame = gameIdIsLocal(snapshot.id)
-                    if (localGame == null) {
-                        //create game
-                        val beginner = snapshot[GAME_BEGINNER] as String
-                        val gameData = snapshot[GAME_DATA] as ArrayList<String>
-                        val gameType = snapshot[GAME_TYPE] as String
-                        val players = snapshot[GAME_PLAYERS] as ArrayList<DocumentReference>
-                        val newGame = Game(beginner, gameData, gameType, players)
-                        newGame.id = gameId
-                        addGame(newGame)
-                    } else {
-                        localGame.gameData = snapshot[GAME_DATA] as ArrayList<String>
-                    }
+                    val any = snapshot["completionDate"]
+                    if (any == 0L) {
+                        val localGame = gameIdIsLocal(snapshot.id)
+                        if (localGame == null) {
+                            val newGame = gameDocToGameObj(snapshot)
+                            addGame(newGame)
+                        } else {
+                            localGame.gameData = snapshot[GAME_DATA] as ArrayList<String>
+                        }
 
+                    }
                 } else {
                     print("pass")
                 }
             }
         gameListeners[gameId] = listener
+    }
+
+    fun gameDocToGameObj(snapshot: DocumentSnapshot): Game {
+        val beginner = snapshot[GAME_BEGINNER] as String
+        val gameData = snapshot[GAME_DATA] as ArrayList<String>
+        val gameType = snapshot[GAME_TYPE] as String
+        val players = snapshot[GAME_PLAYERS] as ArrayList<DocumentReference>
+        var newGame = Game(beginner, gameData, gameType, players)
+        newGame.id = snapshot.id
+        return newGame
     }
 
     private fun challengeListener(snapshot: DocumentSnapshot) {
@@ -273,6 +280,7 @@ class UserDataViewModel : ViewModel() {
 
         for (chall in snapshot.data?.get(USER_CHALLENGES) as ArrayList<HashMap<*, *>>) {
             val type = chall["gameType"]
+            val step_game_time = chall["step_game_time"] as Long
             val userMap = chall["user"] as HashMap<*, *>
             val uid = userMap["id"]
             val name = userMap["name"]
@@ -288,6 +296,7 @@ class UserDataViewModel : ViewModel() {
                 }
             }
             var newChallenge = Challenge(user = userObj, gameType = type as String)
+            newChallenge.step_game_time = step_game_time
             actualChallenges.add(newChallenge)
         }
         //add new challenges
@@ -447,11 +456,13 @@ class UserDataViewModel : ViewModel() {
     }
 
     fun deleteFriend(friend: User) {
-        if (userIsFriend(friend.id)){
-            db.collection(COL_USER).document(FirebaseAuth.getInstance().uid.toString()).collection(USER_DATA).document(
-                USER_FRIENDS).update(USER_FRIENDS, FieldValue.arrayRemove(friend.id))
+        if (userIsFriend(friend.id)) {
+            db.collection(COL_USER).document(auth.uid.toString()).collection(USER_DATA).document(
+                USER_FRIENDS
+            ).update(USER_FRIENDS, FieldValue.arrayRemove(friend.id))
             db.collection(COL_USER).document(friend.id).collection(USER_DATA).document(
-                USER_FRIENDS).update(USER_FRIENDS, FieldValue.arrayRemove(auth.uid.toString()))
+                USER_FRIENDS
+            ).update(USER_FRIENDS, FieldValue.arrayRemove(auth.uid.toString()))
         }
     }
 

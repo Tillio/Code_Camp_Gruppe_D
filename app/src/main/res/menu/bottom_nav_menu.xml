@@ -18,8 +18,8 @@
         android:title="@string/title_challenges" />
 
     <item
-        android:id="@+id/navigation_settings"
+        android:id="@+id/recentGamesFragment"
         android:icon="@drawable/ic_baseline_settings_24"
-        android:title="@string/title_settings" />
+        android:title="@string/title_recentGames" />
 
 </menu>

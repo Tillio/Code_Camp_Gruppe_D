@@ -14,10 +14,13 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.group_d.R
+import com.example.group_d.*
 import com.example.group_d.data.model.Challenge
 import com.example.group_d.data.model.UserDataViewModel
 import com.example.group_d.databinding.FragmentChallengesBinding
+import com.example.group_d.ui.main.ingame.CompassFragmentDirections
+import com.example.group_d.ui.main.ingame.MentalArithmeticsFragmentDirections
+import com.example.group_d.ui.main.ingame.StepsGameFragmentDirections
 import com.example.group_d.ui.main.ingame.TicTacToeFragmentDirections
 
 class ChallengesFragment : Fragment() {
@@ -60,8 +63,13 @@ class ChallengesFragment : Fragment() {
         // send a message to firebase to trigger the notification
         userDataViewModel.prepNotification("Game started", "a new game has started", challenge.user.id)
         challengesViewModel.createGame(challenge).addOnSuccessListener { docref ->
-            val action =
-                TicTacToeFragmentDirections.actionGlobalIngameTicTacToeFragment(docref.id)
+            val action = when (challenge.gameType) {
+                GAME_TYPE_TIC_TAC_TOE -> TicTacToeFragmentDirections.actionGlobalIngameTicTacToeFragment(docref.id)
+                GAME_TYPE_COMPASS -> CompassFragmentDirections.actionGlobalCompassFragment(docref.id)
+                GAME_TYPE_MENTAL_ARITHMETICS -> MentalArithmeticsFragmentDirections.actionGlobalMentalArithmeticsFragment(docref.id)
+                GAME_TYPE_STEPS_GAME -> StepsGameFragmentDirections.actionGlobalStepsGameFragment(docref.id)
+                else -> null
+            }!!
             findNavController().navigate(action)
         }
     }
@@ -83,7 +91,7 @@ class ChallengeDeclineDialogFragment(
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return activity?.let {
             var dontAsk = false
-            val builder = AlertDialog.Builder(it)
+            val builder = AlertDialog.Builder(it, R.style.AlertDialogTheme)
             val msg = getString(R.string.dialog_decline_challenge_msg1) +
                     challenge.user.name +
                     getString(R.string.dialog_decline_challenge_msg2)
