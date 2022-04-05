@@ -17,10 +17,15 @@ class MentalArithmeticsViewModel : GameViewModel() {
     private val _opponentTime = MutableLiveData<String>()
     val opponentTime: LiveData<String> = _opponentTime
 
+    // this holds the ID of the other player
+    var otherID: String = ""
+
     override fun initGame(snap: DocumentSnapshot, docref: DocumentReference) {
         val playerRefs = snap[GAME_PLAYERS] as List<DocumentReference>
         for (playerRef in playerRefs) {
             if (playerRef.id != getOwnUserID()) {
+                // save the ID of the other player
+                otherID = playerRef.id
                 playerRef.get().addOnSuccessListener { playerSnap ->
                     val gameData = snap[GAME_DATA] as MutableList<String>
                     val gameDataString: MutableList<String> = gameData

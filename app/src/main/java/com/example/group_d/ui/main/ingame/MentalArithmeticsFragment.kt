@@ -63,6 +63,8 @@ class MentalArithmeticsFragment : Fragment() {
         mentalArithmeticsViewModel.winner.observe(viewLifecycleOwner) { winner ->
             val msgID = "The winner is: " + winner
             Toast.makeText(activity, msgID, Toast.LENGTH_LONG).show()
+            // send Notification
+            userDataViewModel.prepNotification("Game ended", "A Game has Ended", mentalArithmeticsViewModel.otherID)
             if(winner == Firebase.auth.currentUser!!.email) {
                 assignment.text = "WON"
             } else {
@@ -178,6 +180,8 @@ class MentalArithmeticsFragment : Fragment() {
                         } else if(problems.isEmpty()) {
                             timer.stop()
                             assignment.setText("FINISHED")
+                            // send Notification
+                            userDataViewModel.prepNotification("your Turn", "the other player completed the Task", mentalArithmeticsViewModel.otherID)
                             db.collection(COL_GAMES).document(args.gameID).update(GAME_DATA, FieldValue.arrayUnion(
                                 Firebase.auth.currentUser!!.email + "=" + "finalTime" + "=" + timer.text))
                         }
