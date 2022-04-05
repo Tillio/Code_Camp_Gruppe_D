@@ -3,14 +3,8 @@ package com.example.group_d.data.model
 import android.content.ContentValues
 import android.content.Context
 import android.util.Log
-import android.widget.Toast
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.android.volley.RequestQueue
-import com.android.volley.Response
-import com.android.volley.toolbox.JsonObjectRequest
-import com.android.volley.toolbox.Volley
 import com.example.group_d.*
 import com.example.group_d.data.NotificationData
 import com.example.group_d.data.PushNotification
@@ -24,14 +18,9 @@ import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import com.google.firebase.messaging.FirebaseMessaging
-import com.google.firebase.messaging.RemoteMessage
-import com.google.gson.Gson
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import org.json.JSONException
-import org.json.JSONObject
 
 
 class UserDataViewModel : ViewModel() {
@@ -133,7 +122,7 @@ class UserDataViewModel : ViewModel() {
         Log.d(TAG, "creating challange request")
         // adding me to challanges of other user
         db.collection(COL_USER).document(userid).collection(USER_DATA).document(USER_CHALLENGES)
-            .update(USER_CHALLENGES, FieldValue.arrayUnion(challange))
+            .update(USER_CHALLENGES, FieldValue.arrayUnion(challenge))
         // send notification
         prepNotification("new challenge", "you have been challenged!", userid)
     }
