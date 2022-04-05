@@ -6,6 +6,7 @@ import com.example.group_d.*
 import com.example.group_d.data.model.Game
 import com.example.group_d.data.model.GameEnding
 import com.example.group_d.data.model.TicTacToeModel
+import com.example.group_d.data.model.UserDataViewModel
 import com.example.group_d.ui.main.recentGames.RecentGamesViewModel
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.DocumentSnapshot
@@ -65,6 +66,13 @@ class TicTacToeViewModel : GameViewModel() {
     private fun nextPlayer() {
         modelObj.currentPlayer = modelObj.currentPlayer.next!!
         turnNumber++
+    }
+
+    fun getOtherID(): String {
+        if (runGameRaw.players[0].id == getOwnUserID()){
+            return runGameRaw.players[1].id
+        }
+        return runGameRaw.players[0].id
     }
 
     // Checks if the game is over

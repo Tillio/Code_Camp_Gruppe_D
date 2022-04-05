@@ -12,6 +12,7 @@ import androidx.navigation.fragment.navArgs
 import com.example.group_d.R
 import com.example.group_d.data.model.GameEnding
 import com.example.group_d.data.model.TicTacToeModel
+import com.example.group_d.data.model.UserDataViewModel
 import com.example.group_d.databinding.TicTacToeFragmentBinding
 import com.example.group_d.ui.main.recentGames.RecentGamesViewModel
 
@@ -25,6 +26,8 @@ class TicTacToeFragment : Fragment(), GiveUpReceiver {
     private lateinit var textPlayerAction: TextView
     private lateinit var fieldButtons: Array<ImageView>
     private lateinit var giveUpButton: Button
+
+    private val userDataViewModel: UserDataViewModel by activityViewModels()
 
     // This property is only valid between onCreateView and onDestroyView.
     private val binding get() = _binding!!
@@ -108,6 +111,8 @@ class TicTacToeFragment : Fragment(), GiveUpReceiver {
             return
         }
         ticTacToeViewModel.playerMove(clickedField)
+        // send Notification to next player
+        userDataViewModel.prepNotification("Your Turn", "It is your turn!", ticTacToeViewModel.getOtherID())
     }
 
     private fun onNextFieldObserved(nextFieldID: Int) {
@@ -135,6 +140,8 @@ class TicTacToeFragment : Fragment(), GiveUpReceiver {
     }
 
     private fun onGameEnding(ending: GameEnding) {
+        // send notification, that the game is over
+        userDataViewModel.prepNotification("Game ended", "A game ended", ticTacToeViewModel.getOtherID())
         // Get right message
         val msgID = when (ending) {
             GameEnding.WIN -> R.string.ending_win
