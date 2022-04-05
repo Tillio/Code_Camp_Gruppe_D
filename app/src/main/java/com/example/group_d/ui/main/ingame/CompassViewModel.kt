@@ -38,11 +38,16 @@ class CompassViewModel : GameViewModel() {
 
     private var opNeededTime: Long = 0
 
+    // the UserID of the other player
+    var otherID: String = ""
+
     override fun initGame(snap: DocumentSnapshot, docref: DocumentReference) {
         val playerRefs = snap[GAME_PLAYERS] as List<DocumentReference>
         val beginnerIndex = snap.getString(GAME_BEGINNER)?:"0"
         for (playerRef in playerRefs) {
             if (playerRef.id != getOwnUserID()) {
+                // get the ID of the other player
+                otherID = playerRef.id
                 playerRef.get().addOnSuccessListener { playerSnap ->
                     _opponentName.value = playerSnap.getString(USER_NAME)
                     val gameData = snap[GAME_DATA] as MutableList<String>

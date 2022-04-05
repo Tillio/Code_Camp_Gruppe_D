@@ -46,6 +46,7 @@ class StepsGameViewModel : GameViewModel(), SensorEventListener {
         val playerRefs = snap[GAME_PLAYERS] as List<DocumentReference>
         for (playerRef in playerRefs) {
             if (playerRef.id != getOwnUserID()) {
+                // get the ID of the other player
                 otherID = playerRef.id
                 playerRef.get().addOnSuccessListener { playerSnap ->
                     val gameData = snap[GAME_DATA] as MutableList<String>

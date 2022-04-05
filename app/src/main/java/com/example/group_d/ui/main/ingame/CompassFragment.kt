@@ -21,6 +21,7 @@ import android.widget.*
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.navArgs
 import com.example.group_d.LOCATIONS_GET_QUERY
@@ -31,6 +32,7 @@ import com.example.group_d.data.json.RetrofitInstanceBuilder
 import com.example.group_d.data.model.CompassLocation
 import com.example.group_d.data.model.Game
 import com.example.group_d.data.model.GameEnding
+import com.example.group_d.data.model.UserDataViewModel
 import com.example.group_d.databinding.CompassFragmentBinding
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -59,6 +61,8 @@ class CompassFragment : Fragment(), Callback<MutableList<CompassLocation>>, Give
         @GET(LOCATIONS_GET_QUERY)
         fun loadGeoJson(): Call<MutableList<CompassLocation>>
     }
+
+    private val userDataViewModel: UserDataViewModel by activityViewModels()
 
     private lateinit var compassViewModel: CompassViewModel
     private var _binding: CompassFragmentBinding? = null
@@ -386,6 +390,8 @@ class CompassFragment : Fragment(), Callback<MutableList<CompassLocation>>, Give
         timeCount.base = SystemClock.elapsedRealtime() - 1000 * compassViewModel.neededTime
         giveUpButton.visibility = View.INVISIBLE
         compassView.isClickable = false
+        // send Notification
+        userDataViewModel.prepNotification("your turn", "The other player finished this Task", compassViewModel.otherID)
         textPlayerAction.text =
             getString(R.string.compass_waiting_for_opponent, compassViewModel.opponentName.value?:"?")
     }
@@ -405,6 +411,8 @@ class CompassFragment : Fragment(), Callback<MutableList<CompassLocation>>, Give
         waitSymbol.visibility = View.INVISIBLE
         Toast.makeText(activity, msgID, Toast.LENGTH_SHORT).show()
         textPlayerAction.setText(msgID)
+        // send Notification
+        userDataViewModel.prepNotification("Game ended", "A game has ended", compassViewModel.otherID)
         if (!showEndstate) {
             compassViewModel.deleteLoadedGame()
         }
