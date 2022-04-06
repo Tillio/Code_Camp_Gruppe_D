@@ -65,6 +65,7 @@ class MentalArithmeticsFragment : Fragment() {
             Toast.makeText(activity, msgID, Toast.LENGTH_LONG).show()
             // send Notification
             userDataViewModel.prepNotification("Game ended", "A Game has Ended", mentalArithmeticsViewModel.otherID)
+            //the winner gets a WON text and the loser a LOST text in place of the assignments
             if(winner == Firebase.auth.currentUser!!.email) {
                 assignment.text = "WON"
             } else {
@@ -75,6 +76,7 @@ class MentalArithmeticsFragment : Fragment() {
 
         opponentTime = root.findViewById(R.id.opponentTime)
 
+        //if there is an enemy finish time it gets shown
         mentalArithmeticsViewModel.opponentTime.observe(viewLifecycleOwner) { opponentTime ->
             this.opponentTime.text = "Opponent: " + opponentTime
         }
@@ -86,6 +88,7 @@ class MentalArithmeticsFragment : Fragment() {
             var timerBase: Long = 0
             var finished = false
             var finishTime: String = ""
+            //the game database is read and the stored variables are stored locally to work with them
             if(gameData.size > 1) {
                 for (i in 1 until (gameData.size)) {
                     val dataItem = gameData[i].split("=")
@@ -116,6 +119,7 @@ class MentalArithmeticsFragment : Fragment() {
             var currentProblem = Problem(0, 0, "?")
             val problemText: String
 
+            //if the game started and is not finished yet, the start button changes to submit and the first problem is shown also the timer starts
             if(started && !finished) {
                 submitSolution.text = "Submit"
                 for(i in 0 until problemNumber-1) {
@@ -126,6 +130,7 @@ class MentalArithmeticsFragment : Fragment() {
                 timer.base = SystemClock.elapsedRealtime() - (System.currentTimeMillis() - timerBase)
                 timer.start()
             }else if(finished){
+                //if the game is finished the problem text changes to finished and the submit button and textfield becomes invisible
                 assignment.text = "FINISHED"
                 timer.text = finishTime
                 submitSolution.visibility = View.GONE
@@ -135,14 +140,16 @@ class MentalArithmeticsFragment : Fragment() {
 
             submitSolution.setOnClickListener {
                 if(submitSolution.text == "Start") {
-                    //schreibt in die Datenbank, dass das Spiel gestartet wurde
+                    //it is stored in the database, that the game started
                     db.collection(COL_GAMES).document(args.gameID).update(GAME_DATA, FieldValue.arrayUnion(
                         Firebase.auth.currentUser!!.email + "=" + "started"))
                     currentProblem = problems.removeFirst()
                     val problemText = currentProblem.left.toString() + currentProblem.operator + currentProblem.right.toString()
                     assignment.text = problemText
+                    //the button text changes from start to submit
                     submitSolution.text = "Submit"
                     val timerBase = System.currentTimeMillis()
+                    //timerbase is stored in the database
                     db.collection(COL_GAMES).document(args.gameID).update(GAME_DATA, FieldValue.arrayUnion(
                         Firebase.auth.currentUser!!.email + "=" + "timerBase" + "=" + timerBase
                     ))
@@ -152,7 +159,7 @@ class MentalArithmeticsFragment : Fragment() {
 
                 } else if(submitSolution.text == "Submit") {
 
-                    //berechnen die richtige Lösung
+                    //calculating the correct solution
                     var realSolution = 0
                     if(currentProblem.operator == "+") {
                         realSolution = currentProblem.left + currentProblem.right
@@ -162,7 +169,7 @@ class MentalArithmeticsFragment : Fragment() {
                         realSolution = currentProblem.left * currentProblem.right
                     }
 
-                    //Wenn die Lösung richtig ist, wird das nächste Problem eingefügt oder das Spiel beendet
+                    //if the user solution is correct, the next problem gets shown or the game is finished
                     if(realSolution.toString() == userSolution.text.toString()) {
                         db.collection(COL_GAMES).document(args.gameID).update(
                             GAME_DATA, FieldValue.arrayRemove(

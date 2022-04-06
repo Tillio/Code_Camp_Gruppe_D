@@ -37,6 +37,7 @@ class MentalArithmeticsViewModel : GameViewModel() {
     }
 
     override fun onGameDataChanged(gameData: List<String>) {
+        //checks if the final times of the player and the enemy is already stored in the database
         var playerOneData: List<String> = emptyList()
         var playerTwoData: List<String> = emptyList()
         if(gameData.size > 1) {
@@ -55,6 +56,7 @@ class MentalArithmeticsViewModel : GameViewModel() {
             }
         }
 
+        //winner is calculated
         if(playerOneData.isNotEmpty() && playerTwoData.isNotEmpty()) {
             val playerOneName = playerOneData[0]
             val playerOneTime = playerOneData[2]

@@ -77,6 +77,7 @@ class StepsGameViewModel : GameViewModel(), SensorEventListener {
             }
         }
 
+        //winner is calculated
         if(playerOneData.isNotEmpty() && playerTwoData.isNotEmpty()) {
             val playerOneName = playerOneData[0]
             val playerOneSteps = playerOneData[2].toInt()
@@ -92,6 +93,7 @@ class StepsGameViewModel : GameViewModel(), SensorEventListener {
         }
     }
 
+    //step sensor is started
     fun startStepCounter() {
         val stepCounterSensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER)
         stepCounterSensor.let {
@@ -99,6 +101,7 @@ class StepsGameViewModel : GameViewModel(), SensorEventListener {
         }
     }
 
+    //step sensor is stopped
     fun stopStepCounter() {
         sensorManager.unregisterListener(this)
     }
@@ -109,9 +112,7 @@ class StepsGameViewModel : GameViewModel(), SensorEventListener {
             stepsBase = sensorEvent.values.firstOrNull()!!.toInt()
         }
 
-        //altualisiert current steps in der Datenbank
-
-
+        //refreshes current steps in the database
         sensorEvent.values.firstOrNull()?.let {
             db.collection(COL_GAMES).document(gameID).update(
                 GAME_DATA, FieldValue.arrayRemove(
