@@ -59,8 +59,9 @@ class NewGameSetup : Fragment() {
         }
         // when the StartButton is pressed
         buttonStart.setOnClickListener {
-            // check the selected game and send the corresponding challenge
+            // check the selected game
             if (spinnerGameSelect.selectedItem.toString() == "TicTacToe") {
+                // and send the corresponding challenge
                 userDataViewModel.challengeFriend(
                     args.userID,
                     Challenge(
@@ -142,13 +143,14 @@ class NewGameSetup : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProvider(this).get(NewGameSetupViewModel::class.java)
-        // TODO: Use the ViewModel
     }
 
     // create the PlayerList (you and the player you challenge)
     fun createPlayers(): List<User> {
         val arrayList = ArrayList<User>()
+        // set data for yourself
         arrayList.add(User(name = "you", id = userDataViewModel.getOwnUserID(), online = true))
+        // set data for the other player
         arrayList.add(User(name = args.userName, id = args.userID, online = args.userStatus))
         return arrayList
     }

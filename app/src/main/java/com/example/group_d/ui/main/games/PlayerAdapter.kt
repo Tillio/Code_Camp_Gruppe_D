@@ -27,6 +27,7 @@ class PlayerAdapter : RecyclerView.Adapter<PlayerAdapter.ViewHolder>() {
         holder.playerItemName.text = playerItems[position].name
     }
 
+    // returns the amount of players
     override fun getItemCount(): Int {
         return playerItems.size
     }
