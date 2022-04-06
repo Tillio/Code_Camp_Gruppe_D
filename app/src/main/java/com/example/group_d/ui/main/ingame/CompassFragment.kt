@@ -296,6 +296,7 @@ class CompassFragment : Fragment(), Callback<MutableList<CompassLocation>>, Give
             startTime = currentTime
             compassViewModel.saveStartTime(startTime)
         }
+        giveUpButton.visibility = View.VISIBLE
         /*
             As the chronometer shows the difference between the elapsed time since boot and its
             base, we have to set the base as the difference between the elapsed time since boot
