@@ -124,7 +124,7 @@ class CompassViewModel : GameViewModel() {
                     if (_endTime < 0) {
                         // user gave up
                         readyPlayers = 2
-                        break
+                        _foundAllLocations.value = false
                     }
                     _foundAllLocations.value = true
                 } else {
@@ -133,12 +133,11 @@ class CompassViewModel : GameViewModel() {
                     if (opEndTime < 0) {
                         // opponent gave up
                         readyPlayers = 2
-                        break
                     }
                 }
             }
         }
-        if (readyPlayers == 2) {
+        if (readyPlayers >= 2) {
             val neededTime = _endTime - _startTime
             val opNeededTime = opEndTime - opStartTime
             val timeDiff = opNeededTime - neededTime

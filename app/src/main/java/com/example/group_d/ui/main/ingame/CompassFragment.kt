@@ -127,11 +127,7 @@ class CompassFragment : Fragment(), Callback<MutableList<CompassLocation>>, Give
             textPlayerAction.text = "${curLocation.name}, ${curLocation.addr}"
         }
 
-        compassViewModel.foundAllLocations.observe(viewLifecycleOwner) { foundAllLocations ->
-            if (foundAllLocations) {
-                onAllLocationsFound()
-            }
-        }
+        compassViewModel.foundAllLocations.observe(viewLifecycleOwner, this::onUserReady)
 
         compassViewModel.ending.observe(viewLifecycleOwner) { ending ->
             onGameOver(ending)
@@ -381,25 +377,34 @@ class CompassFragment : Fragment(), Callback<MutableList<CompassLocation>>, Give
         waitSymbol.visibility = View.INVISIBLE
     }
 
-    private fun onAllLocationsFound() {
+    private fun onUserReady(foundAllLocations: Boolean) {
         timeCount.stop()
-        var endTime = compassViewModel.endTime
-        if (endTime == 0L) {
-            // end time has not been saved yet
-            endTime = System.currentTimeMillis()
-            compassViewModel.saveEndTime(endTime)
-            // send Notification
-            userDataViewModel.prepNotification(
-                "your turn",
-                "The other player finished this Task",
-                compassViewModel.otherID
-            )
+        if (foundAllLocations) {
+            // The user found all locations
+            var endTime = compassViewModel.endTime
+            if (endTime == 0L) {
+                // end time has not been saved yet
+                endTime = System.currentTimeMillis()
+                compassViewModel.saveEndTime(endTime)
+                // send Notification
+                userDataViewModel.prepNotification(
+                    "your turn",
+                    "The other player finished this Task",
+                    compassViewModel.otherID
+                )
+            }
+            timeCount.base = SystemClock.elapsedRealtime() - (endTime - compassViewModel.startTime)
+            textPlayerAction.text =
+                getString(
+                    R.string.compass_waiting_for_opponent,
+                    compassViewModel.opponentName.value?:"?"
+                )
+        } else {
+            // The user gave up
+            timeCount.visibility = View.INVISIBLE
         }
-        timeCount.base = SystemClock.elapsedRealtime() - (endTime - compassViewModel.startTime)
         giveUpButton.visibility = View.INVISIBLE
         compassView.isClickable = false
-        textPlayerAction.text =
-            getString(R.string.compass_waiting_for_opponent, compassViewModel.opponentName.value?:"?")
     }
 
     override fun onGiveUp() {
@@ -407,8 +412,6 @@ class CompassFragment : Fragment(), Callback<MutableList<CompassLocation>>, Give
     }
 
     private fun onGameOver(ending: GameEnding) {
-        // stop the time count because in case the user gave up it hasn't been called so far
-        timeCount.stop()
         val msgID = when (ending) {
             GameEnding.WIN -> R.string.ending_win
             GameEnding.LOSE -> R.string.ending_lose
