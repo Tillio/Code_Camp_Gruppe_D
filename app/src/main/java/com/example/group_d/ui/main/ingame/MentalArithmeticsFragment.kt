@@ -123,7 +123,7 @@ class MentalArithmeticsFragment : Fragment() {
                 }
                 val problemText = currentProblem.left.toString() + currentProblem.operator + currentProblem.right.toString()
                 assignment.text = problemText
-                timer.base = timerBase
+                timer.base = SystemClock.elapsedRealtime() - (System.currentTimeMillis() - timerBase)
                 timer.start()
             }else if(finished){
                 assignment.text = "FINISHED"
@@ -142,11 +142,14 @@ class MentalArithmeticsFragment : Fragment() {
                     val problemText = currentProblem.left.toString() + currentProblem.operator + currentProblem.right.toString()
                     assignment.text = problemText
                     submitSolution.text = "Submit"
-                    timer.base = SystemClock.elapsedRealtime()
-                    timer.start()
+                    val timerBase = System.currentTimeMillis()
                     db.collection(COL_GAMES).document(args.gameID).update(GAME_DATA, FieldValue.arrayUnion(
-                        Firebase.auth.currentUser!!.email + "=" + "timerBase" + "=" + timer.base
+                        Firebase.auth.currentUser!!.email + "=" + "timerBase" + "=" + timerBase
                     ))
+
+                    timer.base = SystemClock.elapsedRealtime() - (System.currentTimeMillis() - timerBase)
+                    timer.start()
+
                 } else if(submitSolution.text == "Submit") {
 
                     //berechnen die richtige Lösung
