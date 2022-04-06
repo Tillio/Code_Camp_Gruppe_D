@@ -294,7 +294,7 @@ class CompassFragment : Fragment(), Callback<MutableList<CompassLocation>>, Give
     private fun onGameLoaded(game: Game?) {
         val currentTime = System.currentTimeMillis()
         // Load start time from game data
-        var startTime = compassViewModel.loadStartTime()
+        var startTime = compassViewModel.startTime
         if (startTime == 0L) {
             // startTime == 0 -> There isn't a start time saved
             startTime = currentTime
@@ -383,11 +383,13 @@ class CompassFragment : Fragment(), Callback<MutableList<CompassLocation>>, Give
 
     private fun onAllLocationsFound() {
         timeCount.stop()
-        if (compassViewModel.neededTime == 0L) {
-            // neededTime has not been saved yet
-            compassViewModel.saveNeededTime(timeCount.text)
+        var endTime = compassViewModel.endTime
+        if (endTime == 0L) {
+            // end time has not been saved yet
+            endTime = System.currentTimeMillis()
+            compassViewModel.saveEndTime(endTime)
         }
-        timeCount.base = SystemClock.elapsedRealtime() - 1000 * compassViewModel.neededTime
+        timeCount.base = SystemClock.elapsedRealtime() - (endTime - compassViewModel.startTime)
         giveUpButton.visibility = View.INVISIBLE
         compassView.isClickable = false
         // send Notification

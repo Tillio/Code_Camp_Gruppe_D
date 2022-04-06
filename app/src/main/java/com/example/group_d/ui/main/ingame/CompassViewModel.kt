@@ -32,11 +32,15 @@ class CompassViewModel : GameViewModel() {
     private val _ending = MutableLiveData<GameEnding>()
     val ending: LiveData<GameEnding> = _ending
 
-    // Quicker access to user's and opponent's needed time without searching in game data
-    private var _neededTime: Long = 0
-    val neededTime get() = _neededTime
+    // Quicker access to user's and opponent's start and end time without searching in game data
+    private var _startTime: Long = 0L
+    val startTime get() = _startTime
 
-    private var opNeededTime: Long = 0
+    private var _endTime: Long = 0L
+    val endTime get() = _endTime
+
+    private var opStartTime: Long = 0L
+    private var opEndTime: Long = 0L
 
     // the UserID of the other player
     var otherID: String = ""
@@ -77,6 +81,17 @@ class CompassViewModel : GameViewModel() {
                             }
                             break
                         }
+                        if (str.startsWith("sT_")) {
+                            // Extract start times
+                            val time = str.split("=")[1].toLong()
+                            if (str.startsWith("sT_${Firebase.auth.currentUser!!.email}=")) {
+                                // Save user start time
+                                _startTime = time
+                            } else {
+                                // Save opponent start time
+                                opStartTime = time
+                            }
+                        }
                     }
                     // Show the next location
                     _currentLocation.value = locations[requestedLocationIndices.removeFirst()]
@@ -94,21 +109,28 @@ class CompassViewModel : GameViewModel() {
         // Count ready players
         var readyPlayers = 0
         for (str in gameData) {
-            if (str.startsWith("nT_")) {
+            if (str.startsWith("sT_")
+                && !str.startsWith("sT_${Firebase.auth.currentUser!!.email}=")) {
+                // Opponent started the game, save start time
+                opStartTime = str.split("=")[1].toLong()
+            }
+            else if (str.startsWith("eT_")) {
                 readyPlayers += 1
-                if (str.startsWith("nT_${Firebase.auth.currentUser!!.email}=")) {
-                    // User has finished, extract time
-                    _neededTime = str.split("=")[1].toLong()
-                    if (_neededTime < 0) {
+                // Extract time
+                val time = str.split("=")[1].toLong()
+                if (str.startsWith("eT_${Firebase.auth.currentUser!!.email}=")) {
+                    // User has finished
+                    _endTime = time
+                    if (_endTime < 0) {
                         // user gave up
                         readyPlayers = 2
                         break
                     }
                     _foundAllLocations.value = true
                 } else {
-                    // Opponent has finished, extract time
-                    opNeededTime = str.split("=")[1].toLong()
-                    if (opNeededTime < 0) {
+                    // Opponent has finished
+                    opEndTime = time
+                    if (opEndTime < 0) {
                         // opponent gave up
                         readyPlayers = 2
                         break
@@ -117,13 +139,15 @@ class CompassViewModel : GameViewModel() {
             }
         }
         if (readyPlayers == 2) {
-            val timeDiff = opNeededTime - _neededTime
+            val neededTime = _endTime - _startTime
+            val opNeededTime = opEndTime - opStartTime
+            val timeDiff = opNeededTime - neededTime
             _ending.value = when {
                 timeDiff == 0L -> GameEnding.DRAW
                 // user gave up
-                _neededTime < 0L -> GameEnding.LOSE
+                _endTime < 0L -> GameEnding.LOSE
                 // opponent gave up
-                opNeededTime < 0L -> GameEnding.WIN
+                opEndTime < 0L -> GameEnding.WIN
                 timeDiff > 0L -> GameEnding.WIN
                 else -> GameEnding.LOSE
             }
@@ -186,44 +210,19 @@ class CompassViewModel : GameViewModel() {
         return error
     }
 
-    private fun timeCharSequenceToLong(timeCS: CharSequence): Long {
-        return timeCS.split(":").run {
-            var result = 0L
-            forEach {
-                result *= 60
-                result += it.toLong()
-            }
-            result
-        }
-    }
-
-    fun loadStartTime(): Long {
-        for (str in runGameRaw.gameData) {
-            if (str.startsWith("sT_${Firebase.auth.currentUser!!.email}=")) {
-                return str.split("=")[1].toLong()
-            }
-        }
-        // Start time not saved yet -> return 0
-        return 0L
-    }
-
     fun saveStartTime(startTime: Long) {
         val gameDataVal = "sT_${Firebase.auth.currentUser!!.email}=$startTime"
         updateGameData(gameDataVal)
+        this._startTime = startTime
     }
 
-    fun saveNeededTime(neededTime: Long) {
-        val gameDataVal = "nT_${Firebase.auth.currentUser!!.email}=$neededTime"
+    fun saveEndTime(endTime: Long) {
+        val gameDataVal = "eT_${Firebase.auth.currentUser!!.email}=$endTime"
         updateGameData(gameDataVal)
-        this._neededTime = neededTime
-    }
-
-    fun saveNeededTime(neededTimeCS: CharSequence) {
-        val neededTime = timeCharSequenceToLong(neededTimeCS)
-        saveNeededTime(neededTime)
+        this._endTime = endTime
     }
 
     fun giveUp() {
-        saveNeededTime(-1)
+        saveEndTime(-1)
     }
 }
