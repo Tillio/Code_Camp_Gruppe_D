@@ -388,12 +388,16 @@ class CompassFragment : Fragment(), Callback<MutableList<CompassLocation>>, Give
             // end time has not been saved yet
             endTime = System.currentTimeMillis()
             compassViewModel.saveEndTime(endTime)
+            // send Notification
+            userDataViewModel.prepNotification(
+                "your turn",
+                "The other player finished this Task",
+                compassViewModel.otherID
+            )
         }
         timeCount.base = SystemClock.elapsedRealtime() - (endTime - compassViewModel.startTime)
         giveUpButton.visibility = View.INVISIBLE
         compassView.isClickable = false
-        // send Notification
-        userDataViewModel.prepNotification("your turn", "The other player finished this Task", compassViewModel.otherID)
         textPlayerAction.text =
             getString(R.string.compass_waiting_for_opponent, compassViewModel.opponentName.value?:"?")
     }
@@ -413,9 +417,13 @@ class CompassFragment : Fragment(), Callback<MutableList<CompassLocation>>, Give
         waitSymbol.visibility = View.INVISIBLE
         Toast.makeText(activity, msgID, Toast.LENGTH_SHORT).show()
         textPlayerAction.setText(msgID)
-        // send Notification
-        userDataViewModel.prepNotification("Game ended", "A game has ended", compassViewModel.otherID)
         if (!showEndstate) {
+            // send Notification
+            userDataViewModel.prepNotification(
+                "Game ended",
+                "A game has ended",
+                compassViewModel.otherID
+            )
             compassViewModel.deleteLoadedGame()
         }
     }
