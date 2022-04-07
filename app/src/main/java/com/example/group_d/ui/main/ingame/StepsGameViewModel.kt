@@ -1,16 +1,15 @@
 package com.example.group_d.ui.main.ingame
 
-import android.Manifest
-import android.content.Context
 import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
-import android.util.Log
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.example.group_d.*
+import com.example.group_d.COL_GAMES
+import com.example.group_d.GAME_DATA
+import com.example.group_d.GAME_PLAYERS
+import com.example.group_d.GAME_TYPE_STEPS_GAME
 import com.example.group_d.data.model.Game
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.DocumentReference
@@ -18,7 +17,6 @@ import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import com.tbruyelle.rxpermissions2.RxPermissions
 
 class StepsGameViewModel : GameViewModel(), SensorEventListener {
 
@@ -91,6 +89,7 @@ class StepsGameViewModel : GameViewModel(), SensorEventListener {
             }
         }
     }
+
 
     fun startStepCounter() {
         val stepCounterSensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER)

@@ -103,7 +103,7 @@ class StatisticsViewModel : ViewModel() {
     }
 
     fun updateData() {
-        //resetData()
+        resetData()
         getPastGameData()
     }
 

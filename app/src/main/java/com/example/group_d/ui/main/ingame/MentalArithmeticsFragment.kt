@@ -1,26 +1,23 @@
 package com.example.group_d.ui.main.ingame
 
-import android.opengl.Visibility
-import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import android.os.SystemClock
-import android.text.Editable
-import android.text.TextWatcher
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.navArgs
 import com.example.group_d.COL_GAMES
 import com.example.group_d.GAME_DATA
+import com.example.group_d.GAME_DRAW
 import com.example.group_d.R
 import com.example.group_d.data.model.GameEnding
 import com.example.group_d.data.model.Problem
 import com.example.group_d.data.model.UserDataViewModel
 import com.example.group_d.databinding.MentalArithmeticsFragmentBinding
-import com.example.group_d.databinding.TicTacToeFragmentBinding
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.ktx.firestore
@@ -65,11 +62,16 @@ class MentalArithmeticsFragment : Fragment() {
             Toast.makeText(activity, msgID, Toast.LENGTH_LONG).show()
             // send Notification
             userDataViewModel.prepNotification("Game ended", "A Game has Ended", mentalArithmeticsViewModel.otherID)
+
+            var ending: GameEnding
             if(winner == Firebase.auth.currentUser!!.email) {
                 assignment.text = "WON"
+                ending = GameEnding.WIN
             } else {
                 assignment.text = "LOST"
+                ending = GameEnding.LOSE
             }
+            setWinner(ending)
             mentalArithmeticsViewModel.deleteLoadedGame()
         }
 
@@ -194,6 +196,23 @@ class MentalArithmeticsFragment : Fragment() {
         mentalArithmeticsViewModel.loadRunningGame(args.gameID)
 
         return root
+    }
+
+    private fun setWinner(ending: GameEnding) {
+        val thisGame = mentalArithmeticsViewModel.runGameRaw
+        val ownId = userDataViewModel.getOwnUserID()
+        var opponentId = ""
+        for (player in thisGame.players) {
+            if (ownId != player.id) {
+                opponentId = player.id
+                break
+            }
+        }
+        thisGame.winner = when (ending) {
+            GameEnding.WIN -> ownId
+            GameEnding.LOSE -> opponentId
+            else -> GAME_DRAW
+        }
     }
 
     private fun createProblems(seed: String): ArrayList<Problem> {

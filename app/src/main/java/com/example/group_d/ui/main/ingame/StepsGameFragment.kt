@@ -20,7 +20,9 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.navArgs
 import com.example.group_d.COL_GAMES
 import com.example.group_d.GAME_DATA
+import com.example.group_d.GAME_DRAW
 import com.example.group_d.R
+import com.example.group_d.data.model.GameEnding
 import com.example.group_d.data.model.UserDataViewModel
 import com.example.group_d.databinding.FragmentStepsGameBinding
 import com.google.firebase.auth.ktx.auth
@@ -102,11 +104,16 @@ class StepsGameFragment : Fragment() {
             Toast.makeText(activity, msgID, Toast.LENGTH_LONG).show()
             // send Notification
             userDataViewModel.prepNotification("Game ended", "A game ended", stepsGameViewModel.otherID)
+
+            var ending: GameEnding
             if (stepsWinner == Firebase.auth.currentUser!!.email) {
                 wonLost.text = "WON"
+                ending = GameEnding.WIN
             } else {
                 wonLost.text = "LOST"
+                ending = GameEnding.LOSE
             }
+            setWinner(ending)
             stepsGameViewModel.deleteLoadedGame()
         }
 
@@ -185,6 +192,23 @@ class StepsGameFragment : Fragment() {
         stepsGameViewModel.loadRunningGame(args.gameID)
 
         return root
+    }
+
+    private fun setWinner(ending: GameEnding) {
+        val thisGame = stepsGameViewModel.runGameRaw
+        val ownId = userDataViewModel.getOwnUserID()
+        var opponentId = ""
+        for (player in thisGame.players) {
+            if (ownId != player.id) {
+                opponentId = player.id
+                break
+            }
+        }
+        thisGame.winner = when (ending) {
+            GameEnding.WIN -> ownId
+            GameEnding.LOSE -> opponentId
+            else -> GAME_DRAW
+        }
     }
 
     private fun startTimer(time_in_milli_seconds: Long) {

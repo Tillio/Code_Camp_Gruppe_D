@@ -24,6 +24,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.navArgs
+import com.example.group_d.GAME_DRAW
 import com.example.group_d.LOCATIONS_GET_QUERY
 import com.example.group_d.R
 import com.example.group_d.REQUEST_UPDATE_LOCATION_SETTINGS
@@ -367,7 +368,7 @@ class CompassFragment : Fragment(), Callback<MutableList<CompassLocation>>, Give
                     R.string.compass_hint_clockwise
                 }
             )
-            /*
+            /**
                 This method is called in the timer thread
                 but the toast can only be shown on the UI thread
              */
@@ -418,6 +419,8 @@ class CompassFragment : Fragment(), Callback<MutableList<CompassLocation>>, Give
             GameEnding.LOSE -> R.string.ending_lose
             GameEnding.DRAW -> R.string.ending_draw
         }
+        setWinner(ending)
+
         waitSymbol.visibility = View.INVISIBLE
         Toast.makeText(activity, msgID, Toast.LENGTH_SHORT).show()
         textPlayerAction.setText(msgID)
@@ -429,6 +432,28 @@ class CompassFragment : Fragment(), Callback<MutableList<CompassLocation>>, Give
                 compassViewModel.otherID
             )
             compassViewModel.deleteLoadedGame()
+        }
+    }
+
+    /**
+     * adds the winner of the game to the game Object
+     * If a player ins it adds the players id
+     * if the game results in a draw it adds GAME_DRAW
+     */
+    private fun setWinner(ending: GameEnding) {
+        val thisGame = compassViewModel.runGameRaw
+        val ownId = userDataViewModel.getOwnUserID()
+        var opponentId = ""
+        for (player in thisGame.players) {
+            if (ownId != player.id) {
+                opponentId = player.id
+                break
+            }
+        }
+        thisGame.winner = when (ending) {
+            GameEnding.WIN -> ownId
+            GameEnding.LOSE -> opponentId
+            else -> GAME_DRAW
         }
     }
 
