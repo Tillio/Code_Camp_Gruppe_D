@@ -6,7 +6,6 @@ import com.example.group_d.*
 import com.example.group_d.data.model.Game
 import com.example.group_d.data.model.GameEnding
 import com.example.group_d.data.model.TicTacToeModel
-import com.example.group_d.data.model.UserDataViewModel
 import com.example.group_d.ui.main.recentGames.RecentGamesViewModel
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.DocumentSnapshot
@@ -107,7 +106,7 @@ class TicTacToeViewModel : GameViewModel() {
                     || lastSetField.northEast?.player == lastPlayer && lastSetField.northEast?.northEast?.player == lastPlayer
 
         if (win) {
-            // The winner is the last player
+            //The winner is the last player
             modelObj.winner = lastPlayer
             _ending.value = if (isOnTurn()) GameEnding.WIN else GameEnding.LOSE
         } else if (modelObj.player1.amountOfFields + modelObj.player2.amountOfFields >= TicTacToeModel.NUM_FIELDS) {

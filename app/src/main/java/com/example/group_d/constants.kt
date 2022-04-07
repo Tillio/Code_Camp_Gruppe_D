@@ -1,4 +1,5 @@
 package com.example.group_d
+
 //collection names
 const val COL_USER = "user"
 const val COL_GAMES = "games"
@@ -23,7 +24,8 @@ const val GAME_TYPE_MENTAL_ARITHMETICS = "Mental Arithmetics"
 const val GAME_TYPE_STEPS_GAME = "Steps Game"
 const val GAME_PLAYERS = "players"
 const val GAME_COMPLETION_DATE = "completionDate"
-
+const val GAME_WINNER = "Winner"
+const val GAME_DRAW = "Draw"
 
 const val STEPS_TO_DO = "15"
 

@@ -9,8 +9,8 @@ import com.github.mikephil.charting.charts.HorizontalBarChart
 sealed class StatisticsRecyclerViewHolder(view: View) : RecyclerView.ViewHolder(view) {
     class TTTViewHolder(private val view: View) : StatisticsRecyclerViewHolder(view) {
         fun bind(ttt: StatisticsRecyclerItem.TicTacToe) {
-            val total_games_Textview: TextView = view.findViewById(R.id.total_ttt_games)
-            val total_wins_texatview: TextView = view.findViewById(R.id.total_ttt_wins)
+            val total_games_Textview: TextView = view.findViewById(R.id.total_ttt_wins)
+            val total_wins_texatview: TextView = view.findViewById(R.id.total_ttt_games)
 
             total_games_Textview.text= ttt.totalGames.toString()
             total_wins_texatview.text= ttt.wins.toString()

@@ -1,13 +1,13 @@
 package com.example.group_d.ui.main.recentGames.statistiks
 
-import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
+import android.widget.Button
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.group_d.R
@@ -16,8 +16,6 @@ import com.github.mikephil.charting.charts.PieChart
 import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.data.PieEntry
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
 
 
 class StatisticsFragment : Fragment() {
@@ -38,7 +36,8 @@ class StatisticsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val statisticsRecycler: RecyclerView?
-        viewModel = ViewModelProvider(this).get(StatisticsViewModel::class.java)
+        viewModel = ViewModelProvider(requireActivity())[StatisticsViewModel::class.java]
+
         _binding = FragmentStatisticsBinding.inflate(inflater, container, false)
         val root = binding.root
 
@@ -51,11 +50,16 @@ class StatisticsFragment : Fragment() {
             layoutManager = LinearLayoutManager(context)
         }
         statisticsViewModel.pastGamesData.observe(viewLifecycleOwner){it ->
-            var recyclerAdapterLocal = StatisticsAdapter()
-            recyclerAdapterLocal.data = it
-            statisticsRecycler.adapter = recyclerAdapterLocal
-        }
+            recyclerAdapter.data = it
+            statisticsRecycler.adapter?.notifyDataSetChanged()
 
+        }
+        viewModel.updateData()
+
+        val upButton: Button = root.findViewById(R.id.updateButton)
+        upButton.setOnClickListener{
+            viewModel.updateData()
+        }
 
         return root
     }

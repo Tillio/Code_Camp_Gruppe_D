@@ -1,4 +1,4 @@
-   package com.example.group_d.ui.main.ingame
+package com.example.group_d.ui.main.ingame
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.navArgs
+import com.example.group_d.GAME_DRAW
 import com.example.group_d.R
 import com.example.group_d.data.model.GameEnding
 import com.example.group_d.data.model.TicTacToeModel
@@ -64,7 +65,7 @@ class TicTacToeFragment : Fragment(), GiveUpReceiver {
             }
         }
 
-        if (!args.showEndstate){
+        if (!args.showEndstate) {
             giveUpButton.setOnClickListener {
                 GiveUpDialogFragment(this).show(parentFragmentManager, "give_up")
             }
@@ -74,9 +75,9 @@ class TicTacToeFragment : Fragment(), GiveUpReceiver {
             textOpName.text = ticTacToeViewModel.opponentName
         }
 
-        if (!args.showEndstate){
+        if (!args.showEndstate) {
             ticTacToeViewModel.loadRunningGame(args.gameID)
-        }else{
+        } else {
             ticTacToeViewModel.recentGamesViewModel = recentGamesViewModel
             ticTacToeViewModel.showEndstate(args.gameID)
         }
@@ -112,7 +113,11 @@ class TicTacToeFragment : Fragment(), GiveUpReceiver {
         }
         ticTacToeViewModel.playerMove(clickedField)
         // send Notification to next player
-        userDataViewModel.prepNotification("Your Turn", "It is your turn!", ticTacToeViewModel.getOtherID())
+        userDataViewModel.prepNotification(
+            "Your Turn",
+            "It is your turn!",
+            ticTacToeViewModel.getOtherID()
+        )
     }
 
     private fun onNextFieldObserved(nextFieldID: Int) {
@@ -141,21 +146,43 @@ class TicTacToeFragment : Fragment(), GiveUpReceiver {
 
     private fun onGameEnding(ending: GameEnding) {
         // send notification, that the game is over
-        userDataViewModel.prepNotification("Game ended", "A game ended", ticTacToeViewModel.getOtherID())
+        userDataViewModel.prepNotification(
+            "Game ended",
+            "A game ended",
+            ticTacToeViewModel.getOtherID()
+        )
         // Get right message
         val msgID = when (ending) {
             GameEnding.WIN -> R.string.ending_win
             GameEnding.LOSE -> R.string.ending_lose
             GameEnding.DRAW -> R.string.ending_draw
         }
+        setWinner(ending)
         giveUpButton.visibility = View.INVISIBLE
         waitSymbol.visibility = View.INVISIBLE
         removeLiveDataObservers()
         // Show user the message
         Toast.makeText(activity, msgID, Toast.LENGTH_SHORT).show()
         textPlayerAction.setText(msgID)
-        if (!args.showEndstate){
+        if (!args.showEndstate) {
             ticTacToeViewModel.deleteLoadedGame()
+        }
+    }
+
+    private fun setWinner(ending: GameEnding) {
+        val thisGame = ticTacToeViewModel.runGameRaw
+        val ownId = userDataViewModel.getOwnUserID()
+        var opponentId = ""
+        for (player in thisGame.players) {
+            if (ownId != player.id) {
+                opponentId = player.id
+                break
+            }
+        }
+        thisGame.winner = when (ending) {
+            GameEnding.WIN -> ownId
+            GameEnding.LOSE -> opponentId
+            else -> GAME_DRAW
         }
     }
 
@@ -174,3 +201,4 @@ class TicTacToeFragment : Fragment(), GiveUpReceiver {
         ticTacToeViewModel.showOnTurn.removeObservers(viewLifecycleOwner)
     }
 }
+
