@@ -10,6 +10,7 @@ import java.lang.reflect.Type
 
 class RetrofitInstanceBuilder {
     companion object {
+        // Creates a gson converter factory for the given type and type adapter
         private fun createGsonConverter(type: Type, typeAdapter: Any): Converter.Factory {
             val gsonBuilder = GsonBuilder()
             gsonBuilder.registerTypeAdapter(type, typeAdapter)
@@ -17,6 +18,7 @@ class RetrofitInstanceBuilder {
             return GsonConverterFactory.create(gson)
         }
 
+        // Creates a retrofit instance for the given type and type adapter
         fun getRetrofitInstance(type: Type, typeAdapter: Any): Retrofit {
             return Retrofit.Builder()
                 .baseUrl(LOCATIONS_BASE_URL)

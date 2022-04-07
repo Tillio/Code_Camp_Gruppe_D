@@ -4,14 +4,14 @@ import kotlin.math.cos
 import kotlin.math.sin
 import kotlin.math.sqrt
 
-class CompassLocation(val name: String, val coordinates: DoubleArray, val addr: String) {
+class CompassLocation(val name: String, val latitude: Double, val longitude: Double, val addr: String) {
     companion object {
-        const val E_RADIUS = 6_378_137.0
-        const val P_RADIUS = 6_356_752.3
+        private const val E_RADIUS = 6_378_137.0
+        private const val P_RADIUS = 6_356_752.3
         private const val ECC_2 = 1 - (P_RADIUS * P_RADIUS) / (E_RADIUS * E_RADIUS)
-        const val MAGNETIC_NORTH_LAT = 86.494
-        const val MAGNETIC_NORTH_LONG = 162.867
-        const val MAGNETIC_NORTH_ALT = 0.0
+        private const val MAGNETIC_NORTH_LAT = 86.494
+        private const val MAGNETIC_NORTH_LONG = 162.867
+        private const val MAGNETIC_NORTH_ALT = 0.0
         val magneticNorthEcef: EcefLocation by lazy {
             geodeticToEcef(MAGNETIC_NORTH_LAT, MAGNETIC_NORTH_LONG, MAGNETIC_NORTH_ALT)
         }
@@ -31,7 +31,7 @@ class CompassLocation(val name: String, val coordinates: DoubleArray, val addr: 
             return EcefLocation(x, y, z, latRad, longRad)
         }
 
-        fun EcefToEnu(refPoint: EcefLocation, destPoint: EcefLocation): DoubleArray {
+        fun ecefToEnu(refPoint: EcefLocation, destPoint: EcefLocation): DoubleArray {
             val sinLatRef = sin(refPoint.latitudeRad)
             val cosLatRef = cos(refPoint.latitudeRad)
             val sinLongRef = sin(refPoint.longitudeRad)

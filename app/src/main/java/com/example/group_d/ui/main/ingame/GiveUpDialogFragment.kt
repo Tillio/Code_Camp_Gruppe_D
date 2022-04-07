@@ -12,7 +12,7 @@ class GiveUpDialogFragment(
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return activity.let {
-            val builder = AlertDialog.Builder(it)
+            val builder = AlertDialog.Builder(it, R.style.AlertDialogTheme)
             builder.setTitle(R.string.dialog_give_up_msg)
                 .setPositiveButton(R.string.dialog_yes) { _, _ ->
                     receiver.onGiveUp()

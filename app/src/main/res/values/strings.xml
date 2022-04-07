@@ -11,10 +11,14 @@
     <string name="login_failed">"Login failed"</string>
     <string name="dialog_yes">Yes</string>
     <string name="dialog_no">No</string>
+    <string name="dialog_got_it">Got it</string>
 
     <string name="title_activity_main_screen">MainScreenActivity</string>
 
     <string name="default_notification_channel_id">CC_GD_C</string>
+    <string name="default_message_thing">You have a new Messange: %1$s</string>
+    <string name="msg_subscribed">You have subscibed to Messenges</string>
+    <string name="msg_subscribe_failed">You have failed to subscibe to Messenges</string>
 
     <!--navbar-->
     <string name="title_games">Games</string>
@@ -45,16 +49,27 @@
     <string name="player_you">You</string>
     <string name="button_give_up_text">Give up</string>
     <string name="action_your_turn">Your turn</string>
-    <string name="action_wait_text1">Waiting for&#160;</string>
-    <string name="action_wait_text2">…</string>
+    <string name="action_wait_text">Waiting for %1$s…</string>
     <string name="field_not_empty">This field is not empty</string>
     <string name="not_your_turn">It\'s not your turn</string>
     <string name="game_is_over">The game is over</string>
     <string name="dialog_give_up_msg">Are you sure you want to give up this game?</string>
 
     <!--compass-->
+    <string name="title_compass">Compass</string>
+    <string name="compass_location_request_dialog_title">Location permission needed</string>
+    <string name="compass_location_request_dialog_msg">This game requires your location to determine if your device is oriented correctly.</string>
+    <string name="compass_location_denied_dialog_title">Location services not available</string>
+    <string name="compass_location_denied_dialog_msg">The location services are not available. Go in your device settings and make sure you have enabled the location permission for this app and the location services are enabled.</string>
+    <string name="compass_no_internet_dialog_title">Loading locations failed</string>
+    <string name="compass_no_internet_dialog_msg">Ensure you Wi-Fi or mobile data is enabled.</string>
+    <string name="compass_no_sensor_dialog_title">No rotation sensor found</string>
+    <string name="compass_no_sensor_dialog_msg">Your device doesn\'t have a rotation sensor which is required for this game to work.</string>
     <string name="compass_loading_locations">Loading locations…</string>
     <string name="compass_waiting_for_opponent">You\'ve all locations found. Now wait for %1$s to complete</string>
+    <string name="compass_hint">Wrong direction. Rotate your device %1$s</string>
+    <string name="compass_hint_clockwise">clockwise</string>
+    <string name="compass_hint_counterclockwise">counterclockwise</string>
 
     <string name="ending_win">Congrats! You win</string>
     <string name="ending_lose">Booh! You lose</string>

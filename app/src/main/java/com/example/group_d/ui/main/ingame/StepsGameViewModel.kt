@@ -39,10 +39,15 @@ class StepsGameViewModel : GameViewModel(), SensorEventListener {
 
     lateinit var sensorManager: SensorManager
 
+    // the UserID of the other player
+    var otherID: String = ""
+
     override fun initGame(snap: DocumentSnapshot, docref: DocumentReference) {
         val playerRefs = snap[GAME_PLAYERS] as List<DocumentReference>
         for (playerRef in playerRefs) {
             if (playerRef.id != getOwnUserID()) {
+                // get the ID of the other player
+                otherID = playerRef.id
                 playerRef.get().addOnSuccessListener { playerSnap ->
                     val gameData = snap[GAME_DATA] as MutableList<String>
                     val gameDataString: MutableList<String> = gameData

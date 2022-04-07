@@ -68,11 +68,15 @@
     <fragment
         android:id="@+id/compassFragment"
         android:name="com.example.group_d.ui.main.ingame.CompassFragment"
-        android:label="compass_fragment"
-        tools:layout="@layout/compass_fragment" >
+        android:label="@string/title_compass"
+        tools:layout="@layout/compass_fragment">
         <argument
             android:name="gameID"
             app:argType="string" />
+        <argument
+            android:name="showEndstate"
+            app:argType="boolean"
+            android:defaultValue="false" />
     </fragment>
     <action android:id="@+id/action_global_compassFragment" app:destination="@id/compassFragment" />
     <fragment
