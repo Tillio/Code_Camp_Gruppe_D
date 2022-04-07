@@ -101,7 +101,7 @@ class StepsGameFragment : Fragment() {
             val msgID = "The winner is: " + stepsWinner
             Toast.makeText(activity, msgID, Toast.LENGTH_LONG).show()
             // send Notification
-            userDataViewModel.prepNotification("Game ended", "A game ended", stepsGameViewModel.otherID)
+            userDataViewModel.prepNotification("Game ended", "A steps-game against " + stepsGameViewModel.otherName + " ended.", stepsGameViewModel.otherID)
             if (stepsWinner == Firebase.auth.currentUser!!.email) {
                 wonLost.text = "WON"
             } else {
@@ -195,7 +195,7 @@ class StepsGameFragment : Fragment() {
                     stepsGameViewModel.stopStepCounter()
 
                     // send Notification
-                    userDataViewModel.prepNotification("Your Turn", "The other player completed the Task", stepsGameViewModel.otherID)
+                    userDataViewModel.prepNotification("Your Turn", stepsGameViewModel .otherName + " completed the steps-game.", stepsGameViewModel.otherID)
 
                     db.collection(COL_GAMES).document(args.gameID).update(
                         GAME_DATA, FieldValue.arrayUnion(

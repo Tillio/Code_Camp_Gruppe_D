@@ -389,7 +389,7 @@ class CompassFragment : Fragment(), Callback<MutableList<CompassLocation>>, Give
                 // send Notification
                 userDataViewModel.prepNotification(
                     "your turn",
-                    "The other player finished this Task",
+                    compassViewModel.otherName + " finished the compass-game.",
                     compassViewModel.otherID
                 )
             }
@@ -424,7 +424,7 @@ class CompassFragment : Fragment(), Callback<MutableList<CompassLocation>>, Give
             // send Notification
             userDataViewModel.prepNotification(
                 "Game ended",
-                "A game has ended",
+                "A game of TicTacToe against " + compassViewModel.otherName + " has ended.",
                 compassViewModel.otherID
             )
             compassViewModel.deleteLoadedGame()
