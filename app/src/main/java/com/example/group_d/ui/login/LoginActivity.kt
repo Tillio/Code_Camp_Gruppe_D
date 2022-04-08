@@ -27,33 +27,29 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var binding: ActivityLoginBinding
     private lateinit var loading: ProgressBar
 
-    private lateinit var auth: FirebaseAuth
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val username = binding.username
+        val email = binding.email
         val password = binding.password
         val login = binding.login
-        val register = binding.register
+        val createNew = binding.createNew
         loading = binding.loading
 
-        auth = Firebase.auth
-
         loginViewModel =
-            ViewModelProvider(this, LoginViewModelFactory())[LoginViewModel::class.java]
+            ViewModelProvider(this)[LoginViewModel::class.java]
 
-        loginViewModel.loginFormState.observe(this@LoginActivity, Observer {
+        loginViewModel.formState.observe(this@LoginActivity, Observer {
             val loginState = it ?: return@Observer
 
             // disable login button unless both username / password is valid
             login.isEnabled = loginState.isDataValid
 
-            if (loginState.usernameError != null) {
-                username.error = getString(loginState.usernameError)
+            if (loginState.emailError != null) {
+                email.error = getString(loginState.emailError)
             }
             if (loginState.passwordError != null) {
                 password.error = getString(loginState.passwordError)
@@ -73,17 +69,17 @@ class LoginActivity : AppCompatActivity() {
             finish()
         })
 
-        username.afterTextChanged {
-            loginViewModel.loginDataChanged(
-                username.text.toString(),
+        email.afterTextChanged {
+            loginViewModel.formDataChanged(
+                email.text.toString(),
                 password.text.toString()
             )
         }
 
         password.apply {
             afterTextChanged {
-                loginViewModel.loginDataChanged(
-                    username.text.toString(),
+                loginViewModel.formDataChanged(
+                    email.text.toString(),
                     password.text.toString()
                 )
             }
@@ -104,10 +100,15 @@ class LoginActivity : AppCompatActivity() {
                 loading.visibility = View.VISIBLE
 
                 loginViewModel.login(
-                    auth,
-                    username.text.toString(),
+                    Firebase.auth,
+                    email.text.toString(),
                     password.text.toString()
                 )
+            }
+
+            createNew.setOnClickListener {
+                val intent = Intent(this@LoginActivity, RegisterActivity::class.java)
+                startActivity(intent)
             }
 
         }
