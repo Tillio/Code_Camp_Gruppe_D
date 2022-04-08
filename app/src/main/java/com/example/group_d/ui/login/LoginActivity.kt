@@ -2,23 +2,21 @@ package com.example.group_d.ui.login
 
 import android.app.Activity
 import android.content.Intent
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
-import androidx.annotation.StringRes
-import androidx.appcompat.app.AppCompatActivity
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
-import android.view.inputmethod.EditorInfo
 import android.widget.EditText
+import android.widget.ProgressBar
 import android.widget.Toast
+import androidx.annotation.StringRes
+import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import com.example.group_d.*
 import com.example.group_d.databinding.ActivityLoginBinding
-
 import com.example.group_d.ui.main.MainScreenActivity
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 
@@ -26,6 +24,7 @@ class LoginActivity : AppCompatActivity() {
 
     private lateinit var loginViewModel: LoginViewModel
     private lateinit var binding: ActivityLoginBinding
+    private lateinit var loading: ProgressBar
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,7 +35,7 @@ class LoginActivity : AppCompatActivity() {
         val username = binding.username
         val password = binding.password
         val login = binding.login
-        val loading = binding.loading
+        loading = binding.loading
 
 
         loginViewModel =
@@ -104,29 +103,22 @@ class LoginActivity : AppCompatActivity() {
 
                 val email = username.text.toString()
                 val password = password.text.toString()
-                loginOrCreateUser(FirebaseAuth.getInstance(), email, password)
-
-
+                loginUser(FirebaseAuth.getInstance(), email, password)
             }
 
 
         }
     }
 
-    private fun loginOrCreateUser(auth: FirebaseAuth, email: String, password: String) {
-
+    private fun loginUser(auth: FirebaseAuth, email: String, password: String) {
         auth.signInWithEmailAndPassword(email, password)
-            .addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    startMainActivity()
-                    loginViewModel.login(email, password)
-                    finish()
-                }
-
-
-            }.addOnFailureListener { exception ->
-                registerUser(email, password, auth)
-
+            .addOnSuccessListener(this) {
+                startMainActivity()
+                loginViewModel.login(email, password)
+                finish()
+            }.addOnFailureListener(this) {
+                Toast.makeText(this, R.string.login_failed, Toast.LENGTH_SHORT).show()
+                loading.visibility = View.INVISIBLE
             }
     }
 
