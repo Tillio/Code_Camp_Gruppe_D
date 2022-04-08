@@ -17,6 +17,7 @@ import com.example.group_d.*
 import com.example.group_d.databinding.ActivityLoginBinding
 import com.example.group_d.ui.main.MainScreenActivity
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 
@@ -25,6 +26,8 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var loginViewModel: LoginViewModel
     private lateinit var binding: ActivityLoginBinding
     private lateinit var loading: ProgressBar
+
+    private lateinit var auth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,6 +40,7 @@ class LoginActivity : AppCompatActivity() {
         val login = binding.login
         loading = binding.loading
 
+        auth = Firebase.auth
 
         loginViewModel =
             ViewModelProvider(this, LoginViewModelFactory())[LoginViewModel::class.java]
@@ -55,16 +59,13 @@ class LoginActivity : AppCompatActivity() {
             }
         })
 
-        loginViewModel.loginResult.observe(this@LoginActivity, Observer {
-            val loginResult = it ?: return@Observer
-
-            loading.visibility = View.GONE
-            if (loginResult.error != null) {
-                showLoginFailed(loginResult.error)
+        loginViewModel.authTask.observe(this@LoginActivity, Observer { task ->
+            loading.visibility = View.INVISIBLE
+            if (!task.isSuccessful) {
+                showLoginFailed(R.string.login_failed)
+                return@Observer
             }
-            if (loginResult.success != null) {
-                updateUiWithUser(loginResult.success)
-            }
+            startMainActivity()
             setResult(Activity.RESULT_OK)
 
             //Complete and destroy login activity once successful
@@ -101,25 +102,15 @@ class LoginActivity : AppCompatActivity() {
             login.setOnClickListener {
                 loading.visibility = View.VISIBLE
 
-                val email = username.text.toString()
-                val password = password.text.toString()
-                loginUser(FirebaseAuth.getInstance(), email, password)
+                loginViewModel.login(
+                    auth,
+                    username.text.toString(),
+                    password.text.toString()
+                )
             }
 
 
         }
-    }
-
-    private fun loginUser(auth: FirebaseAuth, email: String, password: String) {
-        auth.signInWithEmailAndPassword(email, password)
-            .addOnSuccessListener(this) {
-                startMainActivity()
-                loginViewModel.login(email, password)
-                finish()
-            }.addOnFailureListener(this) {
-                Toast.makeText(this, R.string.login_failed, Toast.LENGTH_SHORT).show()
-                loading.visibility = View.INVISIBLE
-            }
     }
 
     private fun registerUser(name: String, password: String, auth: FirebaseAuth) {
@@ -173,17 +164,6 @@ class LoginActivity : AppCompatActivity() {
 
         }
 
-    }
-
-    private fun updateUiWithUser(model: LoggedInUserView) {
-        val welcome = getString(R.string.welcome)
-        val displayName = model.displayName
-        // TODO : initiate successful logged in experience
-        Toast.makeText(
-            applicationContext,
-            "$welcome $displayName",
-            Toast.LENGTH_LONG
-        ).show()
     }
 
     private fun showLoginFailed(@StringRes errorString: Int) {
