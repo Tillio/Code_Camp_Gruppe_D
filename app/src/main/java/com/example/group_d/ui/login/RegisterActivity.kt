@@ -1,17 +1,23 @@
 package com.example.group_d.ui.login
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import android.widget.Button
+import android.widget.ProgressBar
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.example.group_d.R
 import com.example.group_d.databinding.ActivityRegisterBinding
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
+import com.example.group_d.ui.main.MainScreenActivity
 
 class RegisterActivity : AppCompatActivity() {
     private lateinit var registerViewModel: RegisterViewModel
     private lateinit var binding: ActivityRegisterBinding
+    private lateinit var register: Button
+    private lateinit var loading: ProgressBar
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,8 +30,8 @@ class RegisterActivity : AppCompatActivity() {
         val username = binding.regUsername
         val password = binding.regPassword
         val confirmPassword = binding.regConfirmPassword
-        val register = binding.register
-        val loading = binding.regLoading
+        register = binding.register
+        loading = binding.regLoading
 
         registerViewModel.formState.observe(this) {
             val loginState = it ?: return@observe
@@ -42,6 +48,24 @@ class RegisterActivity : AppCompatActivity() {
             if (loginState.usernameError != null) {
                 username.error = getString(loginState.usernameError)
             }
+        }
+
+        registerViewModel.authTask.observe(this) { task ->
+            if (!task.isSuccessful) {
+                creatingNewAccountFailed()
+                return@observe
+            }
+            registerViewModel.setupDatabase()
+        }
+
+        registerViewModel.setupTask.observe(this) { task ->
+            if (!task.isSuccessful) {
+                creatingNewAccountFailed()
+            }
+            val intent = Intent(this, MainScreenActivity::class.java)
+            startActivity(intent)
+            setResult(Activity.RESULT_OK)
+            finish()
         }
 
         email.afterTextChanged {
@@ -74,13 +98,19 @@ class RegisterActivity : AppCompatActivity() {
                 confirmPassword.error = getString(R.string.password_not_match)
                 return@setOnClickListener
             }
+            register.visibility = View.INVISIBLE
             loading.visibility = View.VISIBLE
             registerViewModel.registerUser(
-                Firebase.auth,
                 email.text.toString(),
                 password.text.toString(),
                 username.text.toString()
             )
         }
+    }
+
+    private fun creatingNewAccountFailed() {
+        Toast.makeText(applicationContext, R.string.register_failed, Toast.LENGTH_SHORT).show()
+        loading.visibility = View.INVISIBLE
+        register.visibility = View.VISIBLE
     }
 }

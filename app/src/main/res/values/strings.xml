@@ -15,6 +15,7 @@
     <string name="invalid_username">Username must not contain an \@</string>
     <string name="password_not_match">Passwords doesn\'t match</string>
     <string name="login_failed">"Login failed: Invalid username or password"</string>
+    <string name="register_failed">"Creating new account failed"</string>
     <string name="dialog_yes">Yes</string>
     <string name="dialog_no">No</string>
     <string name="dialog_got_it">Got it</string>

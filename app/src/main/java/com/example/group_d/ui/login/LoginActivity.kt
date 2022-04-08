@@ -13,12 +13,10 @@ import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import com.example.group_d.*
+import com.example.group_d.R
 import com.example.group_d.databinding.ActivityLoginBinding
 import com.example.group_d.ui.main.MainScreenActivity
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
-import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 
 class LoginActivity : AppCompatActivity() {
@@ -112,59 +110,6 @@ class LoginActivity : AppCompatActivity() {
             }
 
         }
-    }
-
-    private fun registerUser(name: String, password: String, auth: FirebaseAuth) {
-        auth.createUserWithEmailAndPassword(name, password).addOnCompleteListener(this) { task ->
-            if (task.isSuccessful) {
-                Toast.makeText(
-                    applicationContext,
-                    "created new account",
-                    Toast.LENGTH_LONG
-                ).show()
-
-                val db = Firebase.firestore
-                val user = hashMapOf(
-                    USER_STATUS to false,
-                    USER_NAME to name,
-                    USER_SEARCHING to false
-                )
-                db.collection(COL_USER).document(auth.currentUser?.uid.toString()).set(user)
-
-                val userDataCollection =
-                    db.collection(COL_USER).document(auth.currentUser?.uid.toString()).collection(
-                        USER_DATA
-                    )
-                userDataCollection.document(USER_FRIENDS).set(
-                    hashMapOf(
-                        USER_FRIENDS to arrayListOf<String>()
-                    )
-                )
-
-                userDataCollection.document(USER_CHALLENGES).set(
-                    hashMapOf(
-                        USER_CHALLENGES to arrayListOf<String>()
-                    )
-                )
-
-                userDataCollection.document(USER_FRIEND_REQUESTS).set(
-                    hashMapOf(
-                        USER_FRIEND_REQUESTS to arrayListOf<String>()
-                    )
-                )
-
-                userDataCollection.document(USER_GAMES).set(
-                    hashMapOf(
-                        USER_GAMES to arrayListOf<String>()
-                    )
-                )
-
-                startMainActivity()
-                finish()
-            }
-
-        }
-
     }
 
     private fun showLoginFailed(@StringRes errorString: Int) {
