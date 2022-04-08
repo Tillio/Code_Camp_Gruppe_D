@@ -38,6 +38,7 @@ class LoginActivity : AppCompatActivity() {
         val username = binding.username
         val password = binding.password
         val login = binding.login
+        val register = binding.register
         loading = binding.loading
 
         auth = Firebase.auth
@@ -108,7 +109,6 @@ class LoginActivity : AppCompatActivity() {
                     password.text.toString()
                 )
             }
-
 
         }
     }
