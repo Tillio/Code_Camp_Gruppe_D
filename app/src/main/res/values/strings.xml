@@ -9,6 +9,7 @@
     <string name="action_sign_in">Sign in</string>
     <string name="action_create_new">Create new account</string>
     <string name="action_register">Register</string>
+    <string name="action_sign_out">Sign out</string>
     <string name="welcome">"Welcome !"</string>
     <string name="invalid_email">Not a valid email</string>
     <string name="invalid_password">Password must be >5 characters</string>
@@ -21,6 +22,7 @@
     <string name="dialog_got_it">Got it</string>
 
     <string name="title_activity_main_screen">MainScreenActivity</string>
+    <string name="dialog_sign_out_title">Are you sure you want to sign out?</string>
 
     <string name="default_notification_channel_id">CC_GD_C</string>
     <string name="default_message_thing">You have a new Messange: %1$s</string>

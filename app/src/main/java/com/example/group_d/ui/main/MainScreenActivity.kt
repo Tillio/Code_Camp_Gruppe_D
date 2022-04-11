@@ -1,41 +1,33 @@
 package com.example.group_d.ui.main
 
+import android.app.Activity
+import android.app.AlertDialog
+import android.app.Dialog
 import android.content.ContentValues.TAG
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.widget.Toast
+import android.view.Menu
+import android.view.MenuItem
 import androidx.activity.viewModels
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.LifecycleOwner
+import androidx.fragment.app.DialogFragment
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
-import com.android.volley.RequestQueue
-import com.android.volley.Response
-import com.android.volley.toolbox.JsonObjectRequest
-import com.android.volley.toolbox.Volley
 import com.example.group_d.COL_USER
 import com.example.group_d.R
-import com.example.group_d.data.PushNotification
-import com.example.group_d.data.RetrofitInstance
-import com.example.group_d.data.handler.NotificationHandler
 import com.example.group_d.data.model.UserDataViewModel
 import com.example.group_d.databinding.ActivityMainScreenBinding
-import com.example.group_d.services.MyFirebaseMessagingService
+import com.example.group_d.ui.login.LoginActivity
 import com.google.android.gms.tasks.OnCompleteListener
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.messaging.FirebaseMessaging
-import com.google.firebase.messaging.ktx.messaging
-import com.google.gson.Gson
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import org.json.JSONException
-import org.json.JSONObject
 
 
 class MainScreenActivity : AppCompatActivity() {
@@ -81,6 +73,48 @@ class MainScreenActivity : AppCompatActivity() {
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
 
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.options_menu, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.option_sign_out -> {
+                SignOutDialogFragment(this).show(supportFragmentManager, "sign_out")
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    class SignOutDialogFragment(val mainActivity: MainScreenActivity) : DialogFragment() {
+        override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+            return activity.let {
+                val builder = AlertDialog.Builder(it, R.style.AlertDialogTheme)
+                builder.setTitle(R.string.dialog_sign_out_title)
+                    .setPositiveButton(R.string.dialog_yes) { _, _ ->
+                        mainActivity.signOut()
+                    }
+                    .setNegativeButton(R.string.dialog_no) { dialog, _ ->
+                        dialog.cancel()
+                    }
+                builder.create()
+            }
+        }
+    }
+
+    private fun signOut() {
+        // Sign out user
+        Firebase.auth.signOut()
+        // Go back to login screen
+        setResult(Activity.RESULT_OK)
+        val intent = Intent(this, LoginActivity::class.java)
+        startActivity(intent)
+        setResult(Activity.RESULT_OK)
+        finish()
     }
 
     override fun onDestroy() {
