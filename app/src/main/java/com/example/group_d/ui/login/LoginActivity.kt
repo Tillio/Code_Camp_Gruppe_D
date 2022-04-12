@@ -39,6 +39,8 @@ class LoginActivity : AppCompatActivity() {
 
         loginViewModel =
             ViewModelProvider(this)[LoginViewModel::class.java]
+        // Save the deep link
+        loginViewModel.deepLink = intent?.data
 
         loginViewModel.formState.observe(this@LoginActivity, Observer {
             val loginState = it ?: return@Observer
@@ -106,6 +108,8 @@ class LoginActivity : AppCompatActivity() {
 
             createNew.setOnClickListener {
                 val intent = Intent(this@LoginActivity, RegisterActivity::class.java)
+                // Forward the deep link
+                intent.data = loginViewModel.deepLink
                 startActivity(intent)
             }
 
@@ -118,6 +122,8 @@ class LoginActivity : AppCompatActivity() {
 
     private fun startMainActivity() {
         val i = Intent(this, MainScreenActivity::class.java).apply { }
+        // Forward the deep link
+        i.data = loginViewModel.deepLink
         startActivity(i)
     }
 }

@@ -25,9 +25,11 @@ class LaunchActivity : AppCompatActivity() {
             // There is no user signed in -> go to login
             LoginActivity::class.java
         }
+        val targetIntent = Intent(this, targetActivity)
+        // In case the app was started with a deep link, forward it to the target
+        targetIntent.data = intent?.data
         // Go to target
-        val intent = Intent(this, targetActivity)
-        startActivity(intent)
+        startActivity(targetIntent)
         setResult(Activity.RESULT_OK)
         finish()
     }

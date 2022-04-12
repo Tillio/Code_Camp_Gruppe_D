@@ -22,6 +22,8 @@ class RegisterActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         registerViewModel = ViewModelProvider(this)[RegisterViewModel::class.java]
+        // Save the deep link
+        registerViewModel.deepLink = intent?.data
 
         binding = ActivityRegisterBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -63,6 +65,8 @@ class RegisterActivity : AppCompatActivity() {
                 creatingNewAccountFailed()
             }
             val intent = Intent(this, MainScreenActivity::class.java)
+            // Forward the deep link
+            intent.data = registerViewModel.deepLink
             startActivity(intent)
             setResult(Activity.RESULT_OK)
             finish()

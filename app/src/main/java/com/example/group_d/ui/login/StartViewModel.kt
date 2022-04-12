@@ -1,5 +1,6 @@
 package com.example.group_d.ui.login
 
+import android.net.Uri
 import android.util.Patterns
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -12,6 +13,8 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 
 abstract class StartViewModel : ViewModel() {
+    var deepLink: Uri? = null
+
     protected val auth: FirebaseAuth = Firebase.auth
 
     protected val _formState = MutableLiveData<FormState>()
