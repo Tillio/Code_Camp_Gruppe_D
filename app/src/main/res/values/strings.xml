@@ -47,7 +47,8 @@
     <string name="games_title">Current Games</string>
     <string name="player_names_placeholder">You vs IDK</string>
     <string name="game_type">Gametype</string>
-    <string name="whos_turn_placeholder">Your Turn</string>
+    <string name="your_turn">Your Turn</string>
+    <string name="other_player_turn">Wait for %1$s…</string>
 
     <string name="dialog_decline_challenge_msg1">Are you sure you want to decline the challenge from&#160;</string>
     <string name="dialog_decline_challenge_msg2">\?</string>

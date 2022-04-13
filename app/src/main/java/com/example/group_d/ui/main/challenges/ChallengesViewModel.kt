@@ -53,6 +53,16 @@ class ChallengesViewModel : ViewModel() {
             challenge.gameType,
             players
         )
+        game.lastPlayer = when (challenge.gameType) {
+            GAME_TYPE_TIC_TAC_TOE -> {
+                // In Tic Tac Toe the last player is the player who is not the beginner
+                players[1 - game.beginner.toInt()].id
+            }
+            else -> {
+                // In other games this attribute isn't used
+                ""
+            }
+        }
         return db.collection(COL_GAMES).add(game).addOnSuccessListener { gameRef ->
             db.collection(COL_USER)
                 .document(Firebase.auth.currentUser!!.uid).collection(USER_DATA)

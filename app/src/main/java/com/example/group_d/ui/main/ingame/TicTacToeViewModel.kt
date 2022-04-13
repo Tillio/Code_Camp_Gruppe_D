@@ -45,6 +45,8 @@ class TicTacToeViewModel : GameViewModel() {
         runGameRaw.gameData.add(fieldNum.toString())
         updateGameData()
         move(fieldNum)
+        runGameRaw.lastPlayer = getOwnUserID()
+        updateLastPlayer()
         // User moved, now the user is on turn
         _showOnTurn.value = false
     }

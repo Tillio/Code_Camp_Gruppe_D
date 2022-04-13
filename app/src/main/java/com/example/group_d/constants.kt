@@ -26,6 +26,7 @@ const val GAME_TYPE_MENTAL_ARITHMETICS = "Mental Arithmetics"
 const val GAME_TYPE_STEPS_GAME = "Steps Game"
 const val GAME_PLAYERS = "players"
 const val GAME_COMPLETION_DATE = "completionDate"
+const val GAME_LAST_PLAYER = "lastPlayer"
 
 
 const val STEPS_TO_DO = "15"

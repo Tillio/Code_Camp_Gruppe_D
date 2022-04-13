@@ -12,6 +12,8 @@ import com.google.firebase.ktx.Firebase
 
 abstract class GameViewModel : ViewModel() {
 
+    private val auth = Firebase.auth
+
     private val db = Firebase.firestore
 
     val runGame = MutableLiveData<Game?>()
@@ -67,6 +69,11 @@ abstract class GameViewModel : ViewModel() {
         docref.update(GAME_DATA, FieldValue.arrayUnion(value))
     }
 
+    fun updateLastPlayer() {
+        val docref = db.collection(COL_GAMES).document(runGameID)
+        docref.update(GAME_LAST_PLAYER, runGameRaw.lastPlayer)
+    }
+
     fun deleteFromGameData(value: String) {
         val docref = db.collection(COL_GAMES).document(runGameID)
         docref.update(GAME_DATA, FieldValue.arrayRemove(value))
@@ -91,9 +98,7 @@ abstract class GameViewModel : ViewModel() {
         }
     }
 
-
-
     fun getOwnUserID(): String {
-        return Firebase.auth.currentUser!!.uid
+        return auth.currentUser!!.uid
     }
 }

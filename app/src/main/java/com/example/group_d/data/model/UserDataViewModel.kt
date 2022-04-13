@@ -245,7 +245,10 @@ class UserDataViewModel : ViewModel() {
                             val newGame = gameDocToGameObj(snapshot)
                             addGame(newGame)
                         } else {
+                            // Update game data
                             localGame.gameData = snapshot[GAME_DATA] as ArrayList<String>
+                            // Update last player
+                            localGame.lastPlayer = snapshot[GAME_LAST_PLAYER] as String
                         }
 
                     }
@@ -261,8 +264,10 @@ class UserDataViewModel : ViewModel() {
         val gameData = snapshot[GAME_DATA] as ArrayList<String>
         val gameType = snapshot[GAME_TYPE] as String
         val players = snapshot[GAME_PLAYERS] as ArrayList<DocumentReference>
-        var newGame = Game(beginner, gameData, gameType, players)
+        val lastPlayer = (snapshot[GAME_LAST_PLAYER]?:"") as String
+        val newGame = Game(beginner, gameData, gameType, players)
         newGame.id = snapshot.id
+        newGame.lastPlayer = lastPlayer
         return newGame
     }
 
