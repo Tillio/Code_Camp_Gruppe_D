@@ -54,6 +54,7 @@ class MainScreenActivity : AppCompatActivity() {
         userDataViewModel.notificationHandler.createNotificationChannel(this)
         userDataViewModel.applicationContext = this.applicationContext
 
+        // fetches a token and stores it in firestore
         FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
             if (!task.isSuccessful) {
                 Log.w(TAG, "Fetching FCM registration token failed", task.exception)
@@ -62,12 +63,13 @@ class MainScreenActivity : AppCompatActivity() {
             val token = task.result
             val msg = getString(R.string.default_message_thing, token)
             Log.d(TAG, msg)
-            //Toast.makeText(baseContext, msg, Toast.LENGTH_SHORT).show()
+            // updates the "token"-value in the firestor-database
             Firebase.firestore.collection(COL_USER).document(FirebaseAuth.getInstance().uid.toString()).update("token", token)
         })
+
+        // create topic string from userID
         val topic: String = userDataViewModel.getOwnUserID()
-        // I am not sure if this is still needed, so i will keep it for now
-        val topicStr: String = "/topics/" + topic
+        // subscribe to the topic of this user
         FirebaseMessaging.getInstance().subscribeToTopic(topic)
 
         setupActionBarWithNavController(navController, appBarConfiguration)
@@ -107,6 +109,10 @@ class MainScreenActivity : AppCompatActivity() {
     }
 
     private fun signOut() {
+        // create topic string from userID
+        val topic: String = userDataViewModel.getOwnUserID()
+        // unsubscribe from user-topic
+        FirebaseMessaging.getInstance().unsubscribeFromTopic(topic)
         // Sign out user
         Firebase.auth.signOut()
         // Go back to login screen
