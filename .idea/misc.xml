@@ -8,6 +8,7 @@
         <entry key="..\:/Users/TillP/Documents/Code_Camp_Gruppe_D/app/src/main/res/layout/blank_fragment.xml" value="0.35597826086956524" />
         <entry key="..\:/Users/TillP/Documents/Code_Camp_Gruppe_D/app/src/main/res/layout/compass_fragment.xml" value="0.378125" />
         <entry key="..\:/Users/TillP/Documents/Code_Camp_Gruppe_D/app/src/main/res/layout/fragment_challenge_item.xml" value="0.2765625" />
+        <entry key="..\:/Users/TillP/Documents/Code_Camp_Gruppe_D/app/src/main/res/layout/fragment_game_item.xml" value="0.2911458333333333" />
         <entry key="..\:/Users/TillP/Documents/Code_Camp_Gruppe_D/app/src/main/res/layout/fragment_mental_arithmetic_endstate.xml" value="0.28541666666666665" />
         <entry key="..\:/Users/TillP/Documents/Code_Camp_Gruppe_D/app/src/main/res/layout/fragment_new_game_setup.xml" value="0.2791666666666667" />
         <entry key="..\:/Users/TillP/Documents/Code_Camp_Gruppe_D/app/src/main/res/layout/fragment_recent_games.xml" value="0.3541666666666667" />
@@ -17,7 +18,7 @@
         <entry key="..\:/Users/TillP/Documents/Code_Camp_Gruppe_D/app/src/main/res/layout/item_statistics_mind_arithmethics.xml" value="0.3020833333333333" />
         <entry key="..\:/Users/TillP/Documents/Code_Camp_Gruppe_D/app/src/main/res/layout/item_statistics_tictactoe.xml" value="0.67" />
         <entry key="..\:/Users/TillP/Documents/Code_Camp_Gruppe_D/app/src/main/res/layout/mental_arithmetics_fragment.xml" value="0.21302083333333333" />
-        <entry key="..\:/Users/TillP/Documents/Code_Camp_Gruppe_D/app/src/main/res/layout/recent_game_item.xml" value="0.25833333333333336" />
+        <entry key="..\:/Users/TillP/Documents/Code_Camp_Gruppe_D/app/src/main/res/layout/recent_game_item.xml" value="0.33" />
         <entry key="..\:/Users/TillP/Documents/Code_Camp_Gruppe_D/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.39427083333333335" />
         <entry key="..\:/Users/domin/AndroidStudioProjects/Code_Camp_Gruppe_D/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.22135416666666666" />
         <entry key="..\:/Users/domin/AndroidStudioProjects/Code_Camp_Gruppe_D/app/src/main/res/drawable/ic_baseline_emoji_flags_24.xml" value="0.22135416666666666" />

@@ -1,11 +1,15 @@
 package com.example.group_d.ui.main.recentGames.statistiks
 
+import android.graphics.Color
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.group_d.*
 import com.example.group_d.ui.main.recentGames.statistiks.StatisticsRecyclerItem.*
+import com.github.mikephil.charting.data.PieData
+import com.github.mikephil.charting.data.PieDataSet
+import com.github.mikephil.charting.data.PieEntry
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.ktx.firestore
@@ -61,6 +65,7 @@ class StatisticsViewModel : ViewModel() {
         }
 
     }
+
 
     private fun processPastGameData(gameDoc: DocumentSnapshot) {
         val completionDate = gameDoc[GAME_COMPLETION_DATE]
@@ -119,6 +124,38 @@ class StatisticsViewModel : ViewModel() {
 
         stepsChallenge.wins = 0
         stepsChallenge.totalGames = 0
+
+    }
+
+    fun pieData(): PieData {
+        val entries: ArrayList<PieEntry> = ArrayList()
+        var label = "type"
+
+        val wins = tttStats.wins + compass.wins + stepsChallenge.wins + mentalArithmetic.wins
+        val total =
+            tttStats.totalGames + compass.totalGames + stepsChallenge.totalGames + mentalArithmetic.totalGames
+
+        var data: HashMap<String, Int> = HashMap()
+        data.put("Siege", wins)
+        data.put("Niederlagen", total - wins)
+
+        var colors: ArrayList<Int> = ArrayList()
+        colors.add(Color.parseColor("#304567"))
+        colors.add(Color.parseColor("#a35567"))
+
+        for (type in data.keys) {
+            data.get(type)?.let { PieEntry(it.toFloat(), type) }?.let { entries.add(it) }
+        }
+
+        var pieDataSet = PieDataSet(entries, label)
+
+        pieDataSet.valueTextSize = 12f
+        pieDataSet.colors = colors
+        var pieData = PieData(pieDataSet)
+        pieData.setDrawValues(true)
+
+
+        return pieData
 
     }
 }

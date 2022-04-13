@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
@@ -13,9 +12,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.group_d.R
 import com.example.group_d.databinding.FragmentStatisticsBinding
 import com.github.mikephil.charting.charts.PieChart
-import com.github.mikephil.charting.data.PieData
-import com.github.mikephil.charting.data.PieDataSet
-import com.github.mikephil.charting.data.PieEntry
 
 
 class StatisticsFragment : Fragment() {
@@ -24,6 +20,7 @@ class StatisticsFragment : Fragment() {
     private val binding get() = _binding!!
     private val statisticsViewModel: StatisticsViewModel by activityViewModels()
     private var recyclerAdapter = StatisticsAdapter()
+    private lateinit var pieChart: PieChart
 
     companion object {
         fun newInstance() = StatisticsFragment()
@@ -42,8 +39,8 @@ class StatisticsFragment : Fragment() {
         val root = binding.root
 
 
-        var pieChart: PieChart = root.findViewById(R.id.winLossPie)
-        pieChart.data = pieData()
+        pieChart= root.findViewById(R.id.winLossPie)
+
 
         statisticsRecycler = root.findViewById<RecyclerView>(R.id.statistiks_recycler).apply {
             adapter = recyclerAdapter
@@ -52,26 +49,16 @@ class StatisticsFragment : Fragment() {
         statisticsViewModel.pastGamesData.observe(viewLifecycleOwner){it ->
             recyclerAdapter.data = it
             statisticsRecycler.adapter?.notifyDataSetChanged()
-
+            pieChart.data = statisticsViewModel.pieData()
+            pieChart.invalidate()
         }
         viewModel.updateData()
 
-        val upButton: Button = root.findViewById(R.id.updateButton)
-        upButton.setOnClickListener{
-            viewModel.updateData()
-        }
 
         return root
     }
 
-    fun pieData(): PieData{
-        val entry1 = PieEntry(50f, "1")
-        val entry2 = PieEntry(50f, "2")
-        val arrayListOf = arrayListOf<PieEntry>(entry1, entry2)
-        val pieDataSet = PieDataSet(arrayListOf, "Pie")
-        return PieData(pieDataSet)
 
-    }
 
 
 
