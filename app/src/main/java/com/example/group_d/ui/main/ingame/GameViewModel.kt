@@ -17,7 +17,7 @@ abstract class GameViewModel : ViewModel() {
     private val db = Firebase.firestore
 
     val runGame = MutableLiveData<Game?>()
-    protected val runGameRaw: Game get() = runGame.value!!
+    val runGameRaw: Game get() = runGame.value!!
 
     lateinit var runGameID: String
 
@@ -88,6 +88,8 @@ abstract class GameViewModel : ViewModel() {
         runGameRaw.completionDate = System.currentTimeMillis()
         val docref = db.collection(COL_GAMES).document(runGameID)
         docref.update(GAME_COMPLETION_DATE, runGameRaw.completionDate)
+
+        docref.update(GAME_WINNER, runGameRaw.winner)
 
         //db.collection(COL_GAMES).document(runGameID).delete()
 

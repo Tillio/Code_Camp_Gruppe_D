@@ -1,26 +1,23 @@
 package com.example.group_d.ui.main.ingame
 
-import android.opengl.Visibility
-import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import android.os.SystemClock
-import android.text.Editable
-import android.text.TextWatcher
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.navArgs
 import com.example.group_d.COL_GAMES
 import com.example.group_d.GAME_DATA
+import com.example.group_d.GAME_DRAW
 import com.example.group_d.R
 import com.example.group_d.data.model.GameEnding
 import com.example.group_d.data.model.Problem
 import com.example.group_d.data.model.UserDataViewModel
 import com.example.group_d.databinding.MentalArithmeticsFragmentBinding
-import com.example.group_d.databinding.TicTacToeFragmentBinding
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.ktx.firestore
@@ -64,15 +61,20 @@ class MentalArithmeticsFragment : Fragment() {
             val msgID = "The winner is: " + winner
             Toast.makeText(activity, msgID, Toast.LENGTH_LONG).show()
             // send Notification
+            //the winner gets a WON text and the loser a LOST text in place of the assignments
             userDataViewModel.prepNotification(
                 "Game ended",
                 "A game of mental arithmetics against " + mentalArithmeticsViewModel.otherName + " has Ended",
                 mentalArithmeticsViewModel.otherID)
+            var ending: GameEnding
             if(winner == Firebase.auth.currentUser!!.email) {
                 assignment.text = "WON"
+                ending = GameEnding.WIN
             } else {
                 assignment.text = "LOST"
+                ending = GameEnding.LOSE
             }
+            setWinner(ending)
             mentalArithmeticsViewModel.deleteLoadedGame()
         }
 
@@ -89,6 +91,7 @@ class MentalArithmeticsFragment : Fragment() {
             var timerBase: Long = 0
             var finished = false
             var finishTime: String = ""
+            //the game database is read and the stored variables are stored locally to work with them
             if(gameData.size > 1) {
                 for (i in 1 until (gameData.size)) {
                     val dataItem = gameData[i].split("=")
@@ -119,6 +122,7 @@ class MentalArithmeticsFragment : Fragment() {
             var currentProblem = Problem(0, 0, "?")
             val problemText: String
 
+            //if the game started and is not finished yet, the start button changes to submit and the first problem is shown also the timer starts
             if(started && !finished) {
                 submitSolution.text = "Submit"
                 for(i in 0 until problemNumber-1) {
@@ -126,9 +130,10 @@ class MentalArithmeticsFragment : Fragment() {
                 }
                 val problemText = currentProblem.left.toString() + currentProblem.operator + currentProblem.right.toString()
                 assignment.text = problemText
-                timer.base = timerBase
+                timer.base = SystemClock.elapsedRealtime() - (System.currentTimeMillis() - timerBase)
                 timer.start()
             }else if(finished){
+                //if the game is finished the problem text changes to finished and the submit button and textfield becomes invisible
                 assignment.text = "FINISHED"
                 timer.text = finishTime
                 submitSolution.visibility = View.GONE
@@ -138,21 +143,26 @@ class MentalArithmeticsFragment : Fragment() {
 
             submitSolution.setOnClickListener {
                 if(submitSolution.text == "Start") {
-                    //schreibt in die Datenbank, dass das Spiel gestartet wurde
+                    //it is stored in the database, that the game started
                     db.collection(COL_GAMES).document(args.gameID).update(GAME_DATA, FieldValue.arrayUnion(
                         Firebase.auth.currentUser!!.email + "=" + "started"))
                     currentProblem = problems.removeFirst()
                     val problemText = currentProblem.left.toString() + currentProblem.operator + currentProblem.right.toString()
                     assignment.text = problemText
+                    //the button text changes from start to submit
                     submitSolution.text = "Submit"
-                    timer.base = SystemClock.elapsedRealtime()
-                    timer.start()
+                    val timerBase = System.currentTimeMillis()
+                    //timerbase is stored in the database
                     db.collection(COL_GAMES).document(args.gameID).update(GAME_DATA, FieldValue.arrayUnion(
-                        Firebase.auth.currentUser!!.email + "=" + "timerBase" + "=" + timer.base
+                        Firebase.auth.currentUser!!.email + "=" + "timerBase" + "=" + timerBase
                     ))
+
+                    timer.base = SystemClock.elapsedRealtime() - (System.currentTimeMillis() - timerBase)
+                    timer.start()
+
                 } else if(submitSolution.text == "Submit") {
 
-                    //berechnen die richtige Lösung
+                    //calculating the correct solution
                     var realSolution = 0
                     if(currentProblem.operator == "+") {
                         realSolution = currentProblem.left + currentProblem.right
@@ -162,7 +172,7 @@ class MentalArithmeticsFragment : Fragment() {
                         realSolution = currentProblem.left * currentProblem.right
                     }
 
-                    //Wenn die Lösung richtig ist, wird das nächste Problem eingefügt oder das Spiel beendet
+                    //if the user solution is correct, the next problem gets shown or the game is finished
                     if(realSolution.toString() == userSolution.text.toString()) {
                         db.collection(COL_GAMES).document(args.gameID).update(
                             GAME_DATA, FieldValue.arrayRemove(
@@ -197,6 +207,23 @@ class MentalArithmeticsFragment : Fragment() {
         mentalArithmeticsViewModel.loadRunningGame(args.gameID)
 
         return root
+    }
+
+    private fun setWinner(ending: GameEnding) {
+        val thisGame = mentalArithmeticsViewModel.runGameRaw
+        val ownId = userDataViewModel.getOwnUserID()
+        var opponentId = ""
+        for (player in thisGame.players) {
+            if (ownId != player.id) {
+                opponentId = player.id
+                break
+            }
+        }
+        thisGame.winner = when (ending) {
+            GameEnding.WIN -> ownId
+            GameEnding.LOSE -> opponentId
+            else -> GAME_DRAW
+        }
     }
 
     private fun createProblems(seed: String): ArrayList<Problem> {

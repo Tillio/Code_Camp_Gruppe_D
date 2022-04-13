@@ -2,8 +2,6 @@ package com.example.group_d.data.model
 
 import com.google.firebase.firestore.DocumentReference
 
-
-
 data class Game(
     var beginner: String,
     var gameData: MutableList<String>,
@@ -15,4 +13,5 @@ data class Game(
     var id: String = ""
     var completionDate: Long = 0
     var lastPlayer: String = ""
+    var winner: String = ""
 }

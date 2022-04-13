@@ -104,7 +104,7 @@ class TicTacToeViewModel : GameViewModel() {
                     || lastSetField.northEast?.player == lastPlayer && lastSetField.northEast?.northEast?.player == lastPlayer
 
         if (win) {
-            // The winner is the last player
+            //The winner is the last player
             modelObj.winner = lastPlayer
             _ending.value = if (isOnTurn()) GameEnding.WIN else GameEnding.LOSE
         } else if (modelObj.player1.amountOfFields + modelObj.player2.amountOfFields >= TicTacToeModel.NUM_FIELDS) {
