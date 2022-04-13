@@ -48,9 +48,7 @@ class FriendsListFragment : Fragment(), FriendAdapter.FriendDeleter {
             friendAdapter.friendItems = newFriends
             friendList.adapter = friendAdapter
         }
-        /*friendAdapter.friendItems = ArrayList(
-            userDataViewModel.friends.value!!
-        )*/
+
         friendList.adapter = friendAdapter
         friendList.layoutManager = LinearLayoutManager(context)
         val shareButton = binding.shareButton
@@ -64,11 +62,6 @@ class FriendsListFragment : Fragment(), FriendAdapter.FriendDeleter {
             startActivity(Intent.createChooser(intent, "Share ID via"))
         }
 
-        /*binding.addFriendButton.setOnClickListener{
-            val parentFrag: FriendsFragment =
-                this.parentFragment as FriendsFragment
-                parentFrag.showAddFriendScreen()
-        }*/
         binding.rngButton.setOnClickListener{
             val ownID: String = userDataViewModel.getOwnUserID()
             val listUser: MutableList<User> = mutableListOf()
