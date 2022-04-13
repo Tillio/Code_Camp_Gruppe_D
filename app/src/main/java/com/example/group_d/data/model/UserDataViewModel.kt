@@ -11,10 +11,7 @@ import com.example.group_d.data.PushNotification
 import com.example.group_d.data.RetrofitInstance
 import com.example.group_d.data.handler.NotificationHandler
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.DocumentReference
-import com.google.firebase.firestore.DocumentSnapshot
-import com.google.firebase.firestore.FieldValue
-import com.google.firebase.firestore.ListenerRegistration
+import com.google.firebase.firestore.*
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.CoroutineScope
@@ -42,20 +39,27 @@ class UserDataViewModel : ViewModel() {
         value = ArrayList()
     }
 
+    /**
+     * adds a game Object to the model
+     */
     private fun addGame(game: Game) {
         val gameCopy = games.value
         gameCopy?.add(game)
         games.value = gameCopy!!
     }
 
-    fun sendFriendRequest(username: String): Boolean {
+    /**
+     * sends a friend request to a given email by adding this users uid to the given users
+     * friend request document in firestore
+     */
+    fun sendFriendRequest(email: String): Boolean {
         /*takes username and returns uid*/
-        Log.d(TAG, "sending friend request to: $username")
-        Log.d(TAG, "finding userID of $username ...")
+        Log.d(TAG, "sending friend request to: $email")
+        Log.d(TAG, "finding userID of $email ...")
         /*val otherUid = getUserIdByUsername(username)*/
 
         db.collection("user")
-            .whereEqualTo("name", username)
+            .whereEqualTo("name", email)
             .get()
             .addOnSuccessListener { documents ->
                 for (document in documents) {
@@ -71,6 +75,10 @@ class UserDataViewModel : ViewModel() {
         return true
     }
 
+    /**
+     * sends a friend request to a given uid by adding this users uid to the given users
+     * friend request document in firestore
+     */
     fun sendFriendRequestToID(userID: String) {
         if (userID != getOwnUserID()) {
             db.collection(COL_USER).document(userID).collection(USER_DATA)
@@ -81,6 +89,12 @@ class UserDataViewModel : ViewModel() {
         }
     }
 
+    /**
+     * accepts the friend request of a given uid by
+     * adding the new frind to the users firend list
+     * adding the user to the new friends friend list
+     * removing the friend request from the users friend requests
+     */
     fun acceptFriendRequest(newFriendUid: String) {
         Log.d(TAG, "accepting friend request of $newFriendUid")
 
@@ -101,22 +115,11 @@ class UserDataViewModel : ViewModel() {
         prepNotification("Accepted Friend", "a friendrequest was accepted", newFriendUid)
     }
 
-    fun testAcceptFriendRequest() {
-        db.collection("user").document(getOwnUserID()).collection("userData")
-            .document("friendRequests")
-            .get()
-            .addOnSuccessListener { document ->
-                val friendRequestsArray = document["friendRequests"] as ArrayList<String>
-                if (friendRequestsArray.isNotEmpty()) {
-                    print(friendRequestsArray) //debug
-                    acceptFriendRequest(friendRequestsArray.first())
-                }
-            }
-            .addOnFailureListener { exception ->
-                print(exception)
-            }
-    }
 
+    /**
+     * sends the given challenge to the given uid
+     * by adding the challenge to the uids challenge list
+     */
     fun challengeFriend(userid: String, challenge: Challenge) {
         Log.d(TAG, "creating challange request")
         // adding me to challanges of other user
@@ -126,68 +129,66 @@ class UserDataViewModel : ViewModel() {
         prepNotification("new challenge", "you have been challenged!", userid)
     }
 
+    /**
+     * returns the user's uid
+     */
     fun getOwnUserID(): String {
         return auth.currentUser!!.uid
     }
 
+    /**
+     *returns a user's email
+     */
     fun getOwnEmail(): String {
         return auth.currentUser!!.email.toString()
     }
 
+    /**
+     * returns the user's  name
+     */
     fun getOwnDisplayName(): String {
         return auth.currentUser!!.displayName.toString()
     }
 
-    //listen to own document
+    /**
+     *adds listeners to all relevant user documents in order to track changes in firestore
+     * and handle them
+     */
     fun setupFireBaseSnapshots() {
         val userRef = db.collection(COL_USER).document(auth.uid.toString())
         val dataCol = userRef.collection(USER_DATA)
-
-        dataCol.document(USER_FRIEND_REQUESTS).addSnapshotListener { snapshot, e ->
-            if (e != null) {
-                return@addSnapshotListener
-            }
-            if (snapshot != null && snapshot.exists()) {
-                //success
-                friendRequestsListListener(snapshot)
-            } else
-                print("pass")
-        }
-
-        dataCol.document(USER_GAMES).addSnapshotListener { snapshot, e ->
-            if (e != null) {
-                return@addSnapshotListener
-            }
-            if (snapshot != null && snapshot.exists()) {
-                if (games.value == null) {
-                    val gameList = ArrayList<Game>()
-                    games.value = gameList
+        val documentTypes = arrayListOf(
+            USER_FRIEND_REQUESTS,
+            USER_GAMES,
+            USER_CHALLENGES,
+            USER_FRIENDS
+        )
+        for (type in documentTypes) {
+            dataCol.document(type).addSnapshotListener { snapshot, e ->
+                if (e != null) {
+                    return@addSnapshotListener
                 }
-                gamesListener(snapshot)
-            } else
-                print("pass")
+                if (snapshot != null && snapshot.exists()) {
+                    handleSnapshotTrigger(snapshot)
+
+                }
+            }
+        }
+    }
+
+    private fun handleSnapshotTrigger(snapshot: DocumentSnapshot) {
+        if (games.value == null) {
+            val gameList = ArrayList<Game>()
+            games.value = gameList
         }
 
-        dataCol.document(USER_CHALLENGES).addSnapshotListener { snapshot, e ->
-            if (e != null) {
-                return@addSnapshotListener
-            }
-            if (snapshot != null && snapshot.exists()) {
-                challengeListener(snapshot)
-            } else
-                print("pass")
-        }
-
-        dataCol.document(USER_FRIENDS).addSnapshotListener { snapshot, e ->
-            if (e != null) {
-                return@addSnapshotListener
-            }
-            if (snapshot != null && snapshot.exists()) {
-                friendListListener(snapshot)
-
-            } else {
-                print("pass")
-            }
+        //success
+        val id = snapshot.id
+        when (id) {
+            USER_FRIEND_REQUESTS -> friendRequestsListListener(snapshot)
+            USER_GAMES -> gamesListener(snapshot)
+            USER_CHALLENGES -> challengeListener(snapshot)
+            USER_FRIENDS -> friendListListener(snapshot)
         }
     }
 
@@ -305,6 +306,9 @@ class UserDataViewModel : ViewModel() {
 
     }
 
+    /**
+     * returns true if a given uid is in the users friend list
+     */
     private fun userIsFriend(id: String): Boolean {
         for (friend in friends.value!!) {
             if (friend.id == id) {
@@ -353,7 +357,7 @@ class UserDataViewModel : ViewModel() {
 
     /**
      * takes a list of uIds
-     * the it load the data from firestore for each id
+     * then it load the data from firestore for each id
      * and creates user objects when the call completes
      */
     private fun addFriends(uidList: ArrayList<String>) {
@@ -361,7 +365,7 @@ class UserDataViewModel : ViewModel() {
             db.collection(COL_USER).document(uid).get().addOnSuccessListener { doc ->
                 val name = doc.data?.get(USER_NAME) as String
                 val online = doc.data?.get(USER_STATUS) as Boolean
-                val displayName = doc.data?.get(USER_DISPLAY_NAME) as String
+                val displayName = doc.data?.get(USER_DISPLAY_NAME).toString()
                 val user = User(name = name, status = online, id = uid, displayName = displayName)
                 addFriend(user)
             }
@@ -397,6 +401,10 @@ class UserDataViewModel : ViewModel() {
         return false
     }
 
+    /**
+     * Gets Triggered when a edit to the users Friend Request document in Firestore is made.
+     * then the update gets applied to the model
+     */
     private fun friendRequestsListListener(snapshot: DocumentSnapshot?) {
 
         val actualFriendRequests = snapshot?.data?.get(USER_FRIEND_REQUESTS) as ArrayList<*>
@@ -420,12 +428,20 @@ class UserDataViewModel : ViewModel() {
         addFriendRequests(addFriendRequests)
     }
 
+    /**
+     * removes a list of friend requests from the model
+     * the list has to contain the uid of the request sender
+     */
     private fun removeFriendRequests(removeFriendRequests: ArrayList<String>) {
         for (friendId in removeFriendRequests) {
             removeFriendRequest(friendId)
         }
     }
 
+    /**
+     * adds a list of friend requests to the model
+     * the list has to contain the uids of the request sender
+     */
     private fun addFriendRequests(uidList: ArrayList<String>) {
         for (uid in uidList) {
             db.collection(COL_USER).document(uid).get().addOnSuccessListener { doc ->
@@ -435,6 +451,10 @@ class UserDataViewModel : ViewModel() {
         }
     }
 
+    /**
+     * adds a given FriendRequest object into the model
+     * returns true if successful else false
+     */
     private fun addFriendRequest(request: FriendRequest): Boolean {
         for (friendRequest in friendRequests.value!!) {
             if (friendRequest.friendID == request.friendID) {
@@ -446,6 +466,10 @@ class UserDataViewModel : ViewModel() {
         return true
     }
 
+    /**
+     * uses a given uid in order to find any friend requests made from this uid and deletes them
+     * if succesful returns true else false
+     */
     private fun removeFriendRequest(friendId: String): Boolean {
         for (friendRequest in friendRequests.value!!) {
             if (friendRequest.friendID == friendId) {
@@ -457,6 +481,9 @@ class UserDataViewModel : ViewModel() {
         return false
     }
 
+    /**
+     * removes a given user object from Firestore
+     */
     fun deleteFriend(friend: User) {
         if (userIsFriend(friend.id)) {
             db.collection(COL_USER).document(auth.uid.toString()).collection(USER_DATA).document(
@@ -469,9 +496,9 @@ class UserDataViewModel : ViewModel() {
     }
 
     // prepare a notification
-    public fun prepNotification(title: String, msg: String, topic: String){
+    fun prepNotification(title: String, msg: String, topic: String) {
         // if a title and message exist
-        if(title.isNotEmpty() && msg.isNotEmpty()){
+        if (title.isNotEmpty() && msg.isNotEmpty()) {
             // build the topic from the id
             val topicStr: String = "/topics/" + topic
             // send notification to topic
@@ -482,12 +509,13 @@ class UserDataViewModel : ViewModel() {
     }
 
     // send notification
-    private fun sendNotification(notification: PushNotification) = CoroutineScope(Dispatchers.IO).launch {
-        // try to upload the notification / send message to firebase
-        try {
-            val response = RetrofitInstance.api.postNotification(notification)
-        } catch (e: Exception){
-            Log.e(ContentValues.TAG, e.toString())
+    private fun sendNotification(notification: PushNotification) =
+        CoroutineScope(Dispatchers.IO).launch {
+            // try to upload the notification / send message to firebase
+            try {
+                val response = RetrofitInstance.api.postNotification(notification)
+            } catch (e: Exception) {
+                Log.e(ContentValues.TAG, e.toString())
+            }
         }
-    }
 }

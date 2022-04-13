@@ -53,12 +53,12 @@ class RecentGamesAdapter(private val recentGames: ArrayList<Game>, private val g
     }
 
     /**
-     * load opponent name from firestore
+     * load opponents name from firestore
      */
     private fun loadOpponent(holder: ViewHolder, game:Game){
         for(doc in game.players) {
             doc.get().addOnSuccessListener {user ->
-                var name = user.get(USER_DISPLAY_NAME) as String
+                var name = user.get(USER_DISPLAY_NAME).toString()
                 if (doc.id != FirebaseAuth.getInstance().uid){
                     holder.opponentName.text = name
                 }

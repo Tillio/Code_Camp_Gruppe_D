@@ -437,7 +437,7 @@ class CompassFragment : Fragment(), Callback<MutableList<CompassLocation>>, Give
 
     /**
      * adds the winner of the game to the game Object
-     * If a player ins it adds the players id
+     * If a player wins, it adds the players id
      * if the game results in a draw it adds GAME_DRAW
      */
     private fun setWinner(ending: GameEnding) {
