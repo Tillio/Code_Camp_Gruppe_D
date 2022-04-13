@@ -127,11 +127,7 @@ class CompassFragment : Fragment(), Callback<MutableList<CompassLocation>>, Give
             textPlayerAction.text = "${curLocation.name}, ${curLocation.addr}"
         }
 
-        compassViewModel.foundAllLocations.observe(viewLifecycleOwner) { foundAllLocations ->
-            if (foundAllLocations) {
-                onAllLocationsFound()
-            }
-        }
+        compassViewModel.foundAllLocations.observe(viewLifecycleOwner, this::onUserReady)
 
         compassViewModel.ending.observe(viewLifecycleOwner) { ending ->
             onGameOver(ending)
@@ -294,12 +290,13 @@ class CompassFragment : Fragment(), Callback<MutableList<CompassLocation>>, Give
     private fun onGameLoaded(game: Game?) {
         val currentTime = System.currentTimeMillis()
         // Load start time from game data
-        var startTime = compassViewModel.loadStartTime()
+        var startTime = compassViewModel.startTime
         if (startTime == 0L) {
             // startTime == 0 -> There isn't a start time saved
             startTime = currentTime
             compassViewModel.saveStartTime(startTime)
         }
+        giveUpButton.visibility = View.VISIBLE
         /*
             As the chronometer shows the difference between the elapsed time since boot and its
             base, we have to set the base as the difference between the elapsed time since boot
@@ -381,19 +378,34 @@ class CompassFragment : Fragment(), Callback<MutableList<CompassLocation>>, Give
         waitSymbol.visibility = View.INVISIBLE
     }
 
-    private fun onAllLocationsFound() {
+    private fun onUserReady(foundAllLocations: Boolean) {
         timeCount.stop()
-        if (compassViewModel.neededTime == 0L) {
-            // neededTime has not been saved yet
-            compassViewModel.saveNeededTime(timeCount.text)
+        if (foundAllLocations) {
+            // The user found all locations
+            var endTime = compassViewModel.endTime
+            if (endTime == 0L) {
+                // end time has not been saved yet
+                endTime = System.currentTimeMillis()
+                compassViewModel.saveEndTime(endTime)
+                // send Notification
+                userDataViewModel.prepNotification(
+                    "your turn",
+                    compassViewModel.otherName + " finished the compass-game.",
+                    compassViewModel.otherID
+                )
+            }
+            timeCount.base = SystemClock.elapsedRealtime() - (endTime - compassViewModel.startTime)
+            textPlayerAction.text =
+                getString(
+                    R.string.compass_waiting_for_opponent,
+                    compassViewModel.opponentName.value?:"?"
+                )
+        } else {
+            // The user gave up
+            timeCount.visibility = View.INVISIBLE
         }
-        timeCount.base = SystemClock.elapsedRealtime() - 1000 * compassViewModel.neededTime
         giveUpButton.visibility = View.INVISIBLE
         compassView.isClickable = false
-        // send Notification
-        userDataViewModel.prepNotification("your turn", "The other player finished this Task", compassViewModel.otherID)
-        textPlayerAction.text =
-            getString(R.string.compass_waiting_for_opponent, compassViewModel.opponentName.value?:"?")
     }
 
     override fun onGiveUp() {
@@ -401,8 +413,6 @@ class CompassFragment : Fragment(), Callback<MutableList<CompassLocation>>, Give
     }
 
     private fun onGameOver(ending: GameEnding) {
-        // stop the time count because in case the user gave up it hasn't been called so far
-        timeCount.stop()
         val msgID = when (ending) {
             GameEnding.WIN -> R.string.ending_win
             GameEnding.LOSE -> R.string.ending_lose
@@ -411,9 +421,13 @@ class CompassFragment : Fragment(), Callback<MutableList<CompassLocation>>, Give
         waitSymbol.visibility = View.INVISIBLE
         Toast.makeText(activity, msgID, Toast.LENGTH_SHORT).show()
         textPlayerAction.setText(msgID)
-        // send Notification
-        userDataViewModel.prepNotification("Game ended", "A game has ended", compassViewModel.otherID)
         if (!showEndstate) {
+            // send Notification
+            userDataViewModel.prepNotification(
+                "Game ended",
+                "A game of TicTacToe against " + compassViewModel.otherName + " has ended.",
+                compassViewModel.otherID
+            )
             compassViewModel.deleteLoadedGame()
         }
     }

@@ -6,7 +6,6 @@ import com.example.group_d.*
 import com.example.group_d.data.model.Game
 import com.example.group_d.data.model.GameEnding
 import com.example.group_d.data.model.TicTacToeModel
-import com.example.group_d.data.model.UserDataViewModel
 import com.example.group_d.ui.main.recentGames.RecentGamesViewModel
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.DocumentSnapshot
@@ -32,6 +31,9 @@ class TicTacToeViewModel : GameViewModel() {
     private val modelObj: TicTacToeModel get() = gameModel.value!!
     val opponentName: String
         get() = modelObj.player2.name
+
+    var otherID: String = ""
+    var otherName: String = ""
 
     fun fieldIsEmpty(fieldNum: Int): Boolean {
         return modelObj.fields[fieldNum].player == null
@@ -66,13 +68,6 @@ class TicTacToeViewModel : GameViewModel() {
     private fun nextPlayer() {
         modelObj.currentPlayer = modelObj.currentPlayer.next!!
         turnNumber++
-    }
-
-    fun getOtherID(): String {
-        if (runGameRaw.players[0].id == getOwnUserID()){
-            return runGameRaw.players[1].id
-        }
-        return runGameRaw.players[0].id
     }
 
     // Checks if the game is over
@@ -131,8 +126,13 @@ class TicTacToeViewModel : GameViewModel() {
         val isBeginner = playerRefs[beginnerIndex.toInt()].id == getOwnUserID()
         for (playerRef in playerRefs) {
             if (playerRef.id != getOwnUserID()) {
+                // get the ID of the other player
+                otherID = playerRef.id
+                // get the name of the other player
+                playerRef.get().addOnSuccessListener { document ->
+                    otherName = document["name"].toString() }
                 playerRef.get().addOnSuccessListener { playerSnap ->
-                    val opponentName = playerSnap.getString(USER_NAME)
+                    val opponentName = playerSnap.getString(USER_DISPLAY_NAME)
                     // Build game model
                     _gameModel.apply {
                         value = TicTacToeModel.buildGame("You", opponentName ?: "")
@@ -168,7 +168,7 @@ class TicTacToeViewModel : GameViewModel() {
         for (player in localGame.players) {
             if (player.id != getOwnUserID()) {
                 player.get().addOnSuccessListener { playerSnap ->
-                    val opponentName = playerSnap.getString(USER_NAME)
+                    val opponentName = playerSnap.getString(USER_DISPLAY_NAME)
                     _gameModel.apply {
                         value = TicTacToeModel.buildGame("You", opponentName ?: "")
                         value!!.currentPlayer = if (isBeginner) value!!.player1 else value!!.player2

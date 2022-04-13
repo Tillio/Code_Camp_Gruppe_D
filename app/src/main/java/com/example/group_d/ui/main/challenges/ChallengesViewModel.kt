@@ -17,8 +17,8 @@ class ChallengesViewModel : ViewModel() {
     val db = Firebase.firestore
 
     private fun removeChallenge(challenge: Challenge) {
-        // set online status to online so the challenge can be found in database
-        challenge.user.online = true
+        // set status to true so the challenge can be found in database
+        challenge.user.status = true
         db.collection(COL_USER)
             .document(Firebase.auth.currentUser!!.uid).collection(USER_DATA)
             .document(USER_CHALLENGES).update(USER_CHALLENGES, FieldValue.arrayRemove(challenge))
@@ -44,7 +44,7 @@ class ChallengesViewModel : ViewModel() {
                 gameData.add(seed.toString())
             }
             GAME_TYPE_STEPS_GAME -> {
-                gameData.add(Firebase.auth.currentUser!!.email + "=" + "gameTime" + "=" + challenge.step_game_time.toString())
+                gameData.add(Firebase.auth.currentUser!!.email + "=" + "gameTime" + "=" + challenge.stepGameTime.toString())
             }
         }
         val game = Game(

@@ -15,6 +15,9 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.group_d.R
+import com.example.group_d.USER_DISPLAY_NAME
+import com.example.group_d.USER_NAME
+import com.example.group_d.USER_STATUS
 import com.example.group_d.data.model.User
 import com.example.group_d.data.model.UserDataViewModel
 
@@ -73,11 +76,21 @@ class FriendsListFragment : Fragment(), FriendAdapter.FriendDeleter {
                 if (it.isSuccessful){
                     for (document in it.result!!){
                         if (document.id != ownID){
-                            listUser.add(User(name = document.get("name").toString(), id = document.id, online = document.get("status").toString().toBoolean()))
+                            listUser.add(User(
+                                name = document.get(USER_NAME).toString(),
+                                id = document.id,
+                                status = document.get(USER_STATUS).toString().toBoolean(),
+                                displayName = document.get(USER_DISPLAY_NAME).toString()
+                            ))
                         }
                     }
                     val rngUser: User = listUser.asSequence().shuffled().first()
-                    findNavController().navigate(R.id.action_global_newGameSetup, bundleOf("userID" to rngUser.id, "userName" to rngUser.name, "userStatus" to rngUser.online))
+                    findNavController().navigate(R.id.action_global_newGameSetup, bundleOf(
+                        "userID" to rngUser.id,
+                        "userName" to rngUser.name,
+                        "userStatus" to rngUser.status,
+                        "userDisplayName" to rngUser.displayName
+                    ))
                 }
             }
         }

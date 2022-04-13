@@ -1,19 +1,28 @@
 <resources>
     <string name="app_name">Group_D</string>
-    <string name="title_activity_login">LoginActivity</string>
+    <string name="title_activity_login">Sign in</string>
+    <string name="title_activity_register">Create new account</string>
     <string name="prompt_email">Email</string>
+    <string name="prompt_username">Username</string>
     <string name="prompt_password">Password</string>
-    <string name="action_sign_in">Sign in or register</string>
-    <string name="action_sign_in_short">Sign in</string>
+    <string name="prompt_confirm_password">Confirm password</string>
+    <string name="action_sign_in">Sign in</string>
+    <string name="action_create_new">Create new account</string>
+    <string name="action_register">Register</string>
+    <string name="action_sign_out">Sign out</string>
     <string name="welcome">"Welcome !"</string>
-    <string name="invalid_username">Not a valid username</string>
+    <string name="invalid_email">Not a valid email</string>
     <string name="invalid_password">Password must be >5 characters</string>
-    <string name="login_failed">"Login failed"</string>
+    <string name="invalid_username">Username must not contain an \@</string>
+    <string name="password_not_match">Passwords doesn\'t match</string>
+    <string name="login_failed">"Login failed: Invalid username or password"</string>
+    <string name="register_failed">"Creating new account failed"</string>
     <string name="dialog_yes">Yes</string>
     <string name="dialog_no">No</string>
     <string name="dialog_got_it">Got it</string>
 
     <string name="title_activity_main_screen">MainScreenActivity</string>
+    <string name="dialog_sign_out_title">Are you sure you want to sign out?</string>
 
     <string name="default_notification_channel_id">CC_GD_C</string>
     <string name="default_message_thing">You have a new Messange: %1$s</string>

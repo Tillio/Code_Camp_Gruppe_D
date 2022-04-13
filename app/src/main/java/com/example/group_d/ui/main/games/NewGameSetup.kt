@@ -20,8 +20,6 @@ import com.example.group_d.*
 import com.example.group_d.data.model.Challenge
 import com.example.group_d.data.model.User
 import com.example.group_d.data.model.UserDataViewModel
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
 
 class NewGameSetup : Fragment() {
 
@@ -66,9 +64,10 @@ class NewGameSetup : Fragment() {
                     args.userID,
                     Challenge(
                         User(
-                            name = Firebase.auth.currentUser!!.email.toString(),
+                            name = userDataViewModel.getOwnEmail(),
                             id = userDataViewModel.getOwnUserID(),
-                            online = true
+                            status = true,
+                            displayName = userDataViewModel.getOwnDisplayName()
                         ), GAME_TYPE_TIC_TAC_TOE
                     )
                 )
@@ -77,9 +76,10 @@ class NewGameSetup : Fragment() {
                     args.userID,
                     Challenge(
                         User(
-                            name = Firebase.auth.currentUser!!.email.toString(),
+                            name = userDataViewModel.getOwnEmail(),
                             id = userDataViewModel.getOwnUserID(),
-                            online = true
+                            status = true,
+                            displayName = userDataViewModel.getOwnDisplayName()
                         ), GAME_TYPE_COMPASS
                     )
                 )
@@ -89,24 +89,26 @@ class NewGameSetup : Fragment() {
                     args.userID,
                     Challenge(
                         User(
-                            name = Firebase.auth.currentUser!!.email.toString(),
+                            name = userDataViewModel.getOwnEmail(),
                             id = userDataViewModel.getOwnUserID(),
-                            online = true
+                            status = true,
+                            displayName = userDataViewModel.getOwnDisplayName()
                         ), GAME_TYPE_MENTAL_ARITHMETICS
                     )
                 )
             } else if (spinnerGameSelect.selectedItem.toString() == "Steps Game") {
                 val challenge = Challenge(
                     User(
-                        name = Firebase.auth.currentUser!!.email.toString(),
+                        name = userDataViewModel.getOwnEmail(),
                         id = userDataViewModel.getOwnUserID(),
-                        online = true
+                        status = true,
+                        displayName = userDataViewModel.getOwnDisplayName()
                     ), GAME_TYPE_STEPS_GAME
                 )
                 if (stepGameTimeSelect.selectedItem == "debug"){
-                    challenge.step_game_time = 15000
+                    challenge.stepGameTime = 15000
                 }else{
-                    challenge.step_game_time = (stepGameTimeSelect.selectedItem.toString().toLong())*60000
+                    challenge.stepGameTime = (stepGameTimeSelect.selectedItem.toString().toLong())*60000
                 }
                 userDataViewModel.challengeFriend(
                     args.userID,
@@ -149,9 +151,19 @@ class NewGameSetup : Fragment() {
     fun createPlayers(): List<User> {
         val arrayList = ArrayList<User>()
         // set data for yourself
-        arrayList.add(User(name = "you", id = userDataViewModel.getOwnUserID(), online = true))
+        arrayList.add(User(
+            name = userDataViewModel.getOwnEmail(),
+            id = userDataViewModel.getOwnUserID(),
+            status = true,
+            displayName = "you"
+        ))
         // set data for the other player
-        arrayList.add(User(name = args.userName, id = args.userID, online = args.userStatus))
+        arrayList.add(User(
+            name = args.userName,
+            id = args.userID,
+            status = args.userStatus,
+            displayName = args.userDisplayName
+        ))
         return arrayList
     }
 
