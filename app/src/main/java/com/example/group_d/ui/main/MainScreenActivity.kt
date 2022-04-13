@@ -88,6 +88,11 @@ class MainScreenActivity : AppCompatActivity() {
                 SignOutDialogFragment(this).show(supportFragmentManager, "sign_out")
                 true
             }
+            android.R.id.home -> {
+                // Up button was clicked
+                findNavController(R.id.nav_host_fragment_activity_main_screen).navigateUp()
+                true
+            }
             else -> super.onOptionsItemSelected(item)
         }
     }
