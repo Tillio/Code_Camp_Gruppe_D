@@ -7,7 +7,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.group_d.GAME_TYPE_MAP
 import com.example.group_d.R
-import com.example.group_d.USER_NAME
+import com.example.group_d.USER_DISPLAY_NAME
 import com.example.group_d.data.model.Game
 import com.google.firebase.auth.FirebaseAuth
 
@@ -37,7 +37,7 @@ class GamesAdapter(private val games: ArrayList<Game>, private val gameStarter: 
         for(doc in games[position].players) {
             if(doc.id != FirebaseAuth.getInstance().uid){
                 doc.get().addOnSuccessListener {
-                    val get = it.data?.get(USER_NAME)
+                    val get = it.data?.get(USER_DISPLAY_NAME)
                     holder.ownVsEnemyName.text = "You vs. $get"
                     val gameTypeString = GAME_TYPE_MAP[games[position].gameType]
                     holder.gameTypeText.text = gameTypeString

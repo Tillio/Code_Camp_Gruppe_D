@@ -37,7 +37,7 @@ class ChallengeAdapter(private val challenges: List<Challenge>, private val frag
 
         fun bind(challenge: Challenge) {
             this.challenge = challenge
-            playerName.text = challenge.user.name
+            playerName.text = challenge.user.displayName
             inviteMessage.text = GAME_TYPE_MAP[challenge.gameType]
         }
     }

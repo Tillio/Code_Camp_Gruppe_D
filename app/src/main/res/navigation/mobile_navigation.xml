@@ -64,6 +64,9 @@
         <argument
             android:name="userStatus"
             app:argType="boolean"/>
+        <argument
+            android:name="userDisplayName"
+            app:argType="string" />
     </fragment><action android:id="@+id/action_global_newGameSetup" app:destination="@id/newGameSetup"/>
     <fragment
         android:id="@+id/compassFragment"

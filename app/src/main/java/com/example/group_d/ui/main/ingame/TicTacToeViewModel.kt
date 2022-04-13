@@ -6,7 +6,6 @@ import com.example.group_d.*
 import com.example.group_d.data.model.Game
 import com.example.group_d.data.model.GameEnding
 import com.example.group_d.data.model.TicTacToeModel
-import com.example.group_d.data.model.UserDataViewModel
 import com.example.group_d.ui.main.recentGames.RecentGamesViewModel
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.DocumentSnapshot
@@ -133,7 +132,7 @@ class TicTacToeViewModel : GameViewModel() {
                 playerRef.get().addOnSuccessListener { document ->
                     otherName = document["name"].toString() }
                 playerRef.get().addOnSuccessListener { playerSnap ->
-                    val opponentName = playerSnap.getString(USER_NAME)
+                    val opponentName = playerSnap.getString(USER_DISPLAY_NAME)
                     // Build game model
                     _gameModel.apply {
                         value = TicTacToeModel.buildGame("You", opponentName ?: "")
@@ -169,7 +168,7 @@ class TicTacToeViewModel : GameViewModel() {
         for (player in localGame.players) {
             if (player.id != getOwnUserID()) {
                 player.get().addOnSuccessListener { playerSnap ->
-                    val opponentName = playerSnap.getString(USER_NAME)
+                    val opponentName = playerSnap.getString(USER_DISPLAY_NAME)
                     _gameModel.apply {
                         value = TicTacToeModel.buildGame("You", opponentName ?: "")
                         value!!.currentPlayer = if (isBeginner) value!!.player1 else value!!.player2

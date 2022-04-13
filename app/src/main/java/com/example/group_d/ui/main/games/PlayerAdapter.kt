@@ -24,7 +24,7 @@ class PlayerAdapter : RecyclerView.Adapter<PlayerAdapter.ViewHolder>() {
     // writes the player-data onto the playeritem
     override fun onBindViewHolder(holder: PlayerAdapter.ViewHolder, position: Int) {
         // writes the name of the player
-        holder.playerItemName.text = playerItems[position].name
+        holder.playerItemName.text = playerItems[position].displayName
     }
 
     // returns the amount of players

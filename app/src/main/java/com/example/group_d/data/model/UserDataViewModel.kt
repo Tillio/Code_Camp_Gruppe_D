@@ -11,7 +11,6 @@ import com.example.group_d.data.PushNotification
 import com.example.group_d.data.RetrofitInstance
 import com.example.group_d.data.handler.NotificationHandler
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FieldValue
@@ -128,7 +127,15 @@ class UserDataViewModel : ViewModel() {
     }
 
     fun getOwnUserID(): String {
-        return Firebase.auth.currentUser!!.uid
+        return auth.currentUser!!.uid
+    }
+
+    fun getOwnEmail(): String {
+        return auth.currentUser!!.email.toString()
+    }
+
+    fun getOwnDisplayName(): String {
+        return auth.currentUser!!.displayName.toString()
     }
 
     //listen to own document
@@ -268,14 +275,19 @@ class UserDataViewModel : ViewModel() {
         }
 
         for (chall in snapshot.data?.get(USER_CHALLENGES) as ArrayList<HashMap<*, *>>) {
-            val type = chall["gameType"]
-            val step_game_time = chall["step_game_time"] as Long
-            val userMap = chall["user"] as HashMap<*, *>
-            val uid = userMap["id"]
-            val name = userMap["name"]
-            val status = userMap["online"]
-            var userObj =
-                User(id = uid as String, name = name as String, online = status as Boolean)
+            val type = chall[GAME_TYPE]
+            val stepGameTime = chall[STEP_GAME_TIME] as Long
+            val userMap = chall[COL_USER] as HashMap<*, *>
+            val uid = userMap[USER_ID]
+            val name = userMap[USER_NAME]
+            val status = userMap[USER_STATUS]
+            val displayName = userMap[USER_DISPLAY_NAME]
+            var userObj = User(
+                id = uid as String,
+                name = name as String,
+                status = status as Boolean,
+                displayName = displayName as String
+            )
             if (userIsFriend(uid)) {
                 for (user in friends.value!!) {
                     if (uid == user.id) {
@@ -284,8 +296,8 @@ class UserDataViewModel : ViewModel() {
                     }
                 }
             }
-            var newChallenge = Challenge(user = userObj, gameType = type as String)
-            newChallenge.step_game_time = step_game_time
+            val newChallenge = Challenge(user = userObj, gameType = type as String)
+            newChallenge.stepGameTime = stepGameTime
             actualChallenges.add(newChallenge)
         }
         //add new challenges
@@ -349,7 +361,8 @@ class UserDataViewModel : ViewModel() {
             db.collection(COL_USER).document(uid).get().addOnSuccessListener { doc ->
                 val name = doc.data?.get(USER_NAME) as String
                 val online = doc.data?.get(USER_STATUS) as Boolean
-                val user = User(name = name, online = online, id = uid)
+                val displayName = doc.data?.get(USER_DISPLAY_NAME) as String
+                val user = User(name = name, status = online, id = uid, displayName = displayName)
                 addFriend(user)
             }
         }
