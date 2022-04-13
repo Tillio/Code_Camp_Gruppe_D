@@ -93,7 +93,7 @@ class ChallengeDeclineDialogFragment(
             var dontAsk = false
             val builder = AlertDialog.Builder(it, R.style.AlertDialogTheme)
             val msg = getString(R.string.dialog_decline_challenge_msg1) +
-                    challenge.user.name +
+                    challenge.user.displayName +
                     getString(R.string.dialog_decline_challenge_msg2)
             builder.setTitle(msg)
                 .setPositiveButton(R.string.dialog_yes) { _, _ ->

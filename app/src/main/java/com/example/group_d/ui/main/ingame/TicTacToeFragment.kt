@@ -113,11 +113,7 @@ class TicTacToeFragment : Fragment(), GiveUpReceiver {
         }
         ticTacToeViewModel.playerMove(clickedField)
         // send Notification to next player
-        userDataViewModel.prepNotification(
-            "Your Turn",
-            "It is your turn!",
-            ticTacToeViewModel.getOtherID()
-        )
+        userDataViewModel.prepNotification("Your Turn", "It is your turn in TicTacToe against " + ticTacToeViewModel.otherName, ticTacToeViewModel.otherID)
     }
 
     private fun onNextFieldObserved(nextFieldID: Int) {
@@ -146,11 +142,7 @@ class TicTacToeFragment : Fragment(), GiveUpReceiver {
 
     private fun onGameEnding(ending: GameEnding) {
         // send notification, that the game is over
-        userDataViewModel.prepNotification(
-            "Game ended",
-            "A game ended",
-            ticTacToeViewModel.getOtherID()
-        )
+        userDataViewModel.prepNotification("Game ended", "A game of TicTacToe against " + ticTacToeViewModel.otherName + " ended.", ticTacToeViewModel.otherID)
         // Get right message
         val msgID = when (ending) {
             GameEnding.WIN -> R.string.ending_win
@@ -201,4 +193,3 @@ class TicTacToeFragment : Fragment(), GiveUpReceiver {
         ticTacToeViewModel.showOnTurn.removeObservers(viewLifecycleOwner)
     }
 }
-

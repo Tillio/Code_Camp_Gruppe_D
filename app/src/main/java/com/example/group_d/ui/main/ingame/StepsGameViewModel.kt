@@ -17,6 +17,7 @@ import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import com.tbruyelle.rxpermissions2.RxPermissions
 
 class StepsGameViewModel : GameViewModel(), SensorEventListener {
 
@@ -39,6 +40,7 @@ class StepsGameViewModel : GameViewModel(), SensorEventListener {
 
     // the UserID of the other player
     var otherID: String = ""
+    var otherName: String = ""
 
     override fun initGame(snap: DocumentSnapshot, docref: DocumentReference) {
         val playerRefs = snap[GAME_PLAYERS] as List<DocumentReference>
@@ -46,6 +48,9 @@ class StepsGameViewModel : GameViewModel(), SensorEventListener {
             if (playerRef.id != getOwnUserID()) {
                 // get the ID of the other player
                 otherID = playerRef.id
+                // get the name of the other player
+                playerRef.get().addOnSuccessListener { document ->
+                    otherName = document["name"].toString() }
                 playerRef.get().addOnSuccessListener { playerSnap ->
                     val gameData = snap[GAME_DATA] as MutableList<String>
                     val gameDataString: MutableList<String> = gameData
@@ -75,6 +80,7 @@ class StepsGameViewModel : GameViewModel(), SensorEventListener {
             }
         }
 
+        //winner is calculated
         if(playerOneData.isNotEmpty() && playerTwoData.isNotEmpty()) {
             val playerOneName = playerOneData[0]
             val playerOneSteps = playerOneData[2].toInt()
@@ -90,7 +96,7 @@ class StepsGameViewModel : GameViewModel(), SensorEventListener {
         }
     }
 
-
+    //step sensor is started
     fun startStepCounter() {
         val stepCounterSensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER)
         stepCounterSensor.let {
@@ -98,6 +104,7 @@ class StepsGameViewModel : GameViewModel(), SensorEventListener {
         }
     }
 
+    //step sensor is stopped
     fun stopStepCounter() {
         sensorManager.unregisterListener(this)
     }
@@ -108,9 +115,7 @@ class StepsGameViewModel : GameViewModel(), SensorEventListener {
             stepsBase = sensorEvent.values.firstOrNull()!!.toInt()
         }
 
-        //altualisiert current steps in der Datenbank
-
-
+        //refreshes current steps in the database
         sensorEvent.values.firstOrNull()?.let {
             db.collection(COL_GAMES).document(gameID).update(
                 GAME_DATA, FieldValue.arrayRemove(

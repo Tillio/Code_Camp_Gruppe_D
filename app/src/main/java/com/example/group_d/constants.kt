@@ -11,7 +11,10 @@ const val USER_FRIENDS = "friends"
 const val USER_GAMES = "games"
 const val USER_STATUS = "status"
 const val USER_SEARCHING = "searching"
+const val USER_ID = "id"
+const val STEP_GAME_TIME = "stepGameTime"
 const val USER_NAME = "name"
+const val USER_DISPLAY_NAME = "displayName"
 const val USER_DATA = "userData"
 
 //games keywords

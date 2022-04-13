@@ -43,14 +43,15 @@ class FriendAdapter (private val friendDeleter: FriendDeleter): RecyclerView.Ada
         val buttonDel = view.findViewById(R.id.delete_friend_button) as Button
 
         fun bind(user: User) {
-            panel.text = user.name
+            panel.text = user.displayName
             buttonInv.setOnClickListener { view ->
                 view.findNavController().navigate(
                     R.id.action_global_newGameSetup,
                     bundleOf(
                         "userID" to user.id,
                         "userName" to user.name,
-                        "userStatus" to user.online
+                        "userStatus" to user.status,
+                        "userDisplayName" to user.displayName
                     )
                 )
             }

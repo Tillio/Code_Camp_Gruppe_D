@@ -4,5 +4,5 @@ data class Challenge(
     val user: User,
     val gameType: String
 ){
-    var step_game_time: Long = 0
+    var stepGameTime: Long = 0
 }

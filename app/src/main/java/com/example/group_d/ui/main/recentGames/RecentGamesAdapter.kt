@@ -9,9 +9,8 @@ import android.widget.TextView
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.example.group_d.GAME_TYPE_MAP
-
 import com.example.group_d.R
-import com.example.group_d.USER_NAME
+import com.example.group_d.USER_DISPLAY_NAME
 import com.example.group_d.data.model.Game
 import com.google.firebase.auth.FirebaseAuth
 
@@ -59,7 +58,7 @@ class RecentGamesAdapter(private val recentGames: ArrayList<Game>, private val g
     private fun loadOpponent(holder: ViewHolder, game:Game){
         for(doc in game.players) {
             doc.get().addOnSuccessListener {user ->
-                var name = user.get(USER_NAME) as String
+                var name = user.get(USER_DISPLAY_NAME) as String
                 if (doc.id != FirebaseAuth.getInstance().uid){
                     holder.opponentName.text = name
                 }
