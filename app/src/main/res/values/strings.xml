@@ -102,9 +102,17 @@
 
     <!--notifications-->
     <string name="default_notification_channel_id">CC_GD_C</string>
-    <string name="default_message_thing">You have a new Messange: %1$s</string>
-    <string name="msg_subscribed">You have subscibed to Messenges</string>
-    <string name="msg_subscribe_failed">You have failed to subscibe to Messenges</string>
+    <string name="default_message_thing">You have a new message: %1$s</string>
+    <string name="msg_subscribed">You have subscribed to messages</string>
+    <string name="msg_subscribe_failed">You have failed to subscribe to messages</string>
+    <string name="notify_new_friend_title">New Friend</string>
+    <string name="notify_new_friend_msg">you have a new friend request</string>
+    <string name="notify_acc_friend_title">Accepted Friend</string>
+    <string name="notify_acc_friend_msg">a friend request was accepted</string>
+    <string name="notify_no_friend_title">No Friend</string>
+    <string name="notify_no_friend_msg">you were removed from a friend list!</string>
+    <string name="notify_new_challenge_title">new challenge</string>
+    <string name="notify_new_challenge_msg">you have been challenged!</string>
     <string name="notify_game_started_title">Game started</string>
     <string name="notify_game_started_msg">a new game has started</string>
     <string name="notify_your_turn_title">your turn</string>

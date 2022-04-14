@@ -2,6 +2,7 @@ package com.example.group_d.data.model
 
 import android.content.ContentValues
 import android.content.Context
+import android.content.res.Resources
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -11,7 +12,10 @@ import com.example.group_d.data.PushNotification
 import com.example.group_d.data.RetrofitInstance
 import com.example.group_d.data.handler.NotificationHandler
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.*
+import com.google.firebase.firestore.DocumentReference
+import com.google.firebase.firestore.DocumentSnapshot
+import com.google.firebase.firestore.FieldValue
+import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.CoroutineScope
@@ -52,7 +56,7 @@ class UserDataViewModel : ViewModel() {
      * sends a friend request to a given email by adding this users uid to the given users
      * friend request document in firestore
      */
-    fun sendFriendRequest(email: String): Boolean {
+    fun sendFriendRequest(email: String, resources: Resources): Boolean {
         /*takes username and returns uid*/
         Log.d(TAG, "sending friend request to: $email")
         Log.d(TAG, "finding userID of $email ...")
@@ -64,7 +68,7 @@ class UserDataViewModel : ViewModel() {
             .addOnSuccessListener { documents ->
                 for (document in documents) {
                     Log.d(TAG, "uid: ${document.id} of user: ${document["name"]} found")
-                    sendFriendRequestToID(document.id)
+                    sendFriendRequestToID(document.id, resources)
                 }
             }
             .addOnFailureListener { exception ->
@@ -79,13 +83,17 @@ class UserDataViewModel : ViewModel() {
      * sends a friend request to a given uid by adding this users uid to the given users
      * friend request document in firestore
      */
-    fun sendFriendRequestToID(userID: String) {
+    fun sendFriendRequestToID(userID: String, resources: Resources) {
         if (userID != getOwnUserID()) {
             db.collection(COL_USER).document(userID).collection(USER_DATA)
                 .document(USER_FRIEND_REQUESTS)
                 .update(USER_FRIEND_REQUESTS, FieldValue.arrayUnion(getOwnUserID()))
             //send notification
-            prepNotification("New Friend", "you have a new friendrequest", userID)
+            prepNotification(
+                resources.getString(R.string.notify_new_friend_title),
+                resources.getString(R.string.notify_new_friend_msg),
+                userID
+            )
         }
     }
 
@@ -95,7 +103,7 @@ class UserDataViewModel : ViewModel() {
      * adding the user to the new friends friend list
      * removing the friend request from the users friend requests
      */
-    fun acceptFriendRequest(newFriendUid: String) {
+    fun acceptFriendRequest(newFriendUid: String, resources: Resources) {
         Log.d(TAG, "accepting friend request of $newFriendUid")
 
         val ownUid = getOwnUserID()
@@ -112,7 +120,11 @@ class UserDataViewModel : ViewModel() {
         db.collection("user").document(newFriendUid).collection("userData").document("friends")
             .update("friends", FieldValue.arrayUnion(ownUid))
         //send notification
-        prepNotification("Accepted Friend", "a friendrequest was accepted", newFriendUid)
+        prepNotification(
+            resources.getString(R.string.notify_acc_friend_title),
+            resources.getString(R.string.notify_acc_friend_msg),
+            newFriendUid
+        )
     }
 
 
@@ -120,13 +132,17 @@ class UserDataViewModel : ViewModel() {
      * sends the given challenge to the given uid
      * by adding the challenge to the uids challenge list
      */
-    fun challengeFriend(userid: String, challenge: Challenge) {
+    fun challengeFriend(userid: String, challenge: Challenge, resources: Resources) {
         Log.d(TAG, "creating challange request")
         // adding me to challanges of other user
         db.collection(COL_USER).document(userid).collection(USER_DATA).document(USER_CHALLENGES)
             .update(USER_CHALLENGES, FieldValue.arrayUnion(challenge))
         // send notification
-        prepNotification("new challenge", "you have been challenged!", userid)
+        prepNotification(
+            resources.getString(R.string.notify_new_challenge_title),
+            resources.getString(R.string.notify_new_challenge_msg),
+            userid
+        )
     }
 
     /**
@@ -399,7 +415,6 @@ class UserDataViewModel : ViewModel() {
             if (friend.id == friendId) {
                 friends.value!!.remove(friend)
                 friends.value = friends.value
-                prepNotification("No Friend", "you were removed from a friendlist!", friendId)
                 return true
             }
         }

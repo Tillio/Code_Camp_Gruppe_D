@@ -114,7 +114,7 @@ class NewGameSetup : Fragment() {
             challenge.stepGameTime =
                 (stepGameTimeSelect.selectedItem.toString().toLong()) * 60000
         }
-        userDataViewModel.challengeFriend(args.userID, challenge)
+        userDataViewModel.challengeFriend(args.userID, challenge, resources)
 
         // then close the NewGamesFragment
         findNavController().navigate(R.id.action_global_friendList)

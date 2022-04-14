@@ -101,7 +101,7 @@ class FriendsListFragment : Fragment(), FriendAdapter.FriendDeleter {
         val newFriendUsername = root.findViewById(R.id.editTextTextPersonName2) as TextView
         // set on-click listener for sending friend requests
         addFriendButton.setOnClickListener {
-            userDataViewModel.sendFriendRequest(newFriendUsername.text.toString())
+            userDataViewModel.sendFriendRequest(newFriendUsername.text.toString(), resources)
         }
         //userDataViewModel.testAcceptFriendRequest()
 
@@ -109,7 +109,7 @@ class FriendsListFragment : Fragment(), FriendAdapter.FriendDeleter {
             if (it == userDataViewModel.getOwnUserID()) {
                 return@let
             }
-            userDataViewModel.sendFriendRequestToID(it)
+            userDataViewModel.sendFriendRequestToID(it, resources)
             val requestMsg = getString(R.string.friend_request_to_id, it)
             Toast.makeText(activity, requestMsg, Toast.LENGTH_SHORT).show()
         }
@@ -118,5 +118,10 @@ class FriendsListFragment : Fragment(), FriendAdapter.FriendDeleter {
 
     override fun deleteFriend(friend: User) {
         userDataViewModel.deleteFriend(friend)
+        userDataViewModel.prepNotification(
+            getString(R.string.notify_no_friend_title),
+            getString(R.string.notify_no_friend_msg),
+            friend.id
+        )
     }
 }
