@@ -17,7 +17,6 @@ import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import com.tbruyelle.rxpermissions2.RxPermissions
 
 class StepsGameViewModel : GameViewModel(), SensorEventListener {
 

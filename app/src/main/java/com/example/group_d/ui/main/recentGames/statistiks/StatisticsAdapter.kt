@@ -1,7 +1,6 @@
 package com.example.group_d.ui.main.recentGames.statistiks
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.group_d.R

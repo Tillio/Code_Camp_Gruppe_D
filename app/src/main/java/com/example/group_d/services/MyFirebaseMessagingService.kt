@@ -1,15 +1,11 @@
 package com.example.group_d.services
 
 import android.app.NotificationManager
-import android.app.Service
 import android.content.ContentValues.TAG
-import android.content.Intent
-import android.os.IBinder
 import android.util.Log
 import androidx.core.content.ContextCompat
 import com.example.group_d.COL_USER
 import com.example.group_d.data.handler.sendNotification
-import com.example.group_d.ui.main.MainScreenActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
