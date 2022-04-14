@@ -1,5 +1,6 @@
 package com.example.group_d.ui.main.recentGames.statistiks
 
+import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -40,6 +41,7 @@ class StatisticsFragment : Fragment() {
 
 
         pieChart= root.findViewById(R.id.winLossPie)
+        initPieChart()
 
 
         statisticsRecycler = root.findViewById<RecyclerView>(R.id.statistiks_recycler).apply {
@@ -50,7 +52,12 @@ class StatisticsFragment : Fragment() {
             recyclerAdapter.data = it
             statisticsRecycler.adapter?.notifyDataSetChanged()
             pieChart.data = statisticsViewModel.pieData()
+
+            pieChart.data.dataSet.valueTextColor = Color.parseColor("#CCFFFFFF")
+            pieChart.legend.isEnabled = false
+
             pieChart.invalidate()
+
         }
         viewModel.updateData()
 
@@ -58,7 +65,15 @@ class StatisticsFragment : Fragment() {
         return root
     }
 
+    fun initPieChart(){
+        pieChart.description.isEnabled = false
+        pieChart.isRotationEnabled = false
+        pieChart.description.textColor = Color.WHITE
+        pieChart.setEntryLabelColor(Color.parseColor("#CCFFFFFF"))
+        pieChart.setHoleColor(Color.parseColor("#212121"))
 
+
+    }
 
 
 

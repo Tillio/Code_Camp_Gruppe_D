@@ -34,7 +34,7 @@
         android:id="@+id/ingame_ticTacToeFragment"
         android:name="com.example.group_d.ui.main.ingame.TicTacToeFragment"
         android:label="@string/title_tic_tac_toe"
-        tools:layout="@layout/tic_tac_toe_fragment" >
+        tools:layout="@layout/fragment_tic_tac_toe" >
         <argument
             android:name="gameID"
             app:argType="string" />
@@ -86,7 +86,7 @@
         android:id="@+id/mentalArithmeticsFragment"
         android:name="com.example.group_d.ui.main.ingame.MentalArithmeticsFragment"
         android:label="Mental Arithmetics"
-        tools:layout="@layout/mental_arithmetics_fragment" >
+        tools:layout="@layout/fragment_mental_arithmetics" >
         <argument
             android:name="gameID"
             app:argType="string" />

@@ -17,7 +17,7 @@ class PlayerAdapter : RecyclerView.Adapter<PlayerAdapter.ViewHolder>() {
     // when the ViewHolder is created
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PlayerAdapter.ViewHolder {
         // adds the player-item to the list
-        var view = LayoutInflater.from(parent.context).inflate(R.layout.player_item, parent, false)
+        var view = LayoutInflater.from(parent.context).inflate(R.layout.item_player, parent, false)
         return ViewHolder(view)
     }
 

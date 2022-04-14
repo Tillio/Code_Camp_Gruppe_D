@@ -129,7 +129,7 @@ class StatisticsViewModel : ViewModel() {
 
     fun pieData(): PieData {
         val entries: ArrayList<PieEntry> = ArrayList()
-        var label = "type"
+        var label = ""
 
         val wins = tttStats.wins + compass.wins + stepsChallenge.wins + mentalArithmetic.wins
         val total =
@@ -140,8 +140,8 @@ class StatisticsViewModel : ViewModel() {
         data.put("Niederlagen", total - wins)
 
         var colors: ArrayList<Int> = ArrayList()
-        colors.add(Color.parseColor("#304567"))
-        colors.add(Color.parseColor("#a35567"))
+        colors.add(Color.parseColor("#2f63f5"))
+        colors.add(Color.parseColor("#e14646"))
 
         for (type in data.keys) {
             data.get(type)?.let { PieEntry(it.toFloat(), type) }?.let { entries.add(it) }

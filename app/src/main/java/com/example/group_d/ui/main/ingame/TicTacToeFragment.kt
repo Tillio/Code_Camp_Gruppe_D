@@ -14,14 +14,14 @@ import com.example.group_d.R
 import com.example.group_d.data.model.GameEnding
 import com.example.group_d.data.model.TicTacToeModel
 import com.example.group_d.data.model.UserDataViewModel
-import com.example.group_d.databinding.TicTacToeFragmentBinding
+import com.example.group_d.databinding.FragmentTicTacToeBinding
 import com.example.group_d.ui.main.recentGames.RecentGamesViewModel
 
 class TicTacToeFragment : Fragment(), GiveUpReceiver {
 
     private lateinit var ticTacToeViewModel: TicTacToeViewModel
     private val recentGamesViewModel: RecentGamesViewModel by activityViewModels()
-    private var _binding: TicTacToeFragmentBinding? = null
+    private var _binding: FragmentTicTacToeBinding? = null
     private val args: TicTacToeFragmentArgs by navArgs()
     private lateinit var waitSymbol: ProgressBar
     private lateinit var textPlayerAction: TextView
@@ -41,7 +41,7 @@ class TicTacToeFragment : Fragment(), GiveUpReceiver {
         ticTacToeViewModel =
             ViewModelProvider(this)[TicTacToeViewModel::class.java]
 
-        _binding = TicTacToeFragmentBinding.inflate(inflater, container, false)
+        _binding = FragmentTicTacToeBinding.inflate(inflater, container, false)
         val root = binding.root
         val textOpName = binding.textOpName
         waitSymbol = binding.wait
