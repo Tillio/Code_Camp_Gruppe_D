@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
@@ -43,8 +42,6 @@ class GamesFragment : Fragment(), GamesAdapter.GameStarter{
 
         _binding = FragmentGamesBinding.inflate(inflater, container, false)
         val root: View = binding.root
-
-        val textView: TextView = binding.textGames
 
         val recyclerView: RecyclerView = binding.recyclerViewGames
         recyclerView.adapter = userDataViewModel.games.value?.let { GamesAdapter(it, this) }

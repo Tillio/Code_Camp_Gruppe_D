@@ -103,7 +103,6 @@ class FriendsListFragment : Fragment(), FriendAdapter.FriendDeleter {
         addFriendButton.setOnClickListener {
             userDataViewModel.sendFriendRequest(newFriendUsername.text.toString(), resources)
         }
-        //userDataViewModel.testAcceptFriendRequest()
 
         arguments?.getString("userID")?.let {
             if (it == userDataViewModel.getOwnUserID()) {
