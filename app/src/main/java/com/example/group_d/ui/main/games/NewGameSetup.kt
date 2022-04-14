@@ -91,6 +91,7 @@ class NewGameSetup : Fragment() {
      * Uses the data given by the user and packages it in order to store it in Firestore
      */
     private fun startButtonOnClickListener(view: View) {
+        // gets the selected Game-Type
         val gameType = when (spinnerGameSelect.selectedItem.toString()) {
             "TicTacToe" -> GAME_TYPE_TIC_TAC_TOE
             "Compass" -> GAME_TYPE_COMPASS
@@ -101,6 +102,7 @@ class NewGameSetup : Fragment() {
             }
         }
 
+        // gets the user who sends the challenge
         val mainUser = User(
             name = userDataViewModel.getOwnEmail(),
             id = userDataViewModel.getOwnUserID(),
@@ -108,12 +110,15 @@ class NewGameSetup : Fragment() {
             displayName = userDataViewModel.getOwnDisplayName()
         )
 
+        // creates the challenge
         val challenge = Challenge(mainUser, gameType)
 
+        // stes the chosen Timer for StepsGame, if that is the selected game
         if (gameType == GAME_TYPE_STEPS_GAME){
             challenge.stepGameTime =
                 (stepGameTimeSelect.selectedItem.toString().toLong()) * 60000
         }
+        // sends the challenge
         userDataViewModel.challengeFriend(args.userID, challenge)
 
         // then close the NewGamesFragment

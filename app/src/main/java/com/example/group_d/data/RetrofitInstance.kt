@@ -12,6 +12,7 @@ import java.util.concurrent.TimeUnit
 // used to send messages to firebase
 class RetrofitInstance {
     companion object {
+        // create the retrofit-instance
          private val retrofit by lazy {
              Retrofit.Builder()
                  .baseUrl(BASE_URL)
@@ -19,6 +20,7 @@ class RetrofitInstance {
                  .client(initOkHttp())
                  .build()
          }
+        // use the retrofit-instance to build the notification
         val api by lazy {
             retrofit.create(NotificationAPI::class.java)
         }

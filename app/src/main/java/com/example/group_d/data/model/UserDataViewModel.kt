@@ -21,7 +21,6 @@ import kotlinx.coroutines.launch
 
 class UserDataViewModel : ViewModel() {
 
-    lateinit var applicationContext: Context
     var auth: FirebaseAuth = FirebaseAuth.getInstance()
     val TAG = "UserDataViewModel"
     val db = Firebase.firestore
@@ -399,7 +398,7 @@ class UserDataViewModel : ViewModel() {
             if (friend.id == friendId) {
                 friends.value!!.remove(friend)
                 friends.value = friends.value
-                prepNotification("No Friend", "you were removed from a friendlist!", friendId)
+                prepNotification("No Friend", "You were removed from a friendlist!", friendId)
                 return true
             }
         }
