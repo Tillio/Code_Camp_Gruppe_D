@@ -116,10 +116,11 @@ class NewGameSetup : Fragment() {
         // stes the chosen Timer for StepsGame, if that is the selected game
         if (gameType == GAME_TYPE_STEPS_GAME){
             if (stepGameTimeSelect.selectedItem.toString() == "debug"){
-                challenge.stepGameTime = 15000
+                challenge.stepGameTime = 15000L
+            }else{
+                challenge.stepGameTime =
+                    (stepGameTimeSelect.selectedItem.toString().toLong()) * 60000
             }
-            challenge.stepGameTime =
-                (stepGameTimeSelect.selectedItem.toString().toLong()) * 60000
         }
         // sends the challenge
         userDataViewModel.challengeFriend(args.userID, challenge, resources)
