@@ -1,7 +1,6 @@
 package com.example.group_d.data.model
 
 import android.content.ContentValues
-import android.content.Context
 import android.content.res.Resources
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
@@ -25,7 +24,6 @@ import kotlinx.coroutines.launch
 
 class UserDataViewModel : ViewModel() {
 
-    lateinit var applicationContext: Context
     var auth: FirebaseAuth = FirebaseAuth.getInstance()
     val TAG = "UserDataViewModel"
     val db = Firebase.firestore
