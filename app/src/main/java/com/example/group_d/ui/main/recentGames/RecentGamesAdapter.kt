@@ -34,7 +34,7 @@ class RecentGamesAdapter(private val recentGames: ArrayList<Game>, private val g
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.recent_game_item, parent, false)
+            .inflate(R.layout.item_recent_game, parent, false)
 
         return ViewHolder(view)
     }

@@ -21,7 +21,7 @@ class FriendAdapter (private val friendDeleter: FriendDeleter): RecyclerView.Ada
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
-        return ViewHolder(layoutInflater.inflate(R.layout.friend_item, parent, false))
+        return ViewHolder(layoutInflater.inflate(R.layout.item_friend, parent, false))
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {

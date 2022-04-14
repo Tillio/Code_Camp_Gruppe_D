@@ -175,20 +175,27 @@ class CompassViewModel : GameViewModel() {
     }
 
     private fun getRightDirection(userPos: Location): Double {
-        // Set altitudes to 0 because the geoportal doesn't provide them
+        // Calculate ECEF coordinates, set altitudes to 0 because the geoportal doesn't provide them
         val userPosEcef =
             CompassLocation.geodeticToEcef(userPos.latitude, userPos.longitude, 0.0)
         val currentLocationEcef = _currentLocation.value!!.run {
             CompassLocation.geodeticToEcef(latitude, longitude, 0.0)
         }
+        // Calculate ENU coordinates in reference to the user position
         val locationEnu = CompassLocation.ecefToEnu(userPosEcef, currentLocationEcef)
         val magneticNorthEnu = CompassLocation.ecefToEnu(userPosEcef, CompassLocation.magneticNorthEcef)
+        // Calculate the norms of the ENU vectors
         val locationEnuNorm = sqrt(locationEnu.sumOf { it * it })
         val magneticNorthEnuNorm = sqrt(magneticNorthEnu.sumOf { it * it })
+        // Norm the ENU vectors
         val locationDir = locationEnu.map { it / locationEnuNorm }
         val magneticNorthDir = magneticNorthEnu.map { it / magneticNorthEnuNorm }
+        // Calculate the difference locationDir - magneticNorthDir
         val diff = locationDir.mapIndexed { i, d -> d - magneticNorthDir[i] }
+        // Calculate the dot product <locationDir, magneticNorthDir>
         val dotProd = locationDir.mapIndexed { i, d -> d * magneticNorthDir[i] }.sum()
+
+        // Calculate right orientation
         var rightOrientation = Math.toDegrees(acos(dotProd))
         if (diff[0] < 0) {
             rightOrientation = -rightOrientation

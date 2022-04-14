@@ -19,7 +19,7 @@
 
     <item
         android:id="@+id/recentGamesFragment"
-        android:icon="@drawable/ic_baseline_settings_24"
+        android:icon="@drawable/ic_baseline_history_24"
         android:title="@string/title_recentGames" />
 
 </menu>

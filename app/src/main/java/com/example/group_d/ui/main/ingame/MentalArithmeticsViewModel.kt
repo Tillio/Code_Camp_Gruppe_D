@@ -2,7 +2,9 @@ package com.example.group_d.ui.main.ingame
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.example.group_d.*
+import com.example.group_d.GAME_DATA
+import com.example.group_d.GAME_PLAYERS
+import com.example.group_d.GAME_TYPE_MENTAL_ARITHMETICS
 import com.example.group_d.data.model.Game
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.DocumentReference

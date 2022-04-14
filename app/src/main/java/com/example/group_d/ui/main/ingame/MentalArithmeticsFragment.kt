@@ -17,7 +17,7 @@ import com.example.group_d.R
 import com.example.group_d.data.model.GameEnding
 import com.example.group_d.data.model.Problem
 import com.example.group_d.data.model.UserDataViewModel
-import com.example.group_d.databinding.MentalArithmeticsFragmentBinding
+import com.example.group_d.databinding.FragmentMentalArithmeticsBinding
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.ktx.firestore
@@ -26,7 +26,7 @@ import kotlin.random.Random
 
 class MentalArithmeticsFragment : Fragment() {
 
-    private var _binding: MentalArithmeticsFragmentBinding? = null
+    private var _binding: FragmentMentalArithmeticsBinding? = null
     private val db = Firebase.firestore
     private val args: MentalArithmeticsFragmentArgs by navArgs()
     private val userDataViewModel: UserDataViewModel by activityViewModels()
@@ -50,7 +50,7 @@ class MentalArithmeticsFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = MentalArithmeticsFragmentBinding.inflate(inflater, container, false)
+        _binding = FragmentMentalArithmeticsBinding.inflate(inflater, container, false)
         val root: View = binding.root
         timer = root.findViewById(R.id.timer)
 
