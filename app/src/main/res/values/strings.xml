@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Group_D</string>
+    <string name="app_name">Quickduel</string>
     <string name="title_activity_login">Sign in</string>
     <string name="title_activity_register">Create new account</string>
     <string name="prompt_email">Email</string>
