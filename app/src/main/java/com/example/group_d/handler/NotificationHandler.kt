@@ -39,7 +39,7 @@ fun NotificationManager.sendNotification(messageBody: String, applicationContext
         // then selects the icon of the Notification,
         .setSmallIcon(R.drawable.ic_notifications_black_24dp)
         // the title of the notification
-        .setContentTitle("CC_GD_C")
+        .setContentTitle("Quickduel")
         // then sets the text of the notification
         .setContentText(messageBody)
         // and finally the priority
