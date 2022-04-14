@@ -233,12 +233,12 @@ class MentalArithmeticsFragment : Fragment() {
         problems.add(Problem(random.nextInt(10, 100), random.nextInt(10, 100), "-"))
         problems.add(Problem(random.nextInt(10, 100), random.nextInt(10, 100), "+"))
         problems.add(Problem(random.nextInt(100, 1000), random.nextInt(10, 100), "+"))
-        //problems.add(Problem(random.nextInt(100, 1000), random.nextInt(100, 1000), "-"))
-        //problems.add(Problem(random.nextInt(0, 10), random.nextInt(0, 10), "*"))
-        //problems.add(Problem(random.nextInt(0, 10), random.nextInt(10, 50), "*"))
-        //problems.add(Problem(random.nextInt(1000, 10000), random.nextInt(1000, 10000), "+"))
-        //problems.add(Problem(random.nextInt(1000, 10000), random.nextInt(1000, 10000), "+"))
-        //problems.add(Problem(random.nextInt(10, 26), random.nextInt(10, 26), "*"))
+        problems.add(Problem(random.nextInt(100, 1000), random.nextInt(100, 1000), "-"))
+        problems.add(Problem(random.nextInt(0, 10), random.nextInt(0, 10), "*"))
+        problems.add(Problem(random.nextInt(0, 10), random.nextInt(10, 50), "*"))
+        problems.add(Problem(random.nextInt(1000, 10000), random.nextInt(1000, 10000), "+"))
+        problems.add(Problem(random.nextInt(1000, 10000), random.nextInt(1000, 10000), "+"))
+        problems.add(Problem(random.nextInt(10, 26), random.nextInt(10, 26), "*"))
         return problems
     }
 
