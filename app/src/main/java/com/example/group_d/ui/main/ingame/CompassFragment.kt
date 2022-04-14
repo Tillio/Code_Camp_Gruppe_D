@@ -390,8 +390,8 @@ class CompassFragment : Fragment(), Callback<MutableList<CompassLocation>>, Give
                 compassViewModel.saveEndTime(endTime)
                 // send Notification
                 userDataViewModel.prepNotification(
-                    "your turn",
-                    compassViewModel.otherName + " finished the compass-game.",
+                    getString(R.string.notify_your_turn_title),
+                    getString(R.string.notify_your_turn_compass_msg, userDataViewModel.getOwnDisplayName()),
                     compassViewModel.otherID
                 )
             }
@@ -427,8 +427,12 @@ class CompassFragment : Fragment(), Callback<MutableList<CompassLocation>>, Give
         if (!showEndstate) {
             // send Notification
             userDataViewModel.prepNotification(
-                "Game ended",
-                "A game of TicTacToe against " + compassViewModel.otherName + " has ended.",
+                getString(R.string.notify_game_ended_title),
+                getString(
+                    R.string.notify_game_ended_msg,
+                    getString(R.string.title_compass),
+                    userDataViewModel.getOwnDisplayName()
+                ),
                 compassViewModel.otherID
             )
             compassViewModel.deleteLoadedGame()

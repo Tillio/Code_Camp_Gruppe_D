@@ -24,11 +24,6 @@
     <string name="title_activity_main_screen">MainScreenActivity</string>
     <string name="dialog_sign_out_title">Are you sure you want to sign out?</string>
 
-    <string name="default_notification_channel_id">CC_GD_C</string>
-    <string name="default_message_thing">You have a new Messange: %1$s</string>
-    <string name="msg_subscribed">You have subscibed to Messenges</string>
-    <string name="msg_subscribe_failed">You have failed to subscibe to Messenges</string>
-
     <!--navbar-->
     <string name="title_games">Games</string>
     <string name="title_friends">Friends</string>
@@ -37,22 +32,23 @@
     <string name="user_id">User-Id</string>
     <string name="send_invite">Send Invite</string>
 
-    <string name="friend_request_to_id1">Send friend request to user with id&#160;</string>
-    <string name="friend_request_to_id2" />
+    <string name="friend_request_to_id">Send friend request to user with id %1$s</string>
 
     <!--challenges-->
     <string name="invite_msg_placeholder">invited you to a game</string>
     <string name="button_challenge_acc_text">Accept</string>
     <string name="button_challenge_decl">Decline</string>
-    <string name="games_title">Current Games</string>
-    <string name="player_names_placeholder">You vs IDK</string>
-    <string name="game_type">Gametype</string>
-    <string name="your_turn">Your Turn</string>
-    <string name="other_player_turn">Wait for %1$s…</string>
-
     <string name="dialog_decline_challenge_msg1">Are you sure you want to decline the challenge from&#160;</string>
     <string name="dialog_decline_challenge_msg2">\?</string>
     <string name="dialog_decline_challenge_dont_ask">Don\'t ask anymore</string>
+
+    <!--games-->
+    <string name="games_title">Current Games</string>
+    <string name="player_names_placeholder">You vs IDK</string>
+    <string name="player_names">You vs %1$s</string>
+    <string name="game_type">Gametype</string>
+    <string name="your_turn">Your Turn</string>
+    <string name="other_player_turn">Wait for %1$s…</string>
 
     <!--tictactoe-->
     <string name="title_tic_tac_toe">TicTacToe</string>
@@ -103,4 +99,19 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
+
+    <!--notifications-->
+    <string name="default_notification_channel_id">CC_GD_C</string>
+    <string name="default_message_thing">You have a new Messange: %1$s</string>
+    <string name="msg_subscribed">You have subscibed to Messenges</string>
+    <string name="msg_subscribe_failed">You have failed to subscibe to Messenges</string>
+    <string name="notify_game_started_title">Game started</string>
+    <string name="notify_game_started_msg">a new game has started</string>
+    <string name="notify_your_turn_title">your turn</string>
+    <string name="notify_your_turn_compass_msg">%1$s finished the compass-game.</string>
+    <string name="notify_your_turn_mentarith_msg">%1$s completed mentalArithmetics.</string>
+    <string name="notify_your_turn_steps_game_msg">%1$s completed the steps-game.</string>
+    <string name="notify_your_turn_tic_tac_toe_msg">It is your turn in TicTacToe against %1$s.</string>
+    <string name="notify_game_ended_title">Game ended</string>
+    <string name="notify_game_ended_msg">A game of %1$s against %2$s has ended.</string>
 </resources>

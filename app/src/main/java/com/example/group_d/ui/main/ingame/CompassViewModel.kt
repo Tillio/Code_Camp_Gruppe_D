@@ -55,7 +55,7 @@ class CompassViewModel : GameViewModel() {
                 otherID = playerRef.id
                 // get the name of the other player
                 playerRef.get().addOnSuccessListener { document ->
-                   otherName = document["name"].toString() }
+                   otherName = document[USER_DISPLAY_NAME].toString() }
                 playerRef.get().addOnSuccessListener { playerSnap ->
                     _opponentName.value = playerSnap.getString(USER_DISPLAY_NAME)
                     val gameData = snap[GAME_DATA] as MutableList<String>

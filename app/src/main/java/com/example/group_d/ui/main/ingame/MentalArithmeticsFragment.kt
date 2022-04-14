@@ -63,9 +63,10 @@ class MentalArithmeticsFragment : Fragment() {
             // send Notification
             //the winner gets a WON text and the loser a LOST text in place of the assignments
             userDataViewModel.prepNotification(
-                "Game ended",
-                "A game of mental arithmetics against " + mentalArithmeticsViewModel.otherName + " has Ended",
-                mentalArithmeticsViewModel.otherID)
+                getString(R.string.notify_game_ended_title),
+                "Mental Arithmetics",
+                mentalArithmeticsViewModel.otherID
+            )
             var ending: GameEnding
             if(winner == Firebase.auth.currentUser!!.email) {
                 assignment.text = "WON"
@@ -194,7 +195,11 @@ class MentalArithmeticsFragment : Fragment() {
                             timer.stop()
                             assignment.setText("FINISHED")
                             // send Notification
-                            userDataViewModel.prepNotification("your Turn", mentalArithmeticsViewModel.otherName + " completed mentalArithmatics.", mentalArithmeticsViewModel.otherID)
+                            userDataViewModel.prepNotification(
+                                getString(R.string.notify_your_turn_title),
+                                getString(R.string.notify_your_turn_mentarith_msg, userDataViewModel.getOwnDisplayName()),
+                                mentalArithmeticsViewModel.otherID
+                            )
                             db.collection(COL_GAMES).document(args.gameID).update(GAME_DATA, FieldValue.arrayUnion(
                                 Firebase.auth.currentUser!!.email + "=" + "finalTime" + "=" + timer.text))
                         }

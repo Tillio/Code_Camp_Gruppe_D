@@ -110,9 +110,7 @@ class FriendsListFragment : Fragment(), FriendAdapter.FriendDeleter {
                 return@let
             }
             userDataViewModel.sendFriendRequestToID(it)
-            val requestMsg = getString(R.string.friend_request_to_id1) +
-                    it +
-                    getString(R.string.friend_request_to_id2)
+            val requestMsg = getString(R.string.friend_request_to_id, it)
             Toast.makeText(activity, requestMsg, Toast.LENGTH_SHORT).show()
         }
         return root

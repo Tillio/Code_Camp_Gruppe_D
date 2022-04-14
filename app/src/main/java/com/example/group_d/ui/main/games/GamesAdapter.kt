@@ -40,7 +40,7 @@ class GamesAdapter(private val games: ArrayList<Game>, private val gameStarter: 
             if(doc.id != FirebaseAuth.getInstance().uid){
                 doc.get().addOnSuccessListener {
                     val opName = it.data?.get(USER_DISPLAY_NAME)
-                    holder.ownVsEnemyName.text = "You vs. $opName"
+                    holder.ownVsEnemyName.setText(R.string.player_names, opName)
                     val gameTypeString = GAME_TYPE_MAP[games[position].gameType]
                     holder.gameTypeText.text = gameTypeString
                     val lastPlayer = games[position].lastPlayer

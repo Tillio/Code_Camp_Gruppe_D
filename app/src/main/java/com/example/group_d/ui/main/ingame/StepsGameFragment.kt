@@ -3,7 +3,7 @@ package com.example.group_d.ui.main.ingame
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
-import android.hardware.*
+import android.hardware.SensorManager
 import android.os.Build
 import android.os.Bundle
 import android.os.CountDownTimer
@@ -11,7 +11,9 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.Button
+import android.widget.TextView
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -103,7 +105,15 @@ class StepsGameFragment : Fragment() {
             val msgID = "The winner is: " + stepsWinner
             Toast.makeText(activity, msgID, Toast.LENGTH_LONG).show()
             // send Notification
-            userDataViewModel.prepNotification("Game ended", "A steps-game against " + stepsGameViewModel.otherName + " ended.", stepsGameViewModel.otherID)
+            userDataViewModel.prepNotification(
+                getString(R.string.notify_game_ended_title),
+                getString(
+                    R.string.notify_game_ended_msg,
+                    "steps-game",
+                    userDataViewModel.getOwnDisplayName()
+                ),
+                stepsGameViewModel.otherID
+            )
             var ending: GameEnding
             if (stepsWinner == Firebase.auth.currentUser!!.email) {
                 wonLost.text = "WON"
@@ -130,7 +140,7 @@ class StepsGameFragment : Fragment() {
 
         val game =
             db.collection(COL_GAMES).document(args.gameID).get().addOnSuccessListener { doc ->
-                val gameData = doc.data!!.get("gameData") as ArrayList<String>
+                val gameData = doc.data!!.get(GAME_DATA) as ArrayList<String>
                 var stepsStarted = false
                 var finished = false
                 var remainingTime: Long = 0
@@ -221,7 +231,11 @@ class StepsGameFragment : Fragment() {
                     stepsGameViewModel.stopStepCounter()
 
                     // send Notification
-                    userDataViewModel.prepNotification("Your Turn", stepsGameViewModel .otherName + " completed the steps-game.", stepsGameViewModel.otherID)
+                    userDataViewModel.prepNotification(
+                        getString(R.string.notify_your_turn_title),
+                        getString(R.string.notify_your_turn_steps_game_msg, userDataViewModel.getOwnDisplayName()),
+                        stepsGameViewModel.otherID
+                    )
 
                     db.collection(COL_GAMES).document(args.gameID).update(
                         GAME_DATA, FieldValue.arrayUnion(
