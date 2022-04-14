@@ -136,8 +136,8 @@ class StatisticsViewModel : ViewModel() {
             tttStats.totalGames + compass.totalGames + stepsChallenge.totalGames + mentalArithmetic.totalGames
 
         var data: HashMap<String, Int> = HashMap()
-        data.put("Siege", wins)
-        data.put("Niederlagen", total - wins)
+        data.put("Wins", wins)
+        data.put("Losses", total - wins)
 
         var colors: ArrayList<Int> = ArrayList()
         colors.add(Color.parseColor("#2f63f5"))

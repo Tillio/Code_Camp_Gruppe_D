@@ -12,7 +12,7 @@
         android:id="@+id/textView4"
         android:layout_width="match_parent"
         android:layout_height="20dp"
-        android:text="Step Challenge"
+        android:text="Steps Challenge"
         android:textAlignment="center"
         android:textAllCaps="false"
         android:textIsSelectable="false"
@@ -28,7 +28,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="15dp"
-            android:text="gesamt"
+            android:text="Total"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -54,7 +54,7 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_marginStart="15dp"
-            android:text="Siege"
+            android:text="Wins"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
