@@ -103,7 +103,7 @@
     <fragment
         android:id="@+id/recentGamesFragment"
         android:name="com.example.group_d.ui.main.recentGames.RecentGamesFragment"
-        android:label="recent_games_fragment"
+        android:label="Recent Games"
         tools:layout="@layout/fragment_recent_games" >
         <action
             android:id="@+id/action_recentGamesFragment_to_statistiksFragment"
@@ -112,6 +112,6 @@
     <fragment
         android:id="@+id/statistiksFragment"
         android:name="com.example.group_d.ui.main.recentGames.statistiks.StatisticsFragment"
-        android:label="statistiks_fragment"
+        android:label="Statistiks"
         tools:layout="@layout/fragment_statistics" />
 </navigation>
