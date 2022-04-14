@@ -52,7 +52,6 @@ class MainScreenActivity : AppCompatActivity() {
         )
         userDataViewModel.setupFireBaseSnapshots()
         userDataViewModel.notificationHandler.createNotificationChannel(this)
-        userDataViewModel.applicationContext = this.applicationContext
 
         // fetches a token and stores it in firestore
         FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
